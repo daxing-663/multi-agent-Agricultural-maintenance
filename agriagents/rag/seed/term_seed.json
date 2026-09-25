@@ -1,0 +1,247 @@
+[
+ {
+  "id": "crop:tomato",
+  "pref": "番茄",
+  "labels": {
+   "zh": [
+    "番茄",
+    "西红柿"
+   ],
+   "en": [
+    "tomato",
+    "tomatoes"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "crop:cucumber",
+  "pref": "黄瓜",
+  "labels": {
+   "zh": [
+    "黄瓜"
+   ],
+   "en": [
+    "cucumber",
+    "cucumbers"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "crop:strawberry",
+  "pref": "草莓",
+  "labels": {
+   "zh": [
+    "草莓"
+   ],
+   "en": [
+    "strawberry",
+    "strawberries"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "crop:pepper",
+  "pref": "辣椒",
+  "labels": {
+   "zh": [
+    "辣椒"
+   ],
+   "en": [
+    "pepper",
+    "chili",
+    "chilli"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "crop:eggplant",
+  "pref": "茄子",
+  "labels": {
+   "zh": [
+    "茄子"
+   ],
+   "en": [
+    "eggplant",
+    "aubergine"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "crop:lettuce",
+  "pref": "生菜",
+  "labels": {
+   "zh": [
+    "生菜"
+   ],
+   "en": [
+    "lettuce"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "crop:potato",
+  "pref": "马铃薯",
+  "labels": {
+   "zh": [
+    "马铃薯",
+    "土豆"
+   ],
+   "en": [
+    "potato",
+    "potatoes"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "disease:late-blight",
+  "pref": "晚疫病",
+  "labels": {
+   "zh": [
+    "晚疫病",
+    "番茄晚疫病"
+   ],
+   "en": [
+    "late blight",
+    "tomato late blight"
+   ],
+   "la": [
+    "Phytophthora infestans"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "disease:early-blight",
+  "pref": "早疫病",
+  "labels": {
+   "zh": [
+    "早疫病",
+    "番茄早疫病"
+   ],
+   "en": [
+    "early blight"
+   ],
+   "la": [
+    "Alternaria solani"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "disease:downy-mildew",
+  "pref": "霜霉病",
+  "labels": {
+   "zh": [
+    "霜霉病",
+    "黄瓜霜霉病"
+   ],
+   "en": [
+    "downy mildew"
+   ],
+   "la": [
+    "Pseudoperonospora cubensis"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "disease:gray-mold",
+  "pref": "灰霉病",
+  "labels": {
+   "zh": [
+    "灰霉病",
+    "草莓灰霉病"
+   ],
+   "en": [
+    "gray mold",
+    "grey mould"
+   ],
+   "la": [
+    "Botrytis cinerea"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "disease:leaf-mold",
+  "pref": "叶霉病",
+  "labels": {
+   "zh": [
+    "叶霉病",
+    "番茄叶霉病"
+   ],
+   "en": [
+    "leaf mold",
+    "leaf mould"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "concept:soil-moisture",
+  "pref": "土壤水分",
+  "labels": {
+   "zh": [
+    "土壤水分",
+    "墒情"
+   ],
+   "en": [
+    "soil moisture",
+    "soil water content"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "concept:fertigation",
+  "pref": "水肥一体化",
+  "labels": {
+   "zh": [
+    "水肥一体化",
+    "水肥管理"
+   ],
+   "en": [
+    "fertigation",
+    "water and fertilizer management"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "concept:continuous-cropping",
+  "pref": "连作障碍",
+  "labels": {
+   "zh": [
+    "连作障碍",
+    "连作"
+   ],
+   "en": [
+    "continuous cropping obstacle"
+   ]
+  },
+  "source": "seed"
+ },
+ {
+  "id": "concept:greenhouse",
+  "pref": "温室",
+  "labels": {
+   "zh": [
+    "温室",
+    "大棚",
+    "日光温室"
+   ],
+   "en": [
+    "greenhouse",
+    "green house"
+   ]
+  },
+  "source": "seed"
+ }
+]
