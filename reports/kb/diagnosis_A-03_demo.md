@@ -1,0 +1,496 @@
+# A-03 诊断 Agent 实际运行结果
+
+## 异常初筛
+
+**异常等级:** medium
+**是否需跟进:** 是
+**异常通道:** vision, sensor, device
+
+本轮初筛判定为 medium（存在明确异常，需进入诊断）。核心依据：叶片视觉出现下部叶片褐色圆形病斑、具同心轮纹、边缘黄化，共12处、覆盖叶面积约18%，为番茄结果期典型的叶部病害信号；同时土壤墒情 S-001（0.12，低于下限0.20及7天均值0.28）与空气湿度 S-004（86%，高于上限85及7天均值72）双双偏离，设备 P-003 电量18%低于阈值20%。综合看，病害信号叠加水分/湿度偏离，已构成需要跟进诊断的明确异常，但目前证据尚不足以判定为紧急（缺乏连续序列、无历史影像基线、S-002 读数可疑），故不上升为 high。
+
+**证据:** 1) 视觉通道 IMG-20260926-1001（2026-09-26 09:45）：下部叶片褐色圆形病斑，具同心轮纹，边缘黄化，12处，覆盖叶面积约18%；无历史影像，基线未知。2) 传感器 S-001：0.12 volumetric @09-26 09:58，低于阈值下限0.20，7天参考均值0.28。3) 传感器 S-004：86% @09-26 09:58，高于阈值上限85，7天均值72。4) 设备 PLC-001：online，阀门V-003 closed，喷洒机P-003 idle，电量18%（阈值20），无故障码。5) 数据质量：S-001=0.12 与 S-002=0.34 差值0.22 超过一致性阈值0.15；S-002 超12小时无更新，读数可疑。6) 天气：实况东南风8.5m/s，未来6h预报7–9m/s、降水概率20%。7) 未接入通道：遥感指数A-03（stub）、水质S-005。
+**待确认:** 1) 墒情：S-001 与 S-002 差值0.22 超过一致性阈值0.15，二者不能同时作为同一地块依据；S-002 超12小时无更新，疑为传感器故障、通信中断或采集窗口问题，需现场复核或补采确认哪个可信。2) 视觉：无历史影像基线，病斑仅单次影像，成因、种类与发展阶段未定，无法判断是新增还是既有，也无法排除误判。3) 设备：P-003 电量18% 是否会影响到期作业窗口、PLC 是否已触发低电量保护，报告未说明。4) 天气：高风速（实况8.5m/s、预报7–9m/s）是否持续并覆盖未来作业时段未确认，可能影响喷洒作业与病害防治时机。5) 未接入通道：遥感指数A-03、水质S-005 未接入，其对诊断完整性的影响未知，不能默认正常。6) 墒情缺少7天连续序列，单点偏离可能是瞬时波动，需补采序列后再判定。7) 空气温度 S-003 正常（28.0°C），但仅单点，未形成趋势。
+
+## 工具调用
+
+### 1. `list_knowledge_bases`
+
+参数：`{}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+{"vendor": "local_rag", "available": true, "documents": 51124, "sources": [{"source": "cropdp", "documents": 2578, "kinds": {"kg_entity": 2578}, "datasets": ["CropDP-KG"], "demo_documents": 0}, {"source": "curated", "documents": 2, "kinds": {"agronomy": 2}, "datasets": [], "demo_documents": 0}, {"source": "plantinquiry", "documents": 1946, "kinds": {"diagnosis": 186, "disease_card": 203, "environment": 193, "management": 203, "severity": 203, "symptom": 958}, "datasets": ["PlantInquiryVQA"], "demo_documents": 0}, {"source": "qa_en", "documents": 40583, "kinds": {"qa_pair": 40583}, "datasets": ["KisanVaani/agriculture-qa-english-only", "manifesta/verified-agronomy-17k", "talhakk/agriculture-qa"], "demo_documents": 0}, {"source": "qa_zh", "documents": 5993, "kinds": {"qa_pair": 5993}, "datasets": ["Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery"], "demo_documents": 0}, {"source": "seed", "documents": 22, "kinds": {"diagnosis": 1, "disease_card": 3, "equipment_manual": 4, "management": 3, "qa_pair": 3, "safety_rule": 1, "severity": 1, "soil_reference": 3, "symptom": 3}, "datasets": [], "demo_documents": 22}], "graph": {"entities": 2550, "symptoms": 21061, "with_crops": 1197, "with_symptoms": 2027}, "tools": {"病虫害": "query_pest_disease_library(crop, symptom)", "农艺问答": "query_agronomy_knowledge(question)", "处置方案": "get_treatment_options(diagnosis, crop)", "土壤档案": "query_soil_reference(site_id)", "设备手册": "query_equipment_manual(device_id, fault_code)", "指定语料源查证": "search_knowledge_base(query, source, kind)"}, "note": "目录仅反映已加载内容；seed/is_demo 为演示资料，不是实测证据。"}
+```
+</details>
+
+### 2. `query_pest_disease_library`
+
+参数：`{"crop": "番茄", "symptom": "下部叶片褐色圆形病斑、具同心轮纹、边缘黄化"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+[local_rag] 病虫害查询：作物=番茄，症状=下部叶片褐色圆形病斑、具同心轮纹、边缘黄化
+
+■ 候选病害（按证据检索排序，共 5 条）
+
+1. 番茄早疫病（Alternaria solani）  检索排序分 0.0320  [已关联英文防治卡片]
+   source=cropdp；doc_id=cropdp:番茄早疫病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset
+   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   命中的症状：同心轮纹；圆形或椭圆形暗褐色病斑；病斑椭圆形
+   危害部位：叶片、叶柄、茎部、果实
+   危害作物：番茄
+   适宜发生条件：基肥不足；灌水多；低洼积水
+   英文名/别名：Tomato early blight
+
+2. 番茄灰斑病（Septoria lycopersici）  检索排序分 0.0299  [已关联英文防治卡片]
+   source=cropdp；doc_id=cropdp:番茄灰斑病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset
+   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   命中的症状：边缘褐色；边缘暗色；近圆形大病斑
+   危害部位：叶部、茎部、果实
+   危害作物：番茄
+   英文名/别名：Tomato grey spot
+
+3. 番茄晚疫病（Phytophthora infestans）  检索排序分 0.0271  [已关联英文防治卡片]
+   source=cropdp；doc_id=cropdp:番茄晚疫病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset
+   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   交叉证据：【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-early-blight:diagnosis；出处=agriagents/rag/seed/knowledge_seed.jsonl
+   交叉证据：【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-fruit；出处=agriagents/rag/seed/knowledge_seed.jsonl
+   交叉证据：【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-leaf；出处=agriagents/rag/seed/knowledge_seed.jsonl
+   命中的症状：病斑呈绿褐色；边缘不变红；暗绿色水浸状不整形病斑
+   危害部位：叶片、茎部、果实
+   危害作物：番茄
+   适宜发生条件：以上，空气湿度；地势低洼；排水不良
+   适宜温度：24℃
+   英文名/别名：Tomato late blight
+
+4. 番茄芝麻斑病（Corynespora cassiicola）  检索排序分 0.0250  [已关联英文防治卡片]
+   source=cropdp；doc_id=cropdp:番茄芝麻斑病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset
+   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.target_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   命中的症状：病班近圆形或椭圆形；灰褐色；病斑多条状
+   危害作物：番茄
+   适宜发生条件：高温高湿；多雨高温；田间潮湿；通风透光差；施肥不足
+   英文名/别名：Tomato Helminthosporium leafspot
+
+5. 番茄枯萎病（Fusarium oxysporum f. sp. lycopersici）  检索排序分 0.0245  [已关联英文防治卡片]
+   source=cropdp；doc_id=cropdp:番茄枯萎病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset
+   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   命中的症状：叶片开始发黄；叶片萎蔫发黄；呈褐色萎蔫
+   危害作物：番茄
+   适宜发生条件：土壤湿度过低
+   英文名/别名：Tomato Fusarium wilt
+
+■ 检索到的补充证据（20 条）
+ - source=plantinquiry；doc_id=plantinquiry:tomato.physiological_symptom.yellowing_symptom:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·Yellowing Symptom：tomato / Yellowing Symptom（） 叶片症状： - Uniform yellowing of older, lower leaves, while new growth remains green (classic nitrogen deficiency). - Yellowing between the veins (interveinal chlorosis) on older, lower leaves, sometimes with a 'Christmas tree' pattern (magnesium deficiency). - Interveinal chlorosis primarily …
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_viral.yellow_leaf_curl_virus:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·yellow leaf curl virus：tomato / yellow leaf curl virus（Tomato yellow leaf curl virus） 叶片症状： - Upward cupping or curling of leaf margins, resembling a cup shape. - Interveinal yellowing (chlorosis), starting on younger leaves. - Leaf margins turn a distinct bright yellow while the rest of the leaf may remain green. - Affected leaves become s…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.healthy.healthy:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·healthy：tomato / healthy（） 叶片症状： - Uniformly green color, consistent with the cultivar. - Leaves are fully expanded and turgid. - No spots, lesions, discoloration, or necrosis. - No yellowing (chlorosis) or browning. - No curling, puckering, or distortion of leaf shape. - No visible stippling, webbing, or insect trails.
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·early blight：tomato / early blight（Alternaria solani） 叶片症状： - Starts as small, dark brown to black spots on lower, older leaves. - Lesions enlarge to 0.5-1.5 cm in diameter. - Lesions develop characteristic concentric rings, creating a 'target' or 'bull's-eye' appearance. - A distinct yellow halo often surrounds the dark lesion. -…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.healthy.healthy:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·healthy：tomato / healthy（） 鉴别诊断要点： 易混淆：Early Blight - Healthy leaves lack the characteristic dark, circular lesions with a 'target' or 'bullseye' pattern. - Healthy plants do not show yellowing halos around spots. - Healthy lower leaves remain green and attached, unlike the premature yellowing and dropping seen in early bligh…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·late blight：tomato / late blight（Phytophthora infestans） 叶片症状： - Large, water-soaked, gray-green to dark brown lesions, often appearing on leaf edges or tips. - Lesions expand rapidly and have an irregular, blotchy shape. - A pale green or yellow halo may surround the necrotic lesion. - Under humid conditions, a fuzzy, white mold…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_viral.leaf_curl_virus:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·Leaf Curl Virus：tomato / Leaf Curl Virus（Tomato leaf curl virus） 叶片症状： - Distinct upward curling or cupping of leaf margins. - Leaves become thickened, leathery, and brittle to the touch. - General yellowing (chlorosis) of foliage, sometimes with green veins. - Reduction in leaf size (microphylla). - Veins on the underside of leaves …
+ - source=plantinquiry；doc_id=plantinquiry:tomato.physiological_symptom.yellowing_symptom:card；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·Yellowing Symptom：tomato / Yellowing Symptom（） 别名：chlorosis；tomato chlorosis；nutrient deficiency yellowing 病害类型：physiological_symptom
+ - source=plantinquiry；doc_id=plantinquiry:tomato.physiological_symptom.yellowing_symptom:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·Yellowing Symptom：tomato / Yellowing Symptom（） 鉴别诊断要点： 易混淆：Fusarium Wilt - Fusarium often causes yellowing and wilting on only one side of the plant or even one side of a leaf. - A key diagnostic is the brown vascular discoloration visible when the lower stem is cut open. - Wilting is a primary symptom, often severe and preceding wides…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.cercospora_leaf_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·cercospora leaf spot：tomato / cercospora leaf spot（Cercospora spp.） 叶片症状： - Initial symptoms are small, circular, water-soaked spots, primarily on older, lower leaves. - Lesions enlarge to 2-6 mm in diameter. - Mature lesions have a distinct tan to grayish-white center. - A dark brown to black border surrounds the necrotic center. - The c…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·septoria leaf spot：tomato / septoria leaf spot（Septoria lycopersici） 叶片症状： - Starts on lower, older leaves and progresses upwards. - Initial symptoms are small, water-soaked spots (1-2 mm). - Lesions develop into circular spots (3-6 mm) with dark brown or purplish-brown borders. - Mature lesion centers are typically tan, gray, or white.…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.pest_mite.spider_mites:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·Spider Mites：tomato / Spider Mites（Tetranychus urticae） 叶片症状： - Fine, pale yellow or white stippling (tiny dots) on the upper leaf surface. - Leaves may appear dusty or dirty, particularly on the underside. - With increasing damage, stippled areas coalesce, causing leaves to turn yellow, then bronze. - Affected leaves become dry, …
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   Tomato·Fusarium wilt：Tomato / Fusarium wilt（Fusarium oxysporum f. sp. lycopersici） 叶片症状： - Yellowing of lower, older leaves, often starting on one side of a leaf or branch (unilateral). - Affected leaves wilt during the day and may recover slightly at night initially. - Petioles (leaf stalks) bend downwards, creating a drooping appearance…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.target_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   Tomato·Target Spot：Tomato / Target Spot（Corynespora cassiicola） 叶片症状： - Starts as small, water-soaked spots on older, lower leaves. - Lesions expand into circular spots, 1-10 mm in diameter, with a 'target' or 'bulls-eye' appearance. - Mature lesions exhibit distinct concentric rings. - Lesion centers are typically tan or light gray wit…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·leaf mold：tomato / leaf mold（Passalora fulva） 叶片症状： - Initial symptoms are pale green or yellowish spots on the upper surface of older, lower leaves. - Spots have indefinite, diffuse borders, unlike the sharp borders of other leaf spots. - As spots enlarge, the upper surface becomes a brighter yellow, but typically does not bec…
+ - source=plantinquiry；doc_id=plantinquiry:tomato.disease_bacterial.bacterial_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·bacterial spot：tomato / bacterial spot（Xanthomonas spp. (e.g., X. perforans, X. euvesicatoria, X. vesicatoria, X. gardneri)） 叶片症状： - Initial symptoms are small (<3 mm), dark green to black, water-soaked circular spots. - Lesions become angular as their expansion is limited by small leaf veins. - A greasy or oily appearance is often …
+ - source=plantinquiry；doc_id=plantinquiry:tomato.physiological_symptom.yellowing_symptom:symptom_stems；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl
+   tomato·Yellowing Symptom：tomato / Yellowing Symptom（） 茎秆症状： - Stems may appear thin, spindly, or stunted.
+ - 【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-early-blight:diagnosis；出处=agriagents/rag/seed/knowledge_seed.jsonl
+   番茄晚疫病 vs 早疫病 · 鉴别要点：鉴别诊断要点 易混淆：番茄早疫病（Alternaria solani） - 早疫病病斑有明显同心轮纹（靶心状），晚疫病病斑无轮纹、呈水浸状。 - 早疫病从下部老叶开始发病，晚疫病可从中上部叶片与果实同时发生。 - 早疫病病斑边缘清晰有黄晕，晚疫病边缘不清且扩展快。 易混淆：番茄叶霉病 - 叶霉病叶背有橄榄绿至褐色绒状霉层，正面为边界不清的黄斑；晚疫病霉层为白色。
+ - 【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-fruit；出处=agriagents/rag/seed/knowledge_seed.jsonl
+   番茄晚疫病·果实症状：番茄晚疫病 果实症状 - 青果期最易受害，果面出现油浸状暗绿至褐色不规则斑块。 - 病斑边缘不清晰，质地硬，后期可扩展至整个果面。 - 与早疫病的区别：早疫病病斑有明显的同心轮纹，晚疫病没有。
+ - 【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-leaf；出处=agriagents/rag/seed/knowledge_seed.jsonl
+   番茄晚疫病·叶片症状：番茄晚疫病 叶片症状 - 自叶尖或叶缘出现暗绿色水浸状不整形病斑，迅速扩大。 - 湿度大时病斑边缘出现白色霉状物（孢子囊梗）。 - 病斑由暗绿转褐色，潮湿条件下扩展极快，干燥时停止扩展并变脆。 Leaf symptoms: dark green water-soaked spots/lesions, with white mold in humid conditions. (Demo translation of the Chinese symptoms above.)
+
+置信提示：检索排序分用于融合图谱和文本证据的名次，不是诊断概率或诊断结论。必须结合现场影像、环境条件与鉴别要点复核后再定级。
+```
+</details>
+
+### 3. `query_soil_reference`
+
+参数：`{"site_id": "A-03"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+[stub_knowledge] 土壤档案 @ A-03
+未接入真实数据源（框架占位）。
+```
+</details>
+
+### 4. `query_equipment_manual`
+
+参数：`{"device_id": "PLC-001", "fault_code": "阀门V-003 closed 喷洒机P-003 idle 电量18%"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+[stub_knowledge] 设备手册：PLC-001 / 阀门V-003 closed 喷洒机P-003 idle 电量18%
+未接入真实数据源（框架占位）。
+```
+</details>
+
+### 5. `query_equipment_manual`
+
+参数：`{"device_id": "P-003", "fault_code": "低电量 电量低于阈值 20%"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+[stub_knowledge] 设备手册：P-003 / 低电量 电量低于阈值 20%
+未接入真实数据源（框架占位）。
+```
+</details>
+
+### 6. `search_knowledge_base`
+
+参数：`{"query": "番茄早疫病 同心轮纹 褐色圆形病斑 鉴别要点 发生条件", "source": "plantinquiry", "kind": "diagnosis", "top_k": 6, "crop": "番茄"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+{"vendor": "local_rag", "query": "番茄早疫病 同心轮纹 褐色圆形病斑 鉴别要点 发生条件", "source_filter": "plantinquiry", "kind_filter": "diagnosis", "crop_filter": "番茄", "dataset_filter": "", "found": true, "reason": "", "evidence": [{"doc_id": "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:lookalikes", "source": "plantinquiry", "kind": "diagnosis", "title": "tomato·septoria leaf spot", "text": "tomato / septoria leaf spot（Septoria lycopersici）\n鉴别诊断要点：\n易混淆：early blight\n- Lesions are larger (>6 mm) and often have a distinct 'target-like' appearance with concentric rings.\n- A yellow halo is often prominent around early blight lesions.\n- Early blight lesions are fewer in number per leaf compared to the numerous spots of Septoria.\n- Early blight also causes distinct 'collar rot' at the soil line on seedlings.\n易混淆：bacterial spot\n- Lesions are often angular, limited by small leaf veins, rather than circular.\n- Bacterial spots may appear greasy or water-soaked, especially when young.\n- Lesion centers may fall out, creating a 'shot-hole' effect.\n- Bacterial spot lacks the characteristic tiny black pycnidia found in Septoria lesions.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:lookalikes", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "", "metadata": {"crop": "tomato", "disease": "septoria leaf spot", "disease_id": "tomato.disease_fungal.septoria_leaf_spot", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#2+dense#1"}, {"doc_id": "plantinquiry:tomato.disease_fungal.early_blight:lookalikes", "source": "plantinquiry", "kind": "diagnosis", "title": "tomato·early blight", "text": "tomato / early blight（Alternaria solani）\n鉴别诊断要点：\n易混淆：septoria_leaf_spot\n- Septoria lesions are smaller (1-3 mm) and more numerous than early blight lesions.\n- Septoria lesions have a tan or gray center with a dark brown border, but lack the distinct concentric rings of early blight.\n- Tiny black specks (pycnidia) are often visible in the center of Septoria lesions.\n易混淆：late_blight\n- Late blight lesions are larger, water-soaked, and irregularly shaped with a greasy appearance.\n- Late blight lesions lack the 'target' or 'bull's-eye' rings of early blight.\n- A white, fuzzy mold (sporangia) often develops on the underside of late blight lesions in cool, moist conditions.\n- Late blight progresses much more rapidly, capable of destroying a plant in days.\n易混淆：target_spot\n- Target spot lesions often have a lighter tan center with more defined, darker concentric rings than early blight.\n- Lesions may have a 'shot-hole' appearance as the center falls out.\n- Target spot lesions tend to be smaller and more numerous than classic early blight lesions.\n易混淆：bacterial_spot\n- Bacterial spot lesions are typically small, angular (limited by leaf veins), and initially water-soaked.\n- Lesions lack the concentric rings of early blight and often have a greasy appearance.\n- Bacterial spots may not have a prominent yellow halo.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.early_blight:lookalikes", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "", "metadata": {"crop": "tomato", "disease": "early blight", "disease_id": "tomato.disease_fungal.early_blight", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#1+dense#4"}, {"doc_id": "plantinquiry:tomato.disease_fungal.late_blight:lookalikes", "source": "plantinquiry", "kind": "diagnosis", "title": "tomato·late blight", "text": "tomato / late blight（Phytophthora infestans）\n鉴别诊断要点：\n易混淆：early blight\n- Early blight lesions have distinct concentric rings ('target spots'), which are absent in late blight.\n- Late blight lesions are larger, more water-soaked and irregular.\n- Early blight typically starts on lower, older leaves, while late blight can start anywhere on the plant.\n易混淆：septoria leaf spot\n- Septoria spots are much smaller (1-3 mm), circular, and have a tan or gray center with a dark border.\n- Tiny black dots (pycnidia) are visible in the center of Septoria spots; these are absent in late blight.\n- Late blight causes large, rapidly expanding blotches, not small, numerous spots.\n易混淆：leaf mold\n- Leaf mold produces a dense, olive-green to brown velvety mold on the leaf underside, whereas late blight's mold is white and sparser.\n- The upper leaf surface with leaf mold shows yellow spots, not the large, water-soaked necrotic lesions of late blight.\n- Late blight lesions are dark and necrotic on both sides of the leaf.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.late_blight:lookalikes", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "", "metadata": {"crop": "tomato", "disease": "late blight", "disease_id": "tomato.disease_fungal.late_blight", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#4+dense#2"}, {"doc_id": "plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes", "source": "plantinquiry", "kind": "diagnosis", "title": "tomato·leaf mold", "text": "tomato / leaf mold（Passalora fulva）\n鉴别诊断要点：\n易混淆：late blight\n- Leaf mold has olive-green/grayish, velvety mold on the leaf *underside*; late blight has white, fuzzy/downy mold, often at the lesion edge.\n- Leaf mold lesions are pale yellow on top; late blight lesions are large, water-soaked, dark-green to black, and greasy-looking.\n- Late blight aggressively attacks stems and fruit with large, dark, firm lesions; leaf mold rarely affects these parts as severely.\n易混淆：early blight\n- Leaf mold spots are pale yellow with diffuse borders; early blight lesions are dark brown and have a characteristic 'target-like' pattern of concentric rings.\n- Leaf mold has prominent, visible mold on the leaf underside; early blight lesions do not have visible mold.\n- Early blight lesions are often surrounded by a distinct yellow halo, which is less defined in leaf mold.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "", "metadata": {"crop": "tomato", "disease": "leaf mold", "disease_id": "tomato.disease_fungal.leaf_mold", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#3+dense#3"}, {"doc_id": "plantinquiry:tomato.disease_fungal.target_spot:lookalikes", "source": "plantinquiry", "kind": "diagnosis", "title": "Tomato·Target Spot", "text": "Tomato / Target Spot（Corynespora cassiicola）\n鉴别诊断要点：\n易混淆：Early Blight\n- Early blight lesions are typically larger (>10 mm), more leathery, and more angular than the finer, more circular target spot lesions.\n- The concentric rings in early blight are often fewer, coarser, and more pronounced.\n- Early blight frequently causes a distinct 'collar rot' lesion at the soil line on stems, which is not characteristic of target spot.\n易混淆：Septoria Leaf Spot\n- Septoria lesions are much smaller (2-5 mm) and more numerous than target spot lesions.\n- Septoria lesions lack the distinct concentric 'target' rings.\n- The centers of Septoria lesions contain tiny, visible black specks (pycnidia), which are absent in target spot.\n易混淆：Bacterial Spot\n- Bacterial spot lesions are often angular (vein-limited) and initially appear dark and water-soaked.\n- Bacterial spot lesions do not have the concentric ring pattern of target spot.\n- The centers of bacterial spots may fall out, creating a 'shot-hole' appearance, which is uncommon for target spot.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.target_spot:lookalikes", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "", "metadata": {"crop": "Tomato", "disease": "Target Spot", "disease_id": "tomato.disease_fungal.target_spot", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#5+dense#6"}, {"doc_id": "plantinquiry:tomato.healthy.healthy:lookalikes", "source": "plantinquiry", "kind": "diagnosis", "title": "tomato·healthy", "text": "tomato / healthy（）\n鉴别诊断要点：\n易混淆：Early Blight\n- Healthy leaves lack the characteristic dark, circular lesions with a 'target' or 'bullseye' pattern.\n- Healthy plants do not show yellowing halos around spots.\n- Healthy lower leaves remain green and attached, unlike the premature yellowing and dropping seen in early blight.\n易混淆：Spider Mites\n- Healthy leaves have a smooth, uniformly green surface, not the fine yellow or white stippling caused by mite feeding.\n- The undersides of healthy leaves are clean and lack the fine silk webbing produced by spider mites.\n- Healthy leaves do not have a dusty or 'bronzed' appearance.\n易混淆：Yellowing Symptom\n- Healthy leaves maintain a uniform, rich green color, not the pale green or yellow of chlorosis.\n- The green color in healthy leaves is consistent across the entire leaf, not patterned between the veins (interveinal chlorosis).\n- Healthy plants show no specific pattern of yellowing on old vs. new leaves, which often indicates a nutrient deficiency.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.healthy.healthy:lookalikes", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "", "metadata": {"crop": "tomato", "disease": "healthy", "disease_id": "tomato.healthy.healthy", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#6+dense#8"}], "usage": "检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。"}
+```
+</details>
+
+### 7. `search_knowledge_base`
+
+参数：`{"query": "番茄结果期 土壤墒情 灌水 湿度管理 早疫病 发生条件", "source": "plantinquiry", "kind": "management", "top_k": 5, "crop": "番茄"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+{"vendor": "local_rag", "query": "番茄结果期 土壤墒情 灌水 湿度管理 早疫病 发生条件", "source_filter": "plantinquiry", "kind_filter": "management", "crop_filter": "番茄", "dataset_filter": "", "found": true, "reason": "", "evidence": [{"doc_id": "plantinquiry:tomato.disease_fungal.early_blight:management", "source": "plantinquiry", "kind": "management", "title": "tomato·early blight", "text": "tomato / early blight（Alternaria solani）\n栽培措施：\n- Use certified disease-free seed and transplants.\n- Rotate crops, avoiding solanaceous plants for 2-3 years.\n- Maintain proper plant spacing for good air circulation.\n- Use mulch to reduce soil splash onto lower leaves.\n- Prune and remove lower, infected leaves.\n- Avoid overhead irrigation; use drip irrigation instead.\n- Ensure balanced plant nutrition.\n生物防治：\n- Application of bio-fungicides containing Bacillus subtilis or Trichoderma species.\n化学防治：\n- Application of preventative or curative fungicides containing active ingredients like chlorothalonil, mancozeb, or copper-based compounds.\n- Follow label instructions and alternate fungicide classes to prevent resistance.\n注意事项：Integrated pest management (IPM) combining cultural, biological, and chemical strategies is most effective. Fungicide applications are most effective when applied preventatively based on weather forecasts.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.early_blight:management", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "get_treatment_options(diagnosis, crop)", "metadata": {"crop": "tomato", "disease": "early blight", "disease_id": "tomato.disease_fungal.early_blight", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#1+dense#1"}, {"doc_id": "plantinquiry:tomato.disease_fungal.late_blight:management", "source": "plantinquiry", "kind": "management", "title": "tomato·late blight", "text": "tomato / late blight（Phytophthora infestans）\n栽培措施：\n- Use certified disease-free seeds and transplants.\n- Ensure good air circulation through proper plant spacing and pruning.\n- Avoid overhead irrigation; use drip irrigation to keep foliage dry.\n- Remove and destroy infected plants and debris promptly.\n- Rotate crops, avoiding planting tomatoes or potatoes in the same spot for 3-4 years.\n生物防治：\n- Application of bio-fungicides containing Bacillus subtilis or copper-based compounds (e.g., copper hydroxide) can be suppressive.\n化学防治：\n- Preventative application of protectant fungicides like chlorothalonil or mancozeb.\n- Curative application of systemic fungicides like metalaxyl, mefenoxam, or cymoxanil once disease is detected.\n注意事项：Consult local extension services for recommended fungicides and spray schedules, as resistance management is critical. Predictive models based on weather data can help time applications.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.late_blight:management", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "get_treatment_options(diagnosis, crop)", "metadata": {"crop": "tomato", "disease": "late blight", "disease_id": "tomato.disease_fungal.late_blight", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#2+dense#3"}, {"doc_id": "plantinquiry:tomato.physiological_symptom.yellowing_symptom:management", "source": "plantinquiry", "kind": "management", "title": "tomato·Yellowing Symptom", "text": "tomato / Yellowing Symptom（）\n栽培措施：\n- Conduct a soil test to determine pH and nutrient levels before planting.\n- Apply balanced fertilizers or specific nutrient supplements based on deficiency symptoms and soil tests.\n- Improve soil drainage to prevent waterlogging and root rot.\n- Ensure consistent and adequate watering to avoid drought stress.\n- Incorporate compost or other organic matter to improve soil structure and nutrient availability.\n化学防治：\n- Use foliar sprays of specific nutrients (e.g., chelated iron, Epsom salts for magnesium) for a quick but temporary correction.\n- Adjust soil pH using lime (to raise pH) or sulfur (to lower pH) as recommended by a soil test.\n注意事项：Identifying the specific cause of yellowing is crucial for effective management. Start with a soil test and observation of the yellowing pattern (e.g., old vs. new leaves, interveinal vs. uniform).", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.physiological_symptom.yellowing_symptom:management", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "get_treatment_options(diagnosis, crop)", "metadata": {"crop": "tomato", "disease": "Yellowing Symptom", "disease_id": "tomato.physiological_symptom.yellowing_symptom", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#8+dense#2"}, {"doc_id": "plantinquiry:tomato.healthy.healthy:management", "source": "plantinquiry", "kind": "management", "title": "tomato·healthy", "text": "tomato / healthy（）\n栽培措施：\n- Select disease-resistant cultivars.\n- Ensure proper plant spacing to promote air circulation.\n- Water at the base of the plant to keep foliage dry.\n- Use well-drained soil and apply balanced fertilizer.\n- Practice crop rotation.\n- Maintain good sanitation by removing weeds and plant debris.\n注意事项：Management for a healthy plant focuses on preventative cultural practices to maintain vigor and reduce stress, making the plant less susceptible to future issues.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.healthy.healthy:management", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "get_treatment_options(diagnosis, crop)", "metadata": {"crop": "tomato", "disease": "healthy", "disease_id": "tomato.healthy.healthy", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#7+dense#4"}, {"doc_id": "plantinquiry:tomato.disease_fungal.fusarium_wilt:management", "source": "plantinquiry", "kind": "management", "title": "Tomato·Fusarium wilt", "text": "Tomato / Fusarium wilt（Fusarium oxysporum f. sp. lycopersici）\n栽培措施：\n- Plant certified disease-free seeds and transplants.\n- Select resistant tomato varieties (look for 'F' in the variety code, indicating resistance to race 1, 'F2' for races 1 and 2, etc.).\n- Rotate crops for at least 3-4 years, avoiding other solanaceous hosts.\n- Maintain soil pH between 6.5 and 7.0 to suppress the pathogen.\n- Sanitize all tools, stakes, and equipment between uses.\n- Remove and destroy infected plants immediately to reduce soil inoculum.\n生物防治：\n- Inoculating soil with beneficial microbes like *Trichoderma* spp. or non-pathogenic *Fusarium* strains can suppress the pathogen.\n化学防治：\n- Pre-plant soil fumigation is effective but typically only used in large-scale commercial production.\n- No effective foliar fungicides are available for treatment, as the pathogen is inside the plant's vascular system.\n- Soil-drench fungicides may offer some protection but are not curative once infection is established.\n注意事项：The most effective management strategy is prevention through the use of resistant varieties and good cultural practices.", "truncated": false, "citation": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "dataset_provenance": [{"dataset": "PlantInquiryVQA", "original_doc_id": "plantinquiry:tomato.disease_fungal.fusarium_wilt:management", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl"}], "matched_dataset": {}, "is_demo": false, "applicability_validated": false, "required_tool": "get_treatment_options(diagnosis, crop)", "metadata": {"crop": "Tomato", "disease": "Fusarium wilt", "disease_id": "tomato.disease_fungal.fusarium_wilt", "dataset": "PlantInquiryVQA", "source_ref": "https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl", "project_human_verified": false, "evidence_status": "public_disease_card"}, "match_method": "bm25#4+dense#9"}], "usage": "检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。"}
+```
+</details>
+
+### 8. `query_agronomy_knowledge`
+
+参数：`{"question": "番茄结果期 土壤墒情0.12 volumetric 低于阈值 与空气湿度86%偏高 同时出现，水肥与湿度管理应如何判断？"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+[local_rag] 农艺知识检索：番茄结果期 土壤墒情0.12 volumetric 低于阈值 与空气湿度86%偏高 同时出现，水肥与湿度管理应如何判断？
+命中 5 条：
+
+1. 设施番茄如何做水肥一体化管理
+   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:qa:tomato-fertigation；出处=agriagents/rag/seed/knowledge_seed.jsonl（命中方式 bm25#1+dense#1）
+   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。
+   问：设施番茄如何做水肥一体化管理？ 答：按生育期分阶段控制。定植至缓苗期保持土壤相对含水量 70%–80%，少施或不施肥；开花坐果期适当控水蹲苗，防止徒长；果实膨大期加大水肥供应，每次灌水随水追施高钾水溶肥；采收后期减少氮肥，避免植株贪青。 注意： - 每次灌溉后要检查根区 EC 值，过高说明盐分累积，需要加大淋洗量。 - 阴天不灌或少灌，避免棚内湿度升高诱发灰霉与晚疫。
+
+2. 冲施肥在特殊环境中有哪些特殊效果？
+   source=qa_zh；doc_id=qa_zh:WVCO2D9M08Rp；出处=https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery（命中方式 bm25#4+dense#2）
+   适用范围：通用农艺资料，尚未验证对所问作物的适用性。
+   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。
+   问：冲施肥在特殊环境中有哪些特殊效果？ 答：冲施肥在特殊环境中的效果主要体现在以下几个方面：1) 冲施肥具有操作简便，肥效迅速等特点，适合作为作物生长期中的追肥使用；2) 特别适用于经济作物如各种蔬菜、果树等速长或大量结果期，可以迅速补充作物生长所需的养分；3) 在冬季大棚栽培作物时，冲施肥可以解决因低温、日照不足等不利条件导致养分释放转化慢、肥效迟缓的问题，确保作物的产量和质量。
+
+3. 如何在收获期追肥以提高西红柿的产量和品质？
+   source=qa_zh；doc_id=qa_zh:94Tkoyd781En；出处=https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery（命中方式 bm25#2+dense#7）
+   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。
+   问：如何在收获期追肥以提高西红柿的产量和品质？ 答：在西红柿结果期，需要施入充足的钾肥来满足果实膨大期的需要，以延缓植株衰老并显著提高产量。采收前施入硫酸钾，能有效提高果实品色。
+
+4. What's the water requirement for guava trees, and how often should I irrigate them?
+   source=qa_en；doc_id=qa_en:talhakk/agriculture-qa:48387d4199858ae2；出处=https://huggingface.co/datasets/talhakk/agriculture-qa（命中方式 bm25#9+dense#4）
+   适用范围：通用农艺资料，尚未验证对所问作物的适用性。
+   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。
+   问题：What's the water requirement for guava trees, and how often should I irrigate them? 解答：Guava trees require consistent watering, particularly during the dry season and fruiting phase. Young trees demand more frequent irrigation, while mature ones can withstand periods of drought. Adjust irrigation frequency and volume according to soil moisture levels and climatic factors for effective water management and optimal tree health.
+
+5. How much water do guava trees need, and how often should I irrigate?
+   source=qa_en；doc_id=qa_en:talhakk/agriculture-qa:69b620cae55f5747；出处=https://huggingface.co/datasets/talhakk/agriculture-qa（命中方式 bm25#8+dense#6）
+   适用范围：通用农艺资料，尚未验证对所问作物的适用性。
+   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。
+   问题：How much water do guava trees need, and how often should I irrigate? 解答：Guava trees require regular watering, especially during the dry season and fruit development stage. Young trees need more frequent irrigation, while mature trees can tolerate drought conditions. Irrigation frequency and amount depend on soil moisture levels and weather conditions.
+
+说明：以上为知识库原文或标有来源的摘要。「上游标注已验证」不代表人工或本项目专家审核。条目冲突时须标注分歧并核对适用范围与原始来源。
+```
+</details>
+
+### 9. `get_treatment_options`
+
+参数：`{"diagnosis": "番茄早疫病", "crop": "番茄"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+[local_rag] 处置方案查询：番茄早疫病，作物=番茄
+
+■ 方案 1：early blight（作物 tomato）
+  source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.early_blight:management；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl（linked-card）
+  tomato / early blight（Alternaria solani）
+  栽培措施：
+  - Use certified disease-free seed and transplants.
+  - Rotate crops, avoiding solanaceous plants for 2-3 years.
+  - Maintain proper plant spacing for good air circulation.
+  - Use mulch to reduce soil splash onto lower leaves.
+  - Prune and remove lower, infected leaves.
+  - Avoid overhead irrigation; use drip irrigation instead.
+  - Ensure balanced plant nutrition.
+  生物防治：
+  - Application of bio-fungicides containing Bacillus subtilis or Trichoderma species.
+  化学防治：
+  - Application of preventative or curative fungicides containing active ingredients like chlorothalonil, mancozeb, or copper-based compounds.
+  - Follow label instructions and alternate fungicide classes to prevent resistance.
+  注意事项：Integrated pest management (IPM) combining cultural, biological, and chemical strategies is most effective. Fungicide applications are most effective when applied preventatively based on weather forecasts.
+
+■ 关联卡片摘要
+  病害类型：disease_fungal
+  作物：tomato
+  病原学名：Alternaria solani
+
+⚠ 字段完整性：知识库收录的是防治**方向**（栽培/生物/化学措施），通常**不含**具体用药量、安全间隔期与禁用情形。这些字段缺失时不得由模型补全；涉及化学药剂须转人工确认后方可执行。
+```
+</details>
+
+### 10. `get_treatment_options`
+
+参数：`{"diagnosis": "番茄晚疫病", "crop": "番茄"}`
+
+状态：success
+
+<details><summary>查看工具返回</summary>
+
+```text
+[local_rag] 处置方案查询：番茄晚疫病，作物=番茄
+
+■ 方案 1：late blight（作物 tomato）
+  source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:management；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl（linked-card）
+  tomato / late blight（Phytophthora infestans）
+  栽培措施：
+  - Use certified disease-free seeds and transplants.
+  - Ensure good air circulation through proper plant spacing and pruning.
+  - Avoid overhead irrigation; use drip irrigation to keep foliage dry.
+  - Remove and destroy infected plants and debris promptly.
+  - Rotate crops, avoiding planting tomatoes or potatoes in the same spot for 3-4 years.
+  生物防治：
+  - Application of bio-fungicides containing Bacillus subtilis or copper-based compounds (e.g., copper hydroxide) can be suppressive.
+  化学防治：
+  - Preventative application of protectant fungicides like chlorothalonil or mancozeb.
+  - Curative application of systemic fungicides like metalaxyl, mefenoxam, or cymoxanil once disease is detected.
+  注意事项：Consult local extension services for recommended fungicides and spray schedules, as resistance management is critical. Predictive models based on weather data can help time applications.
+■ 方案 2：番茄晚疫病（作物 番茄）
+  【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:management；出处=agriagents/rag/seed/knowledge_seed.jsonl（exact-disease-crop）
+  原文缺失字段：剂量、安全间隔期、最大用药次数、禁用情形
+  番茄晚疫病 防治方案（结构性示例）
+  栽培措施：
+  - 控制棚内湿度，避免叶面长时间结露；上午通风排湿。
+  - 合理密植，及时整枝打杈并清出病残体。
+  - 与非茄科作物轮作，避免连作。
+  生物防治：
+  - 预防期可选用登记用于卵菌的生物制剂（示例占位，需按当地登记目录核对）。
+  化学防治：
+  - 发病初期及时用药，注意轮换作用机理不同的药剂以延缓抗性。
+  - 【占位】具体药剂品种、用量、安全间隔期与最大用药次数未收录，须由人工按当地登记标准确认。
+
+■ 关联卡片摘要
+  病害类型：disease_oomycete
+  作物：tomato
+  病原学名：Phytophthora infestans
+
+⚠ 字段完整性：知识库收录的是防治**方向**（栽培/生物/化学措施），通常**不含**具体用药量、安全间隔期与禁用情形。这些字段缺失时不得由模型补全；涉及化学药剂须转人工确认后方可执行。
+```
+</details>
+
+## 诊断报告
+
+# 诊断报告
+
+**对象**：A-03 南宁设施大棚番茄区（番茄，结果期）｜基准日期 2026-09-26
+**本轮性质**：以既有证据重写报告；仅引用本轮工具实际返回的 doc_id。土壤档案与设备手册**本轮未取到真实条目**（详见下）。
+
+---
+
+## 候选假设与排除
+
+### 一、生物因素（病虫害）
+
+**假设1：番茄早疫病（Alternaria solani）— 主因候选**
+- 支持证据（视觉通道）：
+  - IMG-20260926-1001（2026-09-26 09:45）：下部叶片褐色**圆形**病斑、**具同心轮纹**、边缘黄化，12处，覆盖叶面积约18%。此三项形态特征与知识库症状条目逐条对应：`plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves`（"Starts as small, dark brown to black spots on lower, older leaves… Lesions develop characteristic concentric rings, creating a 'target' or 'bull's-eye' appearance. A distinct yellow halo often surrounds the dark lesion."）。
+  - 图谱库候选首位亦为此病：`cropdp:番茄早疫病:0`，命中症状"同心轮纹；圆形或椭圆形暗褐色病斑"。
+  - 环境侧：空气湿度 S-004 = 86%（2026-09-26 09:58，高于上限85、7天均值72），与图谱库记载的适宜发生条件"灌水多"方向一致（`cropdp:番茄早疫病:0`：基肥不足；灌水多；低洼积水）。
+- 反证/缺失：**无历史影像基线**（"无历史影像，基线未知"），无法判断病斑为新增还是既有；叶片仅为单次影像；未做叶背霉层/病斑大小的定量核对。图谱库的"基肥不足/灌水多/低洼积水"三项发生条件中，A-03 的土壤档案本轮**未取得**，无法核对基肥与积水状况。
+- 判定：**证据支持的疑似主因**（症状形态与知识库鉴别要点高度吻合），但"发生条件"一环缺土壤档案，属未闭合链条。
+
+**假设2：番茄靶斑病（Corynespora cassiicola）— 未排除的竞争假设**
+- 支持证据：`plantinquiry:tomato.disease_fungal.target_spot:symptom_leaves`（"Lesions expand into circular spots… with a 'target' or 'bulls-eye' appearance. Mature lesions exhibit distinct concentric rings."）——靶斑病**同样具有同心轮纹**，与本次观测形态不可仅凭"轮纹"区分。图谱库 `cropdp:番茄芝麻斑病:0` 亦为候选，适宜条件"高温高湿；通风透光差"（S-004 湿度86% 与之相容）。
+- 反证/缺失：鉴别要点要求比较轮纹粗细与病斑尺寸——`plantinquiry:tomato.disease_fungal.target_spot:lookalikes`：早疫病病斑"typically larger (>10 mm), more leathery… concentric rings are often fewer, coarser, and more pronounced"，靶斑病病斑"tend to be smaller and more numerous"。本轮感知报告**未给出病斑直径读数**，故无法据此二者区分。
+- 判定：**尚未排除**（无法用现有数据区分）。
+
+**假设3：番茄晚疫病（Phytophthora infestans）— 倾向排除（但保留低度可能）**
+- 反证：`plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves` 描述为"Large, water-soaked, gray-green to dark brown lesions, often appearing on leaf edges or tips… irregular, blotchy shape"，`plantinquiry:tomato.disease_fungal.late_blight:lookalikes` 明确"Early blight lesions have distinct concentric rings ('target spots'), which are absent in late blight"。本次观测为**规则圆形+同心轮纹**，与晚疫病"不规则水浸状、无轮纹"相矛盾。
+- 保留项：晚疫病"可从中上部叶片与果实同时发生"（同条鉴别要点），且高湿（86%）条件利于其发生；但无果实症状记录、病斑形态不符。
+- 判定：**基本排除**（形态矛盾），仅作为并发因素低度保留。
+
+**假设4：番茄灰斑病（Septoria lycopersici）— 排除**
+- 反证：`plantinquiry:tomato.disease_fungal.septoria_leaf_spot:lookalikes` 指出灰斑病病斑"smaller (1-3 mm) and more numerous… lack the distinct concentric rings of early blight"，中心有黑色小点（pycnidia）。本次观测为具同心轮纹的较大病斑，与之不符。
+- 判定：**排除**（缺同心轮纹、中心无黑色小点；病斑尺寸描述不符）。
+
+**假设5：番茄枯萎病（Fusarium oxysporum）— 排除**
+- 反证：`plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves` 为下部叶片**单侧**黄化萎蔫、叶柄下垂，非圆形轮纹病斑；`plantinquiry:tomato.physiological_symptom.yellowing_symptom:lookalikes` 进一步指出枯萎病的关键诊断是"lower stem is cut open"可见维管束褐变。本次观测无萎蔫、无维管束记录。
+- 判定：**排除**（症状形态不符）。
+
+**假设6：虫害（叶螨等）— 排除**
+- 反证：`plantinquiry:tomato.pest_mite.spider_mites:symptom_leaves` 为细密浅黄/白色点状失绿（stippling）、叶背丝网、叶面"dusty"感，无圆形轮纹病斑。本次观测为明确病斑，与螨害不符。
+- 判定：**排除**（症状性质不同）。
+
+**假设7：健康/非侵染性黄化 — 排除**
+- 反证：`plantinquiry:tomato.healthy.healthy:lookalikes` 明确健康叶"lack the characteristic dark, circular lesions with a 'target' pattern"、无黄晕；`plantinquiry:tomato.physiological_symptom.yellowing_symptom:symptom_leaves` 描述为均匀黄化或脉间失绿，非圆形轮纹斑。本次观测为明确病斑，二者均不成立。
+- 判定：**排除**。
+
+### 二、非生物因素（土壤与水肥）
+
+**假设8：缺水/水分胁迫（S-001 墒情 0.12）**
+- 支持证据：土壤墒情 S-001 = 0.12 volumetric（2026-09-26 09:58），低于阈值下限0.20、低于7天参考均值0.28。
+- 反证/缺失：
+  - S-001 与 S-002 = 0.34（2026-09-25 22:00）差值0.22，**超过一致性阈值0.15**，两读数不能同时作为同一地块依据；S-002 已超12小时无更新，数据可疑。
+  - 墒情**缺少7天连续序列**，单点偏离可能为瞬时波动。
+  - `query_soil_reference(A-03)` **本轮未接入真实数据源**（返回"未接入真实数据源（框架占位）"），无本底 pH/有机质/质地/灌溉与施肥记录可核对。**A-03 土壤档案本轮缺失**，不得以其他地块替代。
+- 判定：**无法评估**（数据自相矛盾 + 地块档案缺失），既不能确认为真实缺水，也不能排除。
+
+**假设9：缺素/肥害等生理失调**
+- 支持证据：无直接证据。
+- 反证：`plantinquiry:tomato.physiological_symptom.yellowing_symptom:symptom_leaves` 的缺素黄化形态（均匀黄化或脉间失绿）与本次圆形轮纹病斑不符。
+- 缺失：无土壤养分数据、无组织检测，`query_soil_reference(A-03)` 未接入。
+- 判定：**已排除为主要因素**（形态不符），残留的养分背景因档案缺失**无法评估**。
+
+**假设10：药害**
+- 支持证据：无。
+- 缺失：无用药史记录（土壤档案未接入）。
+- 判定：**无法评估**（证据整体缺失），但无任何支持性证据，暂不作为候选。
+
+**假设11：高湿（S-004 = 86%）与通风不足**
+- 支持证据：S-004 = 86%（2026-09-26 09:58），高于阈值上限85及7天均值72；同时风速东南风实况8.5 m/s（预报7–9 m/s）。高湿是早疫病/靶斑病共同的环境诱因（`cropdp:番茄早疫病:0`）。
+- 缺失：单点读数，无棚内湿度连续序列；棚内通风为环境因素而非病害，作**并发促发条件**处理。
+- 判定：**证据支持的促发因素**（非独立病因）。
+
+### 三、设备与环境因素
+
+**假设12：灌溉阀 V-003 / 喷洒机 P-003 / PLC-001 故障**
+- 支持证据（设备状态）：PLC-001 online，阀门 V-003 closed，喷洒机 P-003 idle，电量18%（低于阈值20），**无故障码**。
+- 缺失：`query_equipment_manual(PLC-001, …)` 与 `query_equipment_manual(P-003, …)` **本轮均返回"未接入真实数据源（框架占位）"**——**设备手册本轮缺失**，无法核对低电量保护逻辑、阀位异常判据。P-003 电量18% 是否会中断作业窗口、PLC 是否触发低电量保护，手册未收录，不得推测。
+- 判定：**无法评估**（手册缺失）。就现有事实，V-003 closed + P-003 idle 属停机状态而非报错；无故障码。
+
+### 四、观测系统自身
+- S-002 超12小时无更新（疑似传感器故障/通信中断/采集窗口问题）；S-001 与 S-002 一致性超限；遥感 A-03、水质 S-005 未接入。**采集链路问题已被感知报告的数据质量段证实**，属诊断不确定性来源，非独立病因。
+- 判定：**确认存在观测链路问题**，故墒情方向只能给 low 置信度。
+
+---
+
+## 主因判断
+
+**结论**：**疑似番茄早疫病（Alternaria solani）**，为主要候选病因；番茄靶斑病（Corynespora cassiicola）为**未排除的竞争假设**。并发的环境促发因素为**棚内高湿（S-004 = 86%）。**
+
+- **置信度：medium**（有直接症状证据——圆形褐色病斑+同心轮纹+边缘黄化与知识库鉴别要点互证；但①缺土壤档案、②缺设备手册、③无历史影像基线、④病斑尺寸未测，故至少有1条互证链缺失且存在1个未排除竞争假设）。
+- **成立条件**：若补检确认病斑直径多 >10 mm、质地偏革质、轮纹粗而明显，且叶背无白色霉层、无黑色小点（pycnidia），则支持早疫病（参 `plantinquiry:tomato.disease_fungal.early_blight:lookalikes`）。
+- **证伪条件**：
+  - 若病斑偏小（多为数毫米）、数量多、轮纹细密且中心浅褐，则**改判靶斑病**（参 `plantinquiry:tomato.disease_fungal.target_spot:lookalikes`）；
+  - 若病斑转为不规则、水浸状、边缘不清且有白色霉层，则**改判晚疫病**（参 `plantinquiry:tomato.disease_fungal.late_blight:lookalikes`）；
+  - 若出现单侧萎蔫、茎基维管束褐变，则应改判枯萎病方向（参 `plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves`）。
+
+---
+
+## 鉴别依据
+
+- 早疫病叶部症状与黄晕：`plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves`
+- 早疫病与灰斑病/晚疫病/靶斑病/细菌性斑点病的鉴别要点：`plantinquiry:tomato.disease_fungal.early_blight:lookalikes`
+- 图谱库候选排序与发生条件（同心轮纹；基肥不足、灌水多、低洼积水）：`cropdp:番茄早疫病:0`
+- 靶斑病症状（同心轮纹、"bulls-eye"）：`plantinquiry:tomato.disease_fungal.target_spot:symptom_leaves`；与早疫病鉴别（尺寸/轮纹粗细）：`plantinquiry:tomato.disease_fungal.target_spot:lookalikes`
+- 晚疫病症状（水浸状、不规则、白霉）：`plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves`；与早疫病鉴别（无轮纹）：`plantinquiry:tomato.disease_fungal.late_blight:lookalikes`
+- 灰斑病（小、多、无轮纹、有黑色小点）：`plantinquiry:tomato.disease_fungal.septoria_leaf_spot:lookalikes`；`cropdp:番茄灰斑病:0`
+- 枯萎病（单侧黄化萎蔫、维管束褐变）：`plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves`
+- 叶螨（点状失绿、丝网）：`plantinquiry:tomato.pest_mite.spider_mites:symptom_leaves`
+- 健康株与生理性黄化鉴别：`plantinquiry:tomato.healthy.healthy:lookalikes`、`plantinquiry:tomato.physiological_symptom.yellowing_symptom:symptom_leaves`
+- 早疫病栽培/生物/化学防治方向：`plantinquiry:tomato.disease_fungal.early_blight:management`
+
+> 注：以上为公共病害卡片（`https://github.com/syed-nazmus-sakib/PlantInquiryVQA/...`）与 CropDP 图谱条目，`project_human_verified = false`，属公开资料而非本项目实测或厂家手册。图谱库标注的"基肥不足/灌水多/低洼积水"等发生条件**无法用地块档案核对**（A-03 土壤档案本轮未接入）。涉及药剂的条目仅给"方向"，**不含剂量、稀释倍数、安全间隔期**（见处置方向）。
+
+---
+
+## 严重度倾向与影响范围
+
+- **严重度倾向：中等偏轻—中等**。依据：病斑仅见于**下部叶片**（符合早疫病"自下部老叶起始"的记载，`plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves`），覆盖叶面积约18%，12处；无果实症状、无萎蔫记录。上游初筛等级为 medium，与本判断一致。
+- **影响范围**：病斑覆盖**约18%叶面积**（单株下部叶片），共**12处**（口径：IMG-20260926-1001 单幅影像，2026-09-26 09:45）。**全田病株率/发病面积无法量化**——原因是仅有单次影像、无历史基线、遥感指数 A-03 未接入，缺少田块尺度数据。
+- 环境侧影响：S-004 高湿（86%）若持续，是病害扩展的有利条件；风速实况8.5 m/s（未来6h预报7–9 m/s）与作业窗口的关系**需由中枢/工单规划判断**，本报告不涉及作业决策。
+
+---
+
+## 建议补检（供中枢决定是否追加诊断）
+
+1. **叶片病斑定量（视觉通道，最优先）**：对同株下部叶片测量病斑直径（区分 >10 mm / 数毫米）、记录轮纹粗细与数量、叶背是否有白色霉层、病斑中心是否有黑色小点、是否有"shot-hole"。这是区分早疫病 / 靶斑病 / 晚疫病 / 灰斑病的关键（依据 `plantinquiry:tomato.disease_fungal.early_blight:lookalikes`、`plantinquiry:tomato.disease_fungal.target_spot:lookalikes`）。
+2. **建立影像基线**：补采同一植株/同一部位序列影像，判断病斑为新增还是既有（当前"无历史影像，基线未知"）。
+3. **拓宽取样部位**：检查中上部叶片、叶柄、茎部与果实，以确认是否仅局限下部老叶（区分早疫病与晚疫病）。
+4. **土壤墒情现场复核**：现场同点复测 S-001 与 S-002，并补一段 7天连续序列；先判定二者读数孰为可信，再决定是否重插/更换探头（当前 0.12 vs 0.34 差值0.22 超一致性阈值0.15）。
+5. **补采土壤本底**：请现场提供 A-03 的 pH、有机质、质地与近期灌溉/施肥记录，用于核对早疫病发生条件中的"基肥不足/灌水多/低洼积水"（当前 `query_soil_reference(A-03)` 未接入）。**不以其他地块档案替代。**
+6. **设备侧补齐**：提供 P-003 与 PLC-001 的型号及手册故障码定义，以核对"电量18% <20%"是否触发低电量保护、是否影响灌溉/喷洒（当前设备手册未接入）。
+7. **补充通道**：确认 S-002 无更新的原因（传感器/通信/采集窗口）、遥感指数 A-03 与水质 S-005 未接入对诊断完整性的影响。
+
+---
+
+## 处置方向
+
+> 下列仅为知识库给出的**方向**；知识库未收录剂量、稀释倍数、安全间隔期与禁用情形，**涉及化学药剂的具体参数须转人工确认后方可执行**。
+
+**针对疑似早疫病（引用 `plantinquiry:tomato.disease_fungal.early_blight:management`，来源卡片 `plantinquiry:tomato.disease_fungal.early_blight:management`）：**
+- 栽培措施（原文要点）：使用无病种子与种苗；与非茄科作物轮作 2–3 年；保持合理株行距以利通风；使用覆盖物减少土壤飞溅至下部叶片；**剪除并移除下部病叶**；避免喷灌、改用滴灌；保证均衡营养。
+- 生物防治（原文要点）：施用含 Bacillus subtilis 或 Trichoderma 的生物杀菌剂。
+- 化学防治（原文要点，**方向性**）：施用含 chlorothalonil、mancozeb 或铜制剂的预防性或治疗性杀菌剂；遵循标签说明并轮换不同作用机理药剂以延缓抗性。
+- 注意事项（原文要点）：IPM 综合措施最有效；杀菌剂在依据天气预报进行**预防性**施用时效果最佳。
+
+**若改判为晚疫病，对应知识库方向为** `plantinquiry:tomato.disease_fungal.late_blight:management`（栽培：避免喷灌保持叶面干燥、及时清除销毁病株病残、与非茄科轮作3–4年；化学：预防性 protectant 与 detect 后的 systemic 方向）。**但本报告的主因判断并非晚疫病**，此处仅为改判时的引用，不作为当前方案。
+
+**须转人工的事项**：
+1. 知识库未收录任何剂量、稀释倍数、安全间隔期、最大用药次数与禁用情形 —— 涉及化学药剂施用的具体参数**须转人工按当地登记标准确认**；
+2. 主因存在未排除的竞争假设（靶斑病）—— 若拟据此制定药剂方案，**须先完成补检1（病斑尺寸/轮纹/叶背霉层）再定名**，不得以早疫病方案直接套用于靶斑病；
+3. A-03 土壤档案与 P-003/PLC-001 设备手册本轮均未接入，涉及地块本底与设备安全保护的判断**须转人工**。
+
+---
+
+**一句话小结**：叶片形态证据**较好支持**早疫病（medium 置信度，主因候选），靶斑病**尚未排除**；高湿为并发促发因素；墒情、土壤档案、设备手册三条链**本轮数据缺失或未接入**，不能判定为"正常"，也不得用其他地块/型号的记录替代。
+
+## 严重度评估
+
+- 严重度：medium
+- 置信度：medium
+- 依据：1) 视觉通道 IMG-20260926-1001（09-26 09:45）为下部叶片褐色圆形病斑、具同心轮纹、边缘黄化，12 处、约 18% 叶面积，与知识库早疫病鉴别要点（plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves）逐条对应，图谱库候选首位一致（cropdp:番茄早疫病:0），构成明确异常信号，故不取 low/none。2) 病斑仅限下部老叶，无果实症状、无萎蔫记录，覆盖叶面积 18%、12 处，尚未见扩展至中上部或果实，故不上升为 high/critical（不存在"短期内不可逆损失"的证据）。3) 靶斑病（target_spot：同心轮纹、bull's-eye）为本轮**未排除**的竞争假设——感知报告未给出病斑直径/轮纹粗细读数，无法按 lookalikes 判别，主因未定名，这限制严重度上限。4) 环境促发因素：S-004=86% 高于上限 85 及 7 天均值 72，利于病害扩展，属并发促发条件而非独立病因。5) 墒情 S-001=0.12 低于下限 0.20，但 S-001 与 S-002=0.34 差值 0.22 超一致性阈值 0.15、S-002 超 12h 无更新、又无 7 天连续序列，两读数不能同时作为同一地块依据，水分胁迫**无法评估**。6) A-03 土壤档案与 PLC-001/P-003 设备手册本轮均返回"未接入真实数据源（框架占位）"，早疫病发生条件（基肥不足/灌水多/低洼积水）与低电量保护逻辑均无法核对，为未闭合证据链，故置信度只给 medium 而非 high。7) 设备侧现况为 V-003 closed + P-003 idle + 无故障码，属停机非报错，不构成独立故障严重度来源。
+- 建议补检：1) 病害定名（最优先）：对同株下部叶片测量病斑直径（>10 mm / 数毫米）、记录轮纹粗细与数量、叶背是否有白色霉层、病斑中心是否有黑色小点、有无 shot-hole——用于区分早疫病/靶斑病/晚疫病/灰斑病（依据 early_blight:lookalikes、target_spot:lookalikes）。2) 补采同株同部位序列影像，建立影像基线，判断病斑新增或既有（当前"无历史影像，基线未知"）。3) 拓宽取样部位：中上部叶片、叶柄、茎部与果实，确认是否仅局限下部老叶。4) 现场同点复测 S-001 与 S-002 并补 7 天连续序列，先判定孰为可信，再决定是否重插/更换探头。5) 补采 A-03 土壤本底（pH、有机质、质地、近期灌溉/施肥记录）以核对发生条件，**不得以其他地块档案替代**。6) 提供 P-003 与 PLC-001 型号及手册故障码定义，核对"电量 18% < 20%"是否触发低电量保护、是否影响灌溉/喷洒作业窗口。7) 查明 S-002 无更新原因（传感器/通信/采集窗口），并确认遥感 A-03、水质 S-005 未接入对诊断完整性的影响——未接入通道不得默认正常。
+- 引用核验：{"cited_doc_ids": ["cropdp:番茄早疫病:0", "cropdp:番茄灰斑病:0", "cropdp:番茄芝麻斑病:0", "plantinquiry:tomato.disease_fungal.early_blight:lookalikes", "plantinquiry:tomato.disease_fungal.early_blight:management", "plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves", "plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves", "plantinquiry:tomato.disease_fungal.late_blight:lookalikes", "plantinquiry:tomato.disease_fungal.late_blight:management", "plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves", "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:lookalikes", "plantinquiry:tomato.disease_fungal.target_spot:lookalikes", "plantinquiry:tomato.disease_fungal.target_spot:symptom_leaves", "plantinquiry:tomato.healthy.healthy:lookalikes", "plantinquiry:tomato.pest_mite.spider_mites:symptom_leaves", "plantinquiry:tomato.physiological_symptom.yellowing_symptom:lookalikes", "plantinquiry:tomato.physiological_symptom.yellowing_symptom:symptom_leaves"], "unretrieved_citations": [], "unformatted_citations": [], "answer_citations_valid": true, "retried": true, "status": "passed"}

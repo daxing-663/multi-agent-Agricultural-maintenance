@@ -12,7 +12,7 @@
 from typing import Annotated
 
 from langgraph.graph import MessagesState
-from typing_extensions import TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 
 class PerceptionState(TypedDict):
@@ -34,6 +34,7 @@ class DiagnosisState(TypedDict):
     """诊断 Agent 的子状态：判断病虫害 / 土壤问题 / 设备故障。"""
 
     diagnosis_report: Annotated[str, "诊断报告：候选病因、鉴别过程与证据"]
+    citation_check: NotRequired[dict]
     severity: Annotated[str, "严重度：none / low / medium / high / critical"]
     confidence: Annotated[str, "结论置信度：low / medium / high"]
     rationale: Annotated[str, "证据链与推理依据"]

@@ -48,6 +48,7 @@ _ENV_OVERRIDES = {
     "AGRIAGENTS_RAG_EMBEDDING_MODEL":       "rag_embedding_model",
     "AGRIAGENTS_RAG_HF_ENDPOINT":           "rag_hf_endpoint",
     "AGRIAGENTS_RAG_TOP_K":                 "rag_top_k",
+    "AGRIAGENTS_RAG_EMBEDDING_THREADS":     "rag_embedding_threads",
 }
 
 _BOOL_TRUE = ("true", "1", "yes", "on")
@@ -142,9 +143,12 @@ DEFAULT_CONFIG = _apply_env_overrides({
         or os.path.join(_AGRIAGENTS_HOME, "rag"),
     "rag_data_dir": os.getenv("AGRIAGENTS_RAG_DATA_DIR")
         or os.path.join(_AGRIAGENTS_HOME, "rag", "raw"),   # 原始语料，可增量重建
+    # 本地审核文档/现场档案 JSONL，多个路径用 os.pathsep 分隔（Windows 为分号）。
+    "rag_local_paths": os.getenv("AGRIAGENTS_RAG_LOCAL_PATHS", ""),
     # 嵌入后端：auto（有 fastembed 就用神经嵌入，否则哈希兜底）
     #           / fastembed / hashing / none（纯 BM25 关键词检索）
     "rag_embedding_backend": "auto",
+    "rag_embedding_threads": 2,           # 限制 ONNX 并发，避免多核环境线程争用
     # 多语言模型，中英混检。语料若确定只有中文，可换 BAAI/bge-small-zh-v1.5（92MB）。
     "rag_embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     "rag_model_cache_dir": os.path.join(_AGRIAGENTS_HOME, "models"),

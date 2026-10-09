@@ -5,7 +5,7 @@
 内置种子库让整条 RAG 链路可以在**几秒内**构建并端到端验证——
 接线对不对、Agent 能不能检索到，不需要等语料下载完才知道。
 
-语料文件：``agriagents/rag/seed/knowledge_seed.jsonl``（18 条）。
+语料文件：``agriagents/rag/seed/knowledge_seed.jsonl``。
 内容覆盖五种知识工具的全部形态：病害卡片、分部位症状、防治方案、
 严重度判定、鉴别诊断、农艺问答、土壤档案、设备手册、安全规则。
 
@@ -24,7 +24,7 @@ from agriagents.rag.index import Doc
 from agriagents.rag.sources.base import IngestContext, SourceResult
 
 NAME = "seed"
-DESCRIPTION = "内置示例知识库（18 条，覆盖全部知识工具形态，零下载）"
+DESCRIPTION = "内置演示知识库（覆盖全部知识工具形态，零下载，含明确标识的模拟档案）"
 HOMEPAGE = "（项目内置，无外部来源）"
 LICENSE = "随本项目"
 
@@ -76,6 +76,11 @@ def _to_doc(row: dict) -> Doc:
     reserved = {"id", "kind", "title", "lang", "text", "parent", "meta"}
     meta = dict(row.get("meta") or {})
     meta.update({key: value for key, value in row.items() if key not in reserved})
+    meta["is_demo"] = True
+    meta["evidence_status"] = "demo"
+    meta["project_human_verified"] = False
+    meta.setdefault("source_ref", "agriagents/rag/seed/knowledge_seed.jsonl")
+    meta.setdefault("citation", f"AgriAgents 内置演示条目 {row['id']}（非实测/非厂商手册）")
 
     return Doc(
         doc_id=row["id"],

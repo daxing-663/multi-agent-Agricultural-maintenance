@@ -89,6 +89,33 @@ def get_device_status(
 
 
 @tool
+def list_knowledge_bases() -> str:
+    """列出实际加载的知识源、类型、数量及专用检索工具；首次诊断先查看覆盖范围。"""
+    return route_to_vendor("list_knowledge_bases")
+
+
+@tool
+def search_knowledge_base(
+    query: Annotated[str, "具体实体、症状或农艺问题"],
+    source: Annotated[str, "可选，list_knowledge_bases 返回的 source，例如 cropdp/plantinquiry/qa_en/qa_zh/local"] = "",
+    kind: Annotated[str, "可选，目录返回的 kind，例如 qa_pair/symptom/severity/diagnosis"] = "",
+    top_k: Annotated[int, "最多返回多少条证据，范围1至10；默认3，仅在候选不足时增加"] = 3,
+    crop: Annotated[str, "可选，按元数据精确限制适用作物；未知作物信息的条目不会进入结果"] = "",
+    dataset: Annotated[str, "可选，目录中返回的具体 dataset 标识，可区分 qa_en 下的三个数据集"] = "",
+) -> str:
+    """按知识源/类型精确限定查证范围，返回 doc_id、出处与短命中片段，不默认返回全文。"""
+    return route_to_vendor("search_knowledge_base", query, source, kind, top_k, crop, dataset)
+
+
+@tool
+def get_knowledge_document(
+    doc_id: Annotated[str, "search_knowledge_base 返回的完整 doc_id，必须逐字传入"],
+) -> str:
+    """仅在短片段不足以完成鉴别时，按精确 doc_id 读取一篇知识文档全文。"""
+    return route_to_vendor("get_knowledge_document", doc_id)
+
+
+@tool
 def query_agronomy_knowledge(
     question: Annotated[str, "要查询的农艺问题，尽量具体到作物、生育期与现象"],
 ) -> str:
@@ -124,10 +151,11 @@ def query_equipment_manual(
 
 @tool
 def get_treatment_options(
-    diagnosis: Annotated[str, "已形成的诊断结论摘要"],
+    diagnosis: Annotated[str, "明确病害名称，优先使用病虫害工具返回的 disease 原值；不要附加整段诊断分析"],
+    crop: Annotated[str, "诊断对象的作物名称，例如番茄或黄瓜；应始终提供以避免跨作物方案"] = "",
 ) -> str:
     """查询该诊断对应的可选处置方案及其约束（适用条件、成本、安全间隔期）。"""
-    return route_to_vendor("get_treatment_options", diagnosis)
+    return route_to_vendor("get_treatment_options", diagnosis, crop=crop)
 
 
 # ---------------------------------------------------------------------------

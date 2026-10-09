@@ -21,6 +21,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+rag = [
+    "numpy>=1.24",
+    "pyarrow>=14.0",
+]
+rag-embeddings = [
+    "numpy>=1.24",
+    "pyarrow>=14.0",
+    "fastembed>=0.3",
+]
 dev = [
     "ruff>=0.15",
     "pytest>=8.0",
@@ -31,6 +40,9 @@ agriagents = "cli.main:app"
 
 [tool.setuptools.packages.find]
 include = ["agriagents*", "cli*"]
+
+[tool.setuptools.package-data]
+agriagents = ["skills/*/SKILL.md", "rag/seed/*.json", "rag/seed/*.jsonl", "rag/curated/*.jsonl"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -34,7 +34,7 @@ def query_equipment_manual(device_id: str, fault_code: str) -> str:
     return f"[{VENDOR_NAME}] 设备手册：{device_id} / {fault_code}\n{_PENDING}"
 
 
-def get_treatment_options(diagnosis: str) -> str:
+def get_treatment_options(diagnosis: str, crop: str = "") -> str:
     """查询某诊断对应的可选处置方案及其约束。"""
     return (
         f"[{VENDOR_NAME}] 处置方案查询：{diagnosis}\n{_PENDING}\n"

@@ -18,6 +18,7 @@ import hashlib
 
 from agriagents.rag.index import Doc
 from agriagents.rag.sources.base import IngestContext, SourceResult, dedupe_docs, load_hf_rows
+from agriagents.rag.sources.scope import crop_metadata, is_food_health_qa
 
 NAME = "qa_zh"
 DESCRIPTION = "中文农林牧渔问答数据集（按设施作物相关性过滤后的子集）"
@@ -59,8 +60,14 @@ def build(ctx: IngestContext) -> SourceResult:
     rows, mode = load_hf_rows(ctx, _DATASET, limit=scan_limit)
     docs: list[Doc] = []
     scanned = 0
+    food_health_rejected = 0
     for row in rows:
         scanned += 1
+        question = (row.get("prompt") or row.get("question") or "").strip()
+        answer = (row.get("response") or row.get("answer") or "").strip()
+        if is_food_health_qa(question, answer):
+            food_health_rejected += 1
+            continue
         doc = _row_to_doc(row)
         if doc is not None:
             docs.append(doc)
@@ -74,9 +81,12 @@ def build(ctx: IngestContext) -> SourceResult:
     rate = (before / scanned * 100) if scanned else 0.0
     return SourceResult(
         docs=docs,
+        details={"dataset": _DATASET, "rows_scanned": scanned, "accepted": before,
+                 "documents": len(docs), "accept_limit": accept_limit,
+                 "scan_limit": scan_limit, "food_health_rejected": food_health_rejected, "mode": mode},
         notes=[
             f"扫描 {scanned} 行，合格 {before} 条（命中率 {rate:.1f}%），去重后 {len(docs)} 条（{mode}）",
-            "未命中作物或植保词的条目（养殖/林业/水产）已丢弃",
+            f"排除纯食品/人体健康问答 {food_health_rejected} 条；未命中作物或植保词的条目已丢弃",
         ],
     )
 
@@ -97,14 +107,16 @@ def _row_to_doc(row: dict) -> Doc | None:
     answer = (row.get("response") or row.get("answer") or "").strip()
     if not question or not answer or len(question) + len(answer) < 40:
         return None
+    if is_food_health_qa(question, answer):
+        return None
 
     blob = question + " " + answer
     relevance = _relevance(blob)
     if relevance == 0:
         return None
 
-    # 命中的作物名写进 meta，既是检索锚点也供调用方按作物过滤
-    crops = [crop for crop in _CROPS if crop in blob]
+    # 优先问题主体，不能因为答案比较番茄与黄瓜而把两者都标成适用作物。
+    crop_meta = crop_metadata(question, answer, lang="zh")
     raw_id = str(row.get("id") or "").strip()
     return Doc(
         doc_id=f"qa_zh:{raw_id}" if raw_id else f"qa_zh:{_stable_key(question)}",
@@ -113,7 +125,10 @@ def _row_to_doc(row: dict) -> Doc | None:
         title=question[:120],
         lang="zh",
         text=f"问：{question}\n答：{answer}",
-        meta={"crops": crops[:6], "relevance": relevance},
+        meta={**crop_meta, "relevance": relevance, "dataset": _DATASET,
+              "source_ref": HOMEPAGE, "record_id": raw_id or _stable_key(question),
+              "split": "train", "evidence_status": "unreviewed_public_qa",
+              "project_human_verified": False},
     )
 
 

@@ -108,6 +108,21 @@ class FastEmbedEmbedder:
         probe = next(iter(self._model.embed(["dimension probe"])))
         return int(len(probe))
 
+    def token_lengths(self, texts: Sequence[str]) -> list[int]:
+        """Estimate actual model lengths so build batches waste less padding.
+
+        Older/other FastEmbed backends may not expose a tokenizer; character
+        length remains a safe performance-only fallback in that case.
+        """
+        tokenizer = getattr(getattr(self._model, "model", None), "tokenizer", None)
+        if tokenizer is None:
+            return [len(text) for text in texts]
+        lengths = []
+        for start in range(0, len(texts), 1024):
+            encoded = tokenizer.encode_batch(list(texts[start:start + 1024]))
+            lengths.extend(sum(item.attention_mask) for item in encoded)
+        return lengths
+
     def encode(self, texts: Sequence[str]) -> "object":
         import numpy as np
 
@@ -179,6 +194,7 @@ def get_embedder(config: dict | None = None, *, allow_download: bool = True) -> 
     model_name = config.get("rag_embedding_model") or DEFAULT_MODEL
     cache_dir = config.get("rag_model_cache_dir")
     endpoint = config.get("rag_hf_endpoint")
+    threads = config.get("rag_embedding_threads", 2)
 
     if backend == "none":
         return None
@@ -186,9 +202,9 @@ def get_embedder(config: dict | None = None, *, allow_download: bool = True) -> 
     if backend in ("auto", "fastembed"):
         try:
             if allow_download:
-                return FastEmbedEmbedder(model_name, cache_dir=cache_dir, hf_endpoint=endpoint)
+                return FastEmbedEmbedder(model_name, cache_dir=cache_dir, hf_endpoint=endpoint, threads=threads)
             if _model_is_cached(model_name, cache_dir):
-                return FastEmbedEmbedder(model_name, cache_dir=cache_dir, hf_endpoint=endpoint)
+                return FastEmbedEmbedder(model_name, cache_dir=cache_dir, hf_endpoint=endpoint, threads=threads)
         except Exception:  # noqa: BLE001 - 回退是设计的一部分，不是兜错
             if backend == "fastembed":
                 raise

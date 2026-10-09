@@ -34,8 +34,32 @@ _STOPWORDS_EN = frozenset(
     """a an the of in on for to and or is are was were be been being with by from
     as at it its this that these those there their they we you i not no if then
     than which who whom what when where how can may might must should would could
-    will shall do does did done have has had""".split()
+    will shall do does did done have has had me my mine our ours us your yours him her them""".split()
 )
+
+# 查询里的请求套话不应成为相关性证据。保留“故障”“水分”等领域概念，
+# 但“管理 防治 方法”本身不足以选择任意一个病害的知识条目。
+_QUERY_FILLER_ZH = re.compile(
+    "请问|请帮我|帮我|告诉我|知识库|农业知识|相关知识|相关资料|相关信息|"
+    "有没有|有什么|是什么|怎么|如何|什么|哪些|一下|一下子|有关|相关|"
+    "知识|资料|信息|方法|建议|管理|防治|治疗|处理|处置|查询|参考|病害|"
+    "农业|作物|植物|常识|症状|的|了|吗|呢"
+)
+_QUERY_FILLER_EN = frozenset(
+    "please help tell explain knowledge information advice method methods "
+    "management treatment control query reference disease diseases plant plants "
+    "crop crops agriculture agricultural symptoms".split()
+)
+
+
+def query_terms(text: str) -> set[str]:
+    """用于相关性门槛的词：中文至少二字，英文完整词。
+
+    BM25 仍保留字级召回；此处防止“月球旅行”仅因共用“行”字命中农机。
+    使用替换空格，避免移除套话后意外把两段文字拼成新二元词。
+    """
+    clean = _QUERY_FILLER_ZH.sub(" ", normalize(text))
+    return {term for term in tokenize(clean) if len(term) >= 2 and term not in _QUERY_FILLER_EN}
 
 
 def _is_cjk(ch: str) -> bool:

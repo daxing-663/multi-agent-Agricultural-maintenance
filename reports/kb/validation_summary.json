@@ -1,0 +1,162 @@
+{
+  "verified_at": "2026-09-29T06:17:02+00:00",
+  "index_dir": "C:\\Users\\colorful\\.agriagents\\rag",
+  "documents": 51124,
+  "by_source": {
+    "qa_en": 40583,
+    "qa_zh": 5993,
+    "cropdp": 2578,
+    "plantinquiry": 1946,
+    "seed": 22,
+    "curated": 2
+  },
+  "corpus_sha256": "7b0bc6753492b49395bff16d35a28dbb8a2dd3cff4c1054c9088ee010471f8aa",
+  "embedding": {
+    "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "dimensions": 384,
+    "dense": true
+  },
+  "unit_regression": {
+    "command": "python -m pytest tests -q",
+    "passed": 182,
+    "failed": 0
+  },
+  "bm25": {
+    "passed": 132,
+    "total": 132,
+    "all_passed": true,
+    "dense_hits": 0,
+    "title_recall_at_k": 1.0,
+    "title_mrr": 1.0,
+    "natural_queries": {
+      "positive_cases": 10,
+      "hit_at_3": 1.0,
+      "hit_at_1": 0.9,
+      "declared_crop_conflicts": 0,
+      "baseline_hit_at_3": 0.444444,
+      "baseline_hit_at_1": 0.111111,
+      "baseline_positive_cases": 9,
+      "coverage_gap_cases": 0,
+      "annotation_scope": "Reviewed for query relevance; not agronomic fact verification."
+    },
+    "by_category": {
+      "domain_negative": {
+        "passed": 9,
+        "total": 9
+      },
+      "domain_positive": {
+        "passed": 10,
+        "total": 10
+      },
+      "index_negative": {
+        "passed": 9,
+        "total": 9
+      },
+      "integrity": {
+        "passed": 3,
+        "total": 3
+      },
+      "metadata_filter": {
+        "passed": 35,
+        "total": 35
+      },
+      "natural_query": {
+        "passed": 10,
+        "total": 10
+      },
+      "source_presence": {
+        "passed": 6,
+        "total": 6
+      },
+      "title_retrieval": {
+        "passed": 50,
+        "total": 50
+      }
+    }
+  },
+  "hybrid": {
+    "passed": 133,
+    "total": 133,
+    "all_passed": true,
+    "dense_hits": 186,
+    "title_recall_at_k": 1.0,
+    "title_mrr": 1.0,
+    "natural_queries": {
+      "positive_cases": 10,
+      "hit_at_3": 1.0,
+      "hit_at_1": 0.9,
+      "declared_crop_conflicts": 0,
+      "baseline_hit_at_3": 0.444444,
+      "baseline_hit_at_1": 0.111111,
+      "baseline_positive_cases": 9,
+      "coverage_gap_cases": 0,
+      "annotation_scope": "Reviewed for query relevance; not agronomic fact verification."
+    },
+    "by_category": {
+      "domain_negative": {
+        "passed": 9,
+        "total": 9
+      },
+      "domain_positive": {
+        "passed": 10,
+        "total": 10
+      },
+      "index_negative": {
+        "passed": 9,
+        "total": 9
+      },
+      "integrity": {
+        "passed": 4,
+        "total": 4
+      },
+      "metadata_filter": {
+        "passed": 35,
+        "total": 35
+      },
+      "natural_query": {
+        "passed": 10,
+        "total": 10
+      },
+      "source_presence": {
+        "passed": 6,
+        "total": 6
+      },
+      "title_retrieval": {
+        "passed": 50,
+        "total": 50
+      }
+    }
+  },
+  "live_agent": {
+    "provider": "deepseek",
+    "model": "deepseek-flash",
+    "passed": true,
+    "tool_types": 7,
+    "calls": 17,
+    "dense_evidence_calls": 8,
+    "sources": [
+      "cropdp",
+      "curated",
+      "plantinquiry",
+      "qa_en",
+      "qa_zh",
+      "seed"
+    ],
+    "scenario_checks": {
+      "query_pest_disease_library:tomato": true,
+      "get_treatment_options:tomato": true,
+      "query_pest_disease_library:cucumber": true,
+      "get_treatment_options:cucumber": true,
+      "soil:FIELD-07": true,
+      "soil:GH-09": true,
+      "equipment:VALVE-11:E04": true,
+      "equipment:FAN-03:OFFLINE": true,
+      "dataset:talhakk/agriculture-qa": true,
+      "dataset:KisanVaani/agriculture-qa-english-only": true,
+      "dataset:manifesta/verified-agronomy-17k": true
+    },
+    "citation_status": "passed",
+    "citation_retried": false
+  },
+  "scope": "Fixed retrieval and Agent wiring/citation identity evaluation, not agronomic fact or field diagnosis accuracy."
+}

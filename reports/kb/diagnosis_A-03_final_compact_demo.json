@@ -1,0 +1,57 @@
+{
+  "tool_calls": [
+    {
+      "tool": "list_knowledge_bases",
+      "arguments": {},
+      "characters": 1638,
+      "result": "{\"vendor\": \"local_rag\", \"available\": true, \"documents\": 51124, \"sources\": [{\"source\": \"cropdp\", \"documents\": 2578, \"kinds\": {\"kg_entity\": 2578}, \"datasets\": [\"CropDP-KG\"], \"demo_documents\": 0}, {\"source\": \"curated\", \"documents\": 2, \"kinds\": {\"agronomy\": 2}, \"datasets\": [], \"demo_documents\": 0}, {\"source\": \"plantinquiry\", \"documents\": 1946, \"kinds\": {\"diagnosis\": 186, \"disease_card\": 203, \"environment\": 193, \"management\": 203, \"severity\": 203, \"symptom\": 958}, \"datasets\": [\"PlantInquiryVQA\"], \"demo_documents\": 0}, {\"source\": \"qa_en\", \"documents\": 40583, \"kinds\": {\"qa_pair\": 40583}, \"datasets\": [\"KisanVaani/agriculture-qa-english-only\", \"manifesta/verified-agronomy-17k\", \"talhakk/agriculture-qa\"], \"demo_documents\": 0}, {\"source\": \"qa_zh\", \"documents\": 5993, \"kinds\": {\"qa_pair\": 5993}, \"datasets\": [\"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\"], \"demo_documents\": 0}, {\"source\": \"seed\", \"documents\": 22, \"kinds\": {\"diagnosis\": 1, \"disease_card\": 3, \"equipment_manual\": 4, \"management\": 3, \"qa_pair\": 3, \"safety_rule\": 1, \"severity\": 1, \"soil_reference\": 3, \"symptom\": 3}, \"datasets\": [], \"demo_documents\": 22}], \"graph\": {\"entities\": 2550, \"symptoms\": 21061, \"with_crops\": 1197, \"with_symptoms\": 2027}, \"tools\": {\"病虫害\": \"query_pest_disease_library(crop, symptom)\", \"农艺问答\": \"query_agronomy_knowledge(question)\", \"处置方案\": \"get_treatment_options(diagnosis, crop)\", \"土壤档案\": \"query_soil_reference(site_id)\", \"设备手册\": \"query_equipment_manual(device_id, fault_code)\", \"指定语料源查证\": \"search_knowledge_base(query, source, kind)\", \"按文档读取全文\": \"get_knowledge_document(doc_id)\"}, \"note\": \"目录仅反映已加载内容；seed/is_demo 为演示资料，不是实测证据。\"}"
+    },
+    {
+      "tool": "query_pest_disease_library",
+      "arguments": {
+        "crop": "番茄",
+        "symptom": "下部叶片褐色圆形病斑，具同心轮纹，边缘黄化，多斑覆盖叶面积约18%"
+      },
+      "characters": 2904,
+      "result": "[local_rag] 病虫害查询：作物=番茄，症状=下部叶片褐色圆形病斑，具同心轮纹，边缘黄化，多斑覆盖叶面积约18%\n\n■ 候选病害（按证据检索排序，共 3 条）\n\n1. 番茄早疫病（Alternaria solani）  检索排序分 0.0323  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:番茄早疫病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：同心轮纹；圆形或椭圆形暗褐色病斑；病斑椭圆形\n   危害部位：叶片、叶柄、茎部、果实\n   危害作物：番茄\n   适宜发生条件：基肥不足；灌水多；低洼积水\n   英文名/别名：Tomato early blight\n\n2. 番茄灰斑病（Septoria lycopersici）  检索排序分 0.0301  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:番茄灰斑病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：边缘褐色；边缘暗色；近圆形大病斑\n   危害部位：叶部、茎部、果实\n   危害作物：番茄\n   英文名/别名：Tomato grey spot\n\n3. 番茄晚疫病（Phytophthora infestans）  检索排序分 0.0269  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:番茄晚疫病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：病斑呈绿褐色；边缘不变红；暗绿色水浸状不整形病斑\n   危害部位：叶片、茎部、果实\n   危害作物：番茄\n   适宜发生条件：以上，空气湿度；地势低洼；排水不良\n   适宜温度：24℃\n   英文名/别名：Tomato late blight\n\n■ 关键补充证据（3 条；其余按需定向检索）\n - source=plantinquiry；doc_id=plantinquiry:tomato.physiological_symptom.yellowing_symptom:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·Yellowing Symptom：tomato / Yellowing Symptom（） 叶片症状： - Uniform yellowing of older, lower leaves, while new growth remains green (classic nitrogen deficiency). - Yellowing between the veins (interveinal chlorosis) on older, lower leaves, …\n - source=plantinquiry；doc_id=plantinquiry:tomato.healthy.healthy:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·healthy：tomato / healthy（） 叶片症状： - Uniformly green color, consistent with the cultivar. - Leaves are fully expanded and turgid. - No spots, lesions, discoloration, or necrosis. - No yellowing (chlorosis) or browning. - No curli…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·early blight：tomato / early blight（Alternaria solani） 叶片症状： - Starts as small, dark brown to black spots on lower, older leaves. - Lesions enlarge to 0.5-1.5 cm in diameter. - Lesions develop characteristic concentric rings, creatin…\n\n置信提示：检索排序分用于融合图谱和文本证据的名次，不是诊断概率或诊断结论。必须结合现场影像、环境条件与鉴别要点复核后再定级。"
+    },
+    {
+      "tool": "query_soil_reference",
+      "arguments": {
+        "site_id": "A-03"
+      },
+      "characters": 44,
+      "result": "[stub_knowledge] 土壤档案 @ A-03\n未接入真实数据源（框架占位）。"
+    },
+    {
+      "tool": "query_agronomy_knowledge",
+      "arguments": {
+        "question": "番茄结果期棚内土壤湿度偏低（0.12，下限0.20）与空气相对湿度86%偏高同时出现，是否易诱发早疫病等真菌性叶斑病？灌水过多是否为早疫病发生条件？"
+      },
+      "characters": 1396,
+      "result": "[local_rag] 农艺知识检索：番茄结果期棚内土壤湿度偏低（0.12，下限0.20）与空气相对湿度86%偏高同时出现，是否易诱发早疫病等真菌性叶斑病？灌水过多是否为早疫病发生条件？\n命中 2 条：\n\n1. late blight · 处置原文\n   source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:management；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl（命中方式 linked-card）\n   使用约束：已核对病害与作物身份；原文仍须核对当地适用性、用量和安全约束。\n   tomato / late blight（Phytophthora infestans） 栽培措施： - Use certified disease-free seeds and transplants. - Ensure good air circulation through proper plant spacing and pruning. - Avoid overhead irrigation; use drip irrigation to keep foliage dry. - Remove and destroy infected plants and debris promptly. - Rotate crops, avoiding planting tomatoes or potatoes in the same spot for 3-4 years. 生物防治： - Application of bio-fungicides containing Bacillus subtilis or copper-based compounds (e.g., copper hydroxide) can be supp…\n\n2. 番茄晚疫病 · 处置原文\n   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:management；出处=agriagents/rag/seed/knowledge_seed.jsonl（命中方式 exact-disease-crop）\n   使用约束：已核对病害与作物身份；原文仍须核对当地适用性、用量和安全约束。\n   番茄晚疫病 防治方案（结构性示例） 栽培措施： - 控制棚内湿度，避免叶面长时间结露；上午通风排湿。 - 合理密植，及时整枝打杈并清出病残体。 - 与非茄科作物轮作，避免连作。 生物防治： - 预防期可选用登记用于卵菌的生物制剂（示例占位，需按当地登记目录核对）。 化学防治： - 发病初期及时用药，注意轮换作用机理不同的药剂以延缓抗性。 - 【占位】具体药剂品种、用量、安全间隔期与最大用药次数未收录，须由人工按当地登记标准确认。\n\n说明：以上为知识库原文或标有来源的摘要。「上游标注已验证」不代表人工或本项目专家审核。条目冲突时须标注分歧并核对适用范围与原始来源。"
+    }
+  ],
+  "tool_output_characters": 5982,
+  "full_document_calls": 0,
+  "diagnosis_report": "## 诊断报告\n\n- **结论**：主因为**番茄早疫病（Alternaria solani）**，属**证据支持的判断**（影像症状与知识库鉴别要点吻合），confidence **medium**，severity **中—偏高倾向**（叶部已成斑并具扩展形态）。竞争假设：**番茄晚疫病**，属**合理怀疑**（棚内湿度86%超上限为其适宜条件），但病斑\"圆形+同心轮纹+边缘黄化\"不符合其\"暗绿色水浸状不整形、边缘不变红\"的鉴别要点，暂列次位。番茄灰斑病作为第二竞争假设，仅命中\"边缘褐色/近圆形\"，未见其典型特征，暂不展开。\n\n- **关键证据**：\n  1. IMG-20260926-1001 @09:45 见下部老叶12处褐色圆形病斑、具同心轮纹、边缘黄化，覆盖叶面积约18%；知识库早疫病叶部症状为\"自下部老叶起始的暗褐至黑褐色小斑，扩大后形成特征性同心轮纹\"，部位（下部老叶）与形态均吻合（`cropdp:番茄早疫病:0`、`plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves`）。\n  2. S-004 湿度86%@09:58（高于上限85、7天均值72），为棚内持续高湿提供了直接读数，是叶部真菌病害流行的有利条件；但早疫病条目所列适宜条件为\"基肥不足、灌水多、低洼积水\"，本轮**未取得**肥力与积水证据（`cropdp:番茄早疫病:0`）。\n  3. S-001 墒情0.12@09:58 显著低于下限0.20，与\"灌水多\"方向相反，说明田间水分证据内部不一致，不能用来支持或否证早疫病发生条件。\n\n- **排除与并发因素**：非生物因素无法排除——土壤档案返回\"未接入真实数据源\"（`A-03` 无本底记录），故缺素性黄化、药害/肥害不能按\"已排除\"处理，只能标注**无法评估**；但同时黄化伴轮纹状病斑、非均匀褪绿，与缺氮型\"下部老叶均匀黄化\"描述不符，故缺素列为次要并发可能。设备侧：PLC-001 online、V-003 closed、P-003 idle 且无故障码，设备与环境因素中\"阀/泵/控制失灵\"**已排除**（无故障码、无对应异常需查手册）；P-003 电量18%属可用性约束，不参与病因。\n\n- **关键缺口**：链条断在三处——(1) 无历史影像，无法判断18%病斑是突发还是持续扩展，严重度只能给倾向不能定级；(2) 土壤档案与水质S-005、遥感A-03均缺失，非生物因素整体无法评估；(3) S-001偏低与S-002（0.34，12小时未更新）差0.22超一致性阈值0.15，真实根区墒情方向不明，故\"高湿—病菌\"与\"低墒—植株胁迫\"两条链均未闭合。\n\n- **建议补检**：1) 对病斑叶位拍照复查并做植保镜检/病原确认，取病斑叶与相邻健叶各5片，判断是否有孢子器或霉层；2) 现场复核S-001与S-002传感器（人工取土法对照烘干或便携仪），定出可信墒情通道；3) 补测棚内温湿度连续序列（尤其夜间结露时长）并核对施肥记录，以判定高湿是否持续及肥力条件。\n  **改判条件**：若病菌镜检见卵孢子相关特征、或病斑转为暗绿色水浸状不整形并迅速扩展且边缘不变红，则应改判为晚疫病并升级严重度。\n\n- **处置边界**：方向可按真菌性叶斑病害管理，但具体药剂、剂量、安全间隔期与稀释倍数本轮知识库未收录（seed 条目为演示资料且明确标注\"具体药剂品种、用量、安全间隔期未收录，须由人工按当地登记标准确认\"），**该部分须转人工核定**；消毒与排湿等栽培措施可分别参考 `plantinquiry:tomato.disease_fungal.late_blight:management`（仅作通风降湿、避免顶部灌溉的方向参考）。",
+  "report_characters": 1583,
+  "citation_check": {
+    "cited_doc_ids": [
+      "cropdp:番茄早疫病:0",
+      "plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves",
+      "plantinquiry:tomato.disease_fungal.late_blight:management"
+    ],
+    "unretrieved_citations": [],
+    "unformatted_citations": [],
+    "placeholder_citations": [],
+    "answer_citations_valid": true,
+    "retried": false,
+    "compacted": false,
+    "status": "passed"
+  },
+  "severity": "high",
+  "confidence": "low",
+  "rationale": "1) vision通道有明确病害信号：IMG-20260926-1001见下部老叶12处褐色圆形病斑、同心轮纹、边缘黄化，覆盖叶面积约18%，形态与知识库早疫病\"自下部老叶起始、扩大后形成同心轮纹\"吻合（cropdp:番茄早疫病:0、plantinquiry:tomato.disease_fungal.early_blight:symptom_leaves）。病害处于结果期且已成斑具扩展形态，属\"需尽快处置\"档。2) 但无法定级为critical：无历史影像，无法判断18%是突发还是持续扩展，扩展速率这一critical判定的核心依据缺失；竞争假设晚疫病（棚内湿度86%超上限85、7天均值72，为其适宜条件）尚未排除，且改判条件一旦成立将升级。3) sensor通道双向偏离：S-001墒情0.12低于下限0.20，S-004湿度86%高于上限85，S-002离线12小时且与S-001差0.22超阈值0.15，真实根区墒情方向不明，\"高湿—病菌\"与\"低墒—植株胁迫\"两条链均未闭合。4) device通道仅P-003电量18%为可用性约束（低于20%阈值），PLC-001 online、V-003 closed、无故障码，\"阀/泵/控制失灵\"已排除。5) 作业窗口受限：实况风速8.5m/s、未来6小时7-9m/s，超出常规喷施作业窗口，影响处置可执行性。综合：存在需尽快处置的实质问题，但多处证据缺口使定级与影响量化均受限，故severity=high、confidence=low。",
+  "recommended_checks": "1) 植保镜检/病原确认：取病斑叶与相邻健叶各5片，查孢子器或霉层，确认早疫病/晚疫病（若见卵孢子相关特征、病斑转暗绿色水浸状不整形且边缘不变红，改判晚疫病并升级）；2) 病斑叶位拍照复查并建立历史影像比对，判断18%覆盖面积是突发还是持续扩展，以确认是否达防治阈值（需植保口径）；3) 现场复核S-001与S-002传感器（人工取土烘干或便携仪对照），确定可信墒情通道；4) 补测棚内温湿度连续序列（尤其夜间结露时长）并核对施肥记录，判定高湿是否持续及肥力/积水条件，以印证或排除早疫病发生条件；5) 接入/补测遥感A-03与水质S-005，补齐土壤档案本底，评估非生物因素（缺素性黄化、药害/肥害、滴灌不均）；6) 确认作业风速窗口与具体可作业时段（按现场规程），并提供P-003在电量18%下的可续航作业时长；7) 药剂、剂量、安全间隔期与稀释倍数知识库未收录，须转人工按当地登记标准核定。"
+}

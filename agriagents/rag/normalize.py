@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 import urllib.parse
 from dataclasses import dataclass, field
@@ -31,6 +32,26 @@ AGROVOC_SPARQL_ENDPOINT = "https://agrovoc.fao.org/sparql"
 # AGROVOC 是 40+ 语言的叙词表，但本场景只需要这三类。
 # ``la`` 是拉丁学名——它对不上海量语料，但在植物病理里是唯一无歧义的名字。
 _AGROVOC_LANGS = ("en", "zh", "la")
+
+# 有限的症状表述对齐，只扩展观察描述，不从作物名推断病害。
+# 查询侧常量，不改已建库的术语/向量；诊断仍需作物与鉴别证据约束。
+_SYMPTOM_EQUIVALENTS = (
+    ("water-soaked", "water soaked", "水浸状", "水渍状"),
+    ("white mold", "white mould", "白色霉层", "白色霉状物"),
+    ("angular spots", "angular lesions", "多角形病斑", "角斑"),
+    ("dark green", "暗绿色"),
+    ("chlorosis", "yellowing", "黄化"),
+    ("powdery growth", "白色粉层"),
+)
+
+
+def _label_pattern(label: str) -> str:
+    pattern = re.escape(label)
+    if label[0].isascii() and label[0].isalnum():
+        pattern = r"(?<![a-z0-9])" + pattern
+    if label[-1].isascii() and label[-1].isalnum():
+        pattern += r"(?![a-z0-9])"
+    return pattern
 
 _AGROVOC_QUERY = """PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 SELECT DISTINCT ?c ?pref ?lang WHERE {
@@ -58,7 +79,9 @@ class TermRecord:
 
     def all_labels(self) -> list[str]:
         out: list[str] = []
-        for values in self.labels.values():
+        for lang, values in self.labels.items():
+            if lang == "crop":
+                continue  # 旧版卡片宿主字段是属性，不是疾病的别名。
             for value in values:
                 if value and value not in out:
                     out.append(value)
@@ -89,12 +112,29 @@ class TermNormalizer:
         self.records: dict[str, TermRecord] = {}
         self._index: dict[str, str] = {}
         for record in records:
-            self.records[record.term_id] = record
+            existing = self.records.get(record.term_id)
+            if existing is None:
+                self.records[record.term_id] = TermRecord(
+                    term_id=record.term_id, pref=record.pref,
+                    labels={lang: list(values) for lang, values in record.labels.items()},
+                    sources=list(record.sources),
+                )
+                continue
+            for lang, labels in record.labels.items():
+                bucket = existing.labels.setdefault(lang, [])
+                for label in labels:
+                    if label not in bucket:
+                        bucket.append(label)
+            for source in record.sources:
+                if source not in existing.sources:
+                    existing.sources.append(source)
         self._rebuild()
 
     def _rebuild(self) -> None:
         self._index.clear()
-        for record in self.records.values():
+        # 明确的作物条目优先于历史病害条目中混入的宿主标签。
+        records = sorted(self.records.values(), key=lambda rec: not rec.term_id.startswith("crop:"))
+        for record in records:
             for label in [record.pref, *record.all_labels()]:
                 key = normalize(label)
                 if key and len(key) >= 2:
@@ -110,7 +150,7 @@ class TermNormalizer:
         record = self.lookup(term)
         return record.term_id if record else None
 
-    def expand(self, term: str, *, langs: Iterable[str] = ("zh", "en")) -> list[str]:
+    def expand(self, term: str, *, langs: Iterable[str] = ("zh", "en", "la")) -> list[str]:
         """返回该词的全部等价写法（含原词）。用于跨语言查询改写。"""
         record = self.lookup(term)
         if record is None:
@@ -133,18 +173,32 @@ class TermNormalizer:
         "番茄晚疫病 Phytophthora infestans late blight tomato"，
         就永远命中不了只有英文的 PlantInquiryVQA 卡片。
         """
-        if not query:
+        if not query or max_terms <= 0:
             return query
         haystack = normalize(query)
         extra: list[str] = []
+        for equivalents in _SYMPTOM_EQUIVALENTS:
+            if any(re.search(_label_pattern(label), haystack) for label in equivalents):
+                extra.extend(label for label in equivalents if label not in haystack and label not in extra)
+        used: set[str] = set()
+        spans: list[tuple[int, int]] = []
         # 长词优先，避免"番茄"抢先匹配掉"番茄晚疫病"
         for key in sorted(self._index, key=len, reverse=True):
-            if len(key) < 3 or key not in haystack:
+            if len(key) < 2 or key not in haystack:
                 continue
+            # rust 不能匹配 trust；中文二字作物“番茄”“黄瓜”仍能展开。
+            pattern = _label_pattern(key)
+            matches = [match for match in re.finditer(pattern, haystack)
+                       if not any(match.start() < end and match.end() > start for start, end in spans)]
+            term_id = self._index[key]
+            if not matches or term_id in used:
+                continue
+            used.add(term_id)
+            spans.extend((match.start(), match.end()) for match in matches)
             for label in self.expand(key):
                 if label and label not in extra and normalize(label) not in haystack:
                     extra.append(label)
-            if len(extra) >= max_terms * 3:
+            if len(used) >= max_terms:
                 break
         if not extra:
             return query
@@ -187,16 +241,25 @@ class TermNormalizer:
 def from_knowledge_graph(kg, *, source: str = "cropdp") -> list[TermRecord]:
     """从 CropDP-KG 抽中↔英对齐。这是离线主力来源。"""
     records: list[TermRecord] = []
+    crops: dict[str, TermRecord] = {}
     for entity in kg.entities.values():
         labels: dict[str, list[str]] = {"zh": [entity.name], "en": list(entity.aliases)}
         if entity.scientific:
             labels["la"] = [entity.scientific]
-        # 危害作物也纳入标准化：作物名是查询里最高频的实体
-        if entity.crops:
-            labels.setdefault("zh", [])
-            for crop in entity.crops:
-                if crop and crop not in labels["zh"]:
-                    labels["zh"].append(crop)
+        # 宿主是独立实体。“番茄”绝不是“番茄晚疫病”的同义词。
+        # 只在中英列表可一一对应时配对，否则保留单语，不猜测跨语言对应。
+        english = entity.crops_en if len(entity.crops_en) == len(entity.crops) else []
+        for idx, crop in enumerate(entity.crops):
+            if not crop:
+                continue
+            crop_en = english[idx] if english else ""
+            term_id = f"crop:{normalize(crop_en or crop)}"
+            crop_record = crops.setdefault(term_id, TermRecord(
+                term_id=term_id, pref=crop, labels={"zh": [], "en": []}, sources=[source],
+            ))
+            for lang, value in (("zh", crop), ("en", crop_en)):
+                if value and value not in crop_record.labels[lang]:
+                    crop_record.labels[lang].append(value)
         records.append(
             TermRecord(
                 term_id=f"{source}:{entity.name}",
@@ -205,7 +268,7 @@ def from_knowledge_graph(kg, *, source: str = "cropdp") -> list[TermRecord]:
                 sources=[source],
             )
         )
-    return records
+    return [*records, *crops.values()]
 
 
 def from_disease_cards(cards: Iterable[dict], *, source: str = "plantinquiry") -> list[TermRecord]:
@@ -223,8 +286,6 @@ def from_disease_cards(cards: Iterable[dict], *, source: str = "plantinquiry") -
         labels: dict[str, list[str]] = {"en": en}
         if condition.get("scientific_name"):
             labels["la"] = [condition["scientific_name"]]
-        if crop.get("common_name"):
-            labels["crop"] = [crop["common_name"]]
         records.append(
             TermRecord(
                 term_id=disease_id,
@@ -233,6 +294,12 @@ def from_disease_cards(cards: Iterable[dict], *, source: str = "plantinquiry") -
                 sources=[source],
             )
         )
+        if crop.get("common_name"):
+            crop_name = crop["common_name"]
+            records.append(TermRecord(
+                term_id=f"crop:{normalize(crop_name)}", pref=crop_name,
+                labels={"en": [crop_name]}, sources=[source],
+            ))
     return records
 
 

@@ -5,24 +5,26 @@
 
 from __future__ import annotations
 
-from agriagents.rag.sources import cropdp, plantinquiry, qa_en, qa_zh, seed
+from agriagents.rag.sources import cropdp, curated, local, plantinquiry, qa_en, qa_zh, seed
 from agriagents.rag.sources.base import IngestContext, SourceResult
 
 # 键是 ``--sources`` 命令行能用的名字
 SOURCES = {
     seed.NAME: seed,
+    curated.NAME: curated,
     cropdp.NAME: cropdp,
     plantinquiry.NAME: plantinquiry,
     qa_en.NAME: qa_en,
     qa_zh.NAME: qa_zh,
+    local.NAME: local,
 }
 
-# 默认只建内置种子库：几秒完成，够把 RAG 链路端到端跑通。
-# 要用真实知识库，显式指定 --sources cropdp,plantinquiry / --all。
-DEFAULT_ORDER = (seed.NAME,)
 # 全量构建顺序。cropdp 与 plantinquiry 先跑：它们的产物（图谱、卡片）
 # 是实体标准化的输入，后面的源依赖标准化结果做跨语言改写。
-FULL_ORDER = (seed.NAME, cropdp.NAME, plantinquiry.NAME, qa_en.NAME, qa_zh.NAME)
+FULL_ORDER = (seed.NAME, curated.NAME, cropdp.NAME, plantinquiry.NAME, qa_en.NAME, qa_zh.NAME)
+# 默认生产构建包含全部已接入公开源；快速演示请显式 --sources seed。
+# 配置自有资料时 build 脚本自动追加 local。
+DEFAULT_ORDER = FULL_ORDER
 
 __all__ = ["SOURCES", "DEFAULT_ORDER", "FULL_ORDER", "IngestContext", "SourceResult", "describe_all", "resolve"]
 
@@ -36,7 +38,8 @@ def resolve(names) -> list:
         module = SOURCES.get(name)
         if module is None:
             raise KeyError(f"未知语料源 {name!r}；可选：{', '.join(SOURCES)}")
-        out.append(module)
+        if module not in out:
+            out.append(module)
     return out
 
 

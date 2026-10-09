@@ -209,7 +209,7 @@ def test_all_knowledge_tools_reach_the_local_knowledge_base(routed_kb):
         ("get_treatment_options", ("番茄晚疫病",), "晚疫病"),
         ("query_agronomy_knowledge", ("大棚连作障碍怎么缓解",), None),
         ("query_soil_reference", ("FIELD-07",), None),
-        ("query_equipment_manual", ("irrigation_valve", "E04"), None),
+        ("query_equipment_manual", ("DEMO-VALVE-V1", "E04"), None),
     ]
 
     for tool_name, args, expect in cases:
