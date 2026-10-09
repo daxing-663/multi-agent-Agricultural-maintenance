@@ -62,21 +62,26 @@ def load_cards(ctx: IngestContext) -> list[dict]:
 
 def build(ctx: IngestContext) -> SourceResult:
     cards = load_cards(ctx)
+    if not cards:
+        raise ValueError("PlantInquiryVQA 未读取到任何卡片")
     docs: list[Doc] = []
     for card in cards:
         if ctx.limit is not None and len(docs) >= ctx.limit:
             break
         docs.extend(card_docs(card))
     return SourceResult(
-        docs=docs,
+        docs=docs[:ctx.limit] if ctx.limit is not None else docs,
         artifacts={"cards": cards},
         notes=[f"卡片 {len(cards)} 张，文档 {len(docs)} 条"],
+        details={"cards": len(cards), "source_ref": _URL},
     )
 
 
 def card_docs(card: dict) -> list[Doc]:
     """把一张卡片拆成若干语义面文档。"""
-    disease_id = card.get("disease_id") or "unknown"
+    disease_id = card.get("disease_id")
+    if not isinstance(disease_id, str) or not disease_id.strip():
+        raise ValueError("PlantInquiryVQA 卡片缺少 disease_id")
     crop = card.get("crop") or {}
     condition = card.get("condition") or {}
     pathogen = condition.get("pathogen") or {}
@@ -87,6 +92,13 @@ def card_docs(card: dict) -> list[Doc]:
     issue_type = card.get("issue_type") or ""
 
     base_meta = {
+        "dataset": "PlantInquiryVQA",
+        "source_ref": HOMEPAGE + "/blob/main/diseases_knowledge_base/all_cards.jsonl",
+        "citation": f"PlantInquiryVQA, disease_id={disease_id}",
+        "record_id": disease_id,
+        "schema_version": card.get("schema_version", ""),
+        "evidence_status": "public_disease_card",
+        "project_human_verified": False,
         "disease_id": disease_id,
         "disease": disease_name,
         "crop": crop_name,

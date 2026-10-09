@@ -11,6 +11,8 @@
 from __future__ import annotations
 
 import os
+import hashlib
+import itertools
 from dataclasses import dataclass, field
 from typing import Callable, Iterator
 
@@ -40,27 +42,36 @@ class SourceResult:
     docs: list[Doc] = field(default_factory=list)
     artifacts: dict = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
+    details: dict = field(default_factory=dict)
 
 
-def dedupe_docs(docs: Iterator[Doc] | list[Doc], *, max_chars: int = 2000) -> list[Doc]:
-    """按 ``text`` 前缀去重并截断。
+def dedupe_docs(docs: Iterator[Doc] | list[Doc], *, max_chars: int | None = None) -> list[Doc]:
+    """按完整正文去重；重复条目的来源保存在 ``also_seen_in``。
 
     公开问答集里重复率高得离谱——同一个问题被改写十几种问法是常态。
     全部入索引只会让 top_k 被近重复条目占满，挤掉真正互补的证据。
     """
-    seen: set[str] = set()
+    seen: dict[str, Doc] = {}
     out: list[Doc] = []
     for doc in docs:
         text = (doc.text or "").strip()
         if not text:
             continue
-        if len(text) > max_chars:
+        key = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        if key in seen:
+            previous = seen[key]
+            previous.meta.setdefault("also_seen_in", []).append({
+                "doc_id": doc.doc_id,
+                "source_ref": doc.meta.get("source_ref", ""),
+                "dataset": doc.meta.get("dataset", ""),
+            })
+            continue
+        if max_chars is not None and len(text) > max_chars:
+            doc.meta["original_length"] = len(text)
+            doc.meta["text_truncated"] = True
             text = text[:max_chars]
             doc.text = text
-        key = text[:400]
-        if key in seen:
-            continue
-        seen.add(key)
+        seen[key] = doc
         out.append(doc)
     return out
 
@@ -89,7 +100,10 @@ def load_hf_rows(
     mode: str
     try:
         hf_download_parquet(dataset, parquet_path, config=config, split=split, force=ctx.force)
-        rows = iter_parquet(parquet_path, columns=columns)
+        # iter_parquet 是生成器：须提前读取一行才能在这里捕获缺依赖/损坏文件。
+        iterator = iter(iter_parquet(parquet_path, columns=columns))
+        first = next(iterator, None)
+        rows = itertools.chain(()) if first is None else itertools.chain((first,), iterator)
         mode = f"parquet:{os.path.getsize(parquet_path) // 1024}KB"
     except ImportError as exc:
         ctx.log(f"    · 缺少 pyarrow，改用分页端点（慢）：{exc}")

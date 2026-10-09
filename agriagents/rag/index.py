@@ -5,7 +5,7 @@
 召回到早疫病），纯关键词又对"叶子发黄"↔"叶片黄化"这种同义改写无能为力。
 两者互补，所以融合。
 
-**为什么是 RRF 而不是加权求和**：BM25 分数无上界、余弦在 [0,1]，
+**为什么是 RRF 而不是加权求和**：BM25 分数无上界、余弦在 [-1,1]，
 加权求和需要每次调参且对语料规模敏感。RRF 只看排名，天然尺度无关，
 在混合检索里是更稳的默认选择。``rrf_k`` 越小越强调头部结果。
 
@@ -28,9 +28,9 @@ import os
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Iterable, Iterator, Sequence
+from typing import Iterable, Iterator, Mapping, Sequence
 
-from agriagents.rag.text import normalize, tokenize
+from agriagents.rag.text import normalize, query_terms, tokenize
 
 # BM25 参数。k1 控制词频饱和，b 控制长度归一。
 # 1.5 / 0.75 是文献里的通用默认值，对短文本（症状、问答对）表现稳定。
@@ -43,13 +43,14 @@ _RRF_K = 60
 MANIFEST_NAME = "manifest.json"
 CORPUS_NAME = "corpus.jsonl"
 VECTORS_NAME = "vectors.npy"
+_MANIFEST_RESERVED = {"version", "built_at", "documents", "embedder", "dim", "by_source", "by_kind", "dense"}
 
 
 @dataclass
 class Doc:
     """一条可检索的知识块。
 
-    ``text`` 是**唯一**被索引的字段：分词、嵌入都只看它。
+    ``title`` 与 ``text`` 参与关键词索引；嵌入只看 ``text``。
     ``meta`` 存放结构化字段（作物、病原、危害部位、发生条件…），
     供调用方做过滤与拼装回答，不参与打分——这样调整元数据不会让索引失效。
     """
@@ -98,6 +99,7 @@ class Hit:
     bm25_rank: int | None = None
     dense_rank: int | None = None
     bm25_score: float = 0.0
+    dense_score: float = 0.0
 
     @property
     def how(self) -> str:
@@ -141,7 +143,7 @@ class RagIndex:
 
         lengths: list[int] = []
         for idx, doc in enumerate(self.docs):
-            counts = Counter(tokenize(doc.text))
+            counts = Counter(tokenize(f"{doc.title}\n{doc.text}"))
             lengths.append(sum(counts.values()) or 1)
             for term, tf in counts.items():
                 self._postings[term].append((idx, tf))
@@ -180,24 +182,48 @@ class RagIndex:
     # 检索
     # ------------------------------------------------------------------
 
-    def _allowed(self, sources, kinds, lang) -> set[int] | None:
+    @staticmethod
+    def _values(value) -> set[str]:
+        values = value if isinstance(value, (list, tuple, set, frozenset)) else [value]
+        return {normalize(str(item)) for item in values if item is not None}
+
+    @classmethod
+    def _metadata_values(cls, meta: dict, key: str) -> set[str]:
+        values = cls._values(meta.get(key))
+        if key == "dataset":
+            # 去重仅合并正文，副数据集出处仍是这个规范文档的真实来源。
+            for origin in meta.get("also_seen_in") or []:
+                if isinstance(origin, dict):
+                    values |= cls._values(origin.get("dataset"))
+        return values
+
+    def _allowed(self, sources, kinds, lang, meta_filters=None, allowed_doc_ids=None) -> set[int] | None:
         """先按元数据圈定候选集，再做排序。
 
         必须先过滤再排序：若先取 top_k 再过滤，会得到"不足 k 条"甚至空结果，
         而库里其实有符合条件的内容。这也是向量库需要 pre-filter 的同一个问题。
         """
-        if not sources and not kinds and not lang:
+        if sources is None and kinds is None and lang is None and not meta_filters and allowed_doc_ids is None:
             return None
-        src = set(sources) if sources else None
-        knd = set(kinds) if kinds else None
-        langs = set(lang) if lang else None
+        def values(items):
+            return {items} if isinstance(items, str) else set(items)
+        src = values(sources) if sources is not None else None
+        knd = values(kinds) if kinds is not None else None
+        langs = values(lang) if lang is not None else None
+        ids = values(allowed_doc_ids) if allowed_doc_ids is not None else None
+        filters = {key: self._values(value) for key, value in (meta_filters or {}).items()}
         out = set()
         for idx, doc in enumerate(self.docs):
+            if ids is not None and doc.doc_id not in ids:
+                continue
             if src is not None and doc.source not in src:
                 continue
             if knd is not None and doc.kind not in knd:
                 continue
             if langs is not None and doc.lang not in langs:
+                continue
+            if any(not (wanted & self._metadata_values(doc.meta, key))
+                   for key, wanted in filters.items()):
                 continue
             out.add(idx)
         return out
@@ -211,26 +237,44 @@ class RagIndex:
         sources: Iterable[str] | None = None,
         kinds: Iterable[str] | None = None,
         lang: Iterable[str] | None = None,
+        meta_filters: Mapping[str, object] | None = None,
+        allowed_doc_ids: Iterable[str] | None = None,
+        min_dense_score: float = 0.15,
         embedder=None,
     ) -> list[Hit]:
-        """混合检索。``embedder`` 只在索引带向量且与查询编码器一致时才需要传。"""
-        if not self.docs:
+        """混合检索；所有过滤条件在候选截断前生效。
+
+        ``meta_filters`` 键间 AND、单键多值 OR，规范化后精确匹配元数据；
+        ``allowed_doc_ids`` 供领域门面表达复杂的作物/设备约束，空集拒绝全部。
+        分数是排序依据，不是诊断概率。哈希向量必须有关键词证据才能参与。
+        """
+        informative = query_terms(query)
+        if not self.docs or top_k <= 0 or candidate_k <= 0 or not informative:
             return []
-        allowed = self._allowed(sources, kinds, lang)
+        allowed = self._allowed(sources, kinds, lang, meta_filters, allowed_doc_ids)
         if allowed is not None and not allowed:
             return []
 
         bm25 = self._bm25_scores(query, allowed)
+        lexical = set()
+        for term in informative:
+            lexical.update(idx for idx, _ in self._postings.get(term, ()))
+        if allowed is not None:
+            lexical &= allowed
+        # 完全没有领域词面证据的查询不应仅凭稠密余弦被强行分配一个答案。
+        # 已知术语的中英/同义改写由门面的 TermNormalizer 补足。
+        if not lexical:
+            return []
+        bm25 = {idx: score for idx, score in bm25.items() if idx in lexical}
         bm25_ranked = sorted(bm25.items(), key=lambda kv: (-kv[1], kv[0]))[:candidate_k]
 
         dense_ranked: list[tuple[int, float]] = []
         if self.vectors is not None and embedder is not None:
-            import numpy as np
-
             # 维度守卫：编码器与建库时用的若不是同一个模型，直接跳过稠密召回。
             # 否则 numpy 会抛 matmul 维度错误，把整次检索连 BM25 一起带崩——
             # 而这里完全可以从容降级：BM25 结果仍然是可用的。
-            if getattr(embedder, "dim", None) not in (None, self.vectors.shape[1]):
+            if (getattr(embedder, "dim", None) not in (None, self.vectors.shape[1])
+                    or (self.embedder_name and getattr(embedder, "name", self.embedder_name) != self.embedder_name)):
                 embedder = None
         if embedder is not None and self.vectors is not None:
             import numpy as np
@@ -241,12 +285,16 @@ class RagIndex:
                 mask = np.zeros(len(self.docs), dtype=bool)
                 mask[list(allowed)] = True
                 sims = np.where(mask, sims, -np.inf)
-            order = np.argsort(-sims)[:candidate_k]
-            dense_ranked = [(int(i), float(sims[i])) for i in order if np.isfinite(sims[i])]
+            if (self.embedder_name or getattr(embedder, "name", "")).startswith("hashing-"):
+                sims = np.where(np.array([i in lexical for i in range(len(self.docs))]), sims, -np.inf)
+            order = np.argsort(-sims, kind="stable")[:candidate_k]
+            dense_ranked = [(int(i), float(sims[i])) for i in order
+                            if np.isfinite(sims[i]) and sims[i] > max(0.0, min_dense_score)]
 
         fused: dict[int, float] = defaultdict(float)
         bm25_rank_of: dict[int, int] = {}
         dense_rank_of: dict[int, int] = {}
+        dense_score_of = dict(dense_ranked)
         for rank, (doc_idx, _) in enumerate(bm25_ranked):
             fused[doc_idx] += 1.0 / (_RRF_K + rank + 1)
             bm25_rank_of[doc_idx] = rank
@@ -261,10 +309,11 @@ class RagIndex:
                 bm25_rank=bm25_rank_of.get(doc_idx),
                 dense_rank=dense_rank_of.get(doc_idx),
                 bm25_score=bm25.get(doc_idx, 0.0),
+                dense_score=dense_score_of.get(doc_idx, 0.0),
             )
             for doc_idx, score in fused.items()
         ]
-        hits.sort(key=lambda h: (-h.score, h.doc.doc_id))
+        hits.sort(key=lambda h: (normalize(h.doc.title) != normalize(query), -h.score, h.doc.doc_id))
         return hits[:top_k]
 
     def profile(self) -> dict:
@@ -336,10 +385,13 @@ class RagIndex:
                 import numpy as np
 
                 vectors = np.load(vector_path)
-                if len(vectors) != len(docs):
-                    # 语料与向量条数不一致：宁可退化成 BM25，也不能拿错位的向量去检索
+                if (vectors.ndim != 2 or vectors.shape[0] != len(docs) or vectors.shape[1] == 0
+                        or not np.issubdtype(vectors.dtype, np.floating)
+                        or not np.isfinite(vectors).all()
+                        or (manifest.get("dim") is not None and manifest["dim"] != vectors.shape[1])):
+                    # 形状、条数或数值不一致：不能用错位/损坏的向量，保留 BM25。
                     vectors = None
-            except ImportError:
+            except (ImportError, ValueError, TypeError, OSError):
                 vectors = None
 
         index = cls(
@@ -347,6 +399,7 @@ class RagIndex:
             vectors,
             embedder_name=manifest.get("embedder"),
             built_at=manifest.get("built_at"),
+            extra={key: value for key, value in manifest.items() if key not in _MANIFEST_RESERVED},
         )
         index._rebuild_bm25()
         return index
@@ -361,6 +414,8 @@ class RagIndex:
         progress: callable | None = None,
     ) -> "RagIndex":
         """用嵌入后端构建带向量的索引；``embedder`` 为 None 时退化为纯 BM25。"""
+        if batch_size <= 0:
+            raise ValueError("batch_size 必须为正整数")
         docs = list(docs)
         vectors = None
         embedder_name = None
@@ -368,14 +423,29 @@ class RagIndex:
         if embedder is not None and docs:
             import numpy as np
 
-            chunks: list = []
             total = len(docs)
+            # Transformer 按批内最长文本补齐；混排长短文档会浪费大量计算。
+            # 编码顺序按长度分组，但必须写回原位置，保持 corpus 与向量行身份一致。
+            token_lengths = getattr(embedder, "token_lengths", None)
+            lengths = token_lengths([doc.text for doc in docs]) if token_lengths else [len(doc.text) for doc in docs]
+            if len(lengths) != total:
+                raise ValueError("编码器返回的文本长度条数不匹配")
+            order = sorted(range(total), key=lambda idx: lengths[idx])
             for start in range(0, total, batch_size):
-                batch = [d.text for d in docs[start : start + batch_size]]
-                chunks.append(embedder.encode(batch))
+                positions = order[start : start + batch_size]
+                batch = [docs[idx].text for idx in positions]
+                encoded = np.asarray(embedder.encode(batch), dtype="float32")
+                if (encoded.ndim != 2 or encoded.shape[0] != len(positions)
+                        or encoded.shape[1] == 0 or not np.isfinite(encoded).all()):
+                    raise ValueError("编码器返回的向量条数、形状或数值不合法")
+                if (getattr(embedder, "dim", encoded.shape[1]) not in (None, encoded.shape[1])
+                        or (vectors is not None and encoded.shape[1] != vectors.shape[1])):
+                    raise ValueError("编码器返回的向量维度不一致")
+                if vectors is None:
+                    vectors = np.empty((total, encoded.shape[1]), dtype="float32")
+                vectors[positions] = encoded
                 if progress:
                     progress(min(start + batch_size, total), total)
-            vectors = np.vstack(chunks).astype("float32")
             embedder_name = getattr(embedder, "name", repr(embedder))
 
         index = cls(docs, vectors, embedder_name=embedder_name)

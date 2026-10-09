@@ -1,0 +1,3820 @@
+{
+  "schema_version": 1,
+  "index_dir": "C:\\Users\\colorful\\.agriagents\\rag",
+  "corpus_sha256": "7b0bc6753492b49395bff16d35a28dbb8a2dd3cff4c1054c9088ee010471f8aa",
+  "mode": "offline_bm25_dense_no_llm_no_download",
+  "evaluated_embedder": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "scope": "Deterministic source/kind title self-retrieval, metadata filters, domain regression and fixed natural-language relevance gold; not an agronomic factual accuracy benchmark.",
+  "parameters": {
+    "samples_per_group": 3,
+    "top_k": 5,
+    "expected_sources": [
+      "seed",
+      "curated",
+      "cropdp",
+      "plantinquiry",
+      "qa_en",
+      "qa_zh"
+    ]
+  },
+  "profile": {
+    "documents": 51124,
+    "by_source": {
+      "qa_en": 40583,
+      "qa_zh": 5993,
+      "cropdp": 2578,
+      "plantinquiry": 1946,
+      "seed": 22,
+      "curated": 2
+    },
+    "by_kind": {
+      "qa_pair": 46579,
+      "kg_entity": 2578,
+      "symptom": 961,
+      "disease_card": 206,
+      "management": 206,
+      "severity": 204,
+      "environment": 193,
+      "diagnosis": 187,
+      "equipment_manual": 4,
+      "soil_reference": 3,
+      "agronomy": 2,
+      "safety_rule": 1
+    },
+    "dense": true,
+    "embedder": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "built_at": "2026-09-29T06:13:07+00:00"
+  },
+  "summary": {
+    "passed": 133,
+    "total": 133,
+    "all_passed": true,
+    "dense_hits": 186,
+    "title_recall_at_k": 1.0,
+    "title_mrr": 1.0,
+    "natural_queries": {
+      "positive_cases": 10,
+      "hit_at_3": 1.0,
+      "hit_at_1": 0.9,
+      "declared_crop_conflicts": 0,
+      "baseline_hit_at_3": 0.444444,
+      "baseline_hit_at_1": 0.111111,
+      "baseline_positive_cases": 9,
+      "coverage_gap_cases": 0,
+      "annotation_scope": "Reviewed for query relevance; not agronomic fact verification."
+    },
+    "by_category": {
+      "domain_negative": {
+        "passed": 9,
+        "total": 9
+      },
+      "domain_positive": {
+        "passed": 10,
+        "total": 10
+      },
+      "index_negative": {
+        "passed": 9,
+        "total": 9
+      },
+      "integrity": {
+        "passed": 4,
+        "total": 4
+      },
+      "metadata_filter": {
+        "passed": 35,
+        "total": 35
+      },
+      "natural_query": {
+        "passed": 10,
+        "total": 10
+      },
+      "source_presence": {
+        "passed": 6,
+        "total": 6
+      },
+      "title_retrieval": {
+        "passed": 50,
+        "total": 50
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "integrity:nonempty",
+      "category": "integrity",
+      "passed": true,
+      "count": 51124
+    },
+    {
+      "id": "source:seed",
+      "category": "source_presence",
+      "passed": true,
+      "source": "seed"
+    },
+    {
+      "id": "source:curated",
+      "category": "source_presence",
+      "passed": true,
+      "source": "curated"
+    },
+    {
+      "id": "source:cropdp",
+      "category": "source_presence",
+      "passed": true,
+      "source": "cropdp"
+    },
+    {
+      "id": "source:plantinquiry",
+      "category": "source_presence",
+      "passed": true,
+      "source": "plantinquiry"
+    },
+    {
+      "id": "source:qa_en",
+      "category": "source_presence",
+      "passed": true,
+      "source": "qa_en"
+    },
+    {
+      "id": "source:qa_zh",
+      "category": "source_presence",
+      "passed": true,
+      "source": "qa_zh"
+    },
+    {
+      "id": "integrity:unique_ids",
+      "category": "integrity",
+      "passed": true,
+      "duplicates": []
+    },
+    {
+      "id": "integrity:nonempty_text",
+      "category": "integrity",
+      "passed": true,
+      "empty_doc_ids": []
+    },
+    {
+      "id": "title:cropdp:三化螟:0",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "cropdp",
+      "kind": "kg_entity",
+      "query": "三化螟",
+      "expected_doc_ids": [
+        "cropdp:三化螟:0"
+      ],
+      "actual_doc_ids": [
+        "cropdp:三化螟:0",
+        "cropdp:甘蓝水肿病:0",
+        "cropdp:二化螟:0",
+        "cropdp:枣果锈病:0",
+        "cropdp:凹缘菱纹叶蝉:0"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "cropdp:三化螟:0",
+          "bm25_rank": 0,
+          "dense_rank": null,
+          "bm25_score": 57.140563274662924,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "cropdp:甘蓝水肿病:0",
+          "bm25_rank": null,
+          "dense_rank": 0,
+          "bm25_score": 0.0,
+          "dense_score": 0.588962733745575
+        },
+        {
+          "doc_id": "cropdp:二化螟:0",
+          "bm25_rank": 1,
+          "dense_rank": null,
+          "bm25_score": 30.063604997894224,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "cropdp:枣果锈病:0",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.5670064687728882
+        },
+        {
+          "doc_id": "cropdp:凹缘菱纹叶蝉:0",
+          "bm25_rank": null,
+          "dense_rank": 2,
+          "bm25_score": 0.0,
+          "dense_score": 0.5640617609024048
+        }
+      ]
+    },
+    {
+      "id": "title:cropdp:粟缘蝽:0",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "cropdp",
+      "kind": "kg_entity",
+      "query": "粟缘蝽",
+      "expected_doc_ids": [
+        "cropdp:粟缘蝽:0"
+      ],
+      "actual_doc_ids": [
+        "cropdp:粟缘蝽:0",
+        "cropdp:山药镰刀菌枯萎病:0",
+        "cropdp:枣果锈病:0",
+        "cropdp:稻棘缘蝽:0",
+        "cropdp:蕹菜(茄匐柄霉)叶斑病:0"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "cropdp:粟缘蝽:0",
+          "bm25_rank": 0,
+          "dense_rank": null,
+          "bm25_score": 63.66598163259941,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "cropdp:山药镰刀菌枯萎病:0",
+          "bm25_rank": null,
+          "dense_rank": 0,
+          "bm25_score": 0.0,
+          "dense_score": 0.7512815594673157
+        },
+        {
+          "doc_id": "cropdp:枣果锈病:0",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.7346757650375366
+        },
+        {
+          "doc_id": "cropdp:稻棘缘蝽:0",
+          "bm25_rank": 1,
+          "dense_rank": null,
+          "bm25_score": 38.14291889689637,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "cropdp:蕹菜(茄匐柄霉)叶斑病:0",
+          "bm25_rank": null,
+          "dense_rank": 2,
+          "bm25_score": 0.0,
+          "dense_score": 0.7288947105407715
+        }
+      ]
+    },
+    {
+      "id": "title:cropdp:龟蜡蚧:0",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "cropdp",
+      "kind": "kg_entity",
+      "query": "龟蜡蚧",
+      "expected_doc_ids": [
+        "cropdp:龟蜡蚧:0"
+      ],
+      "actual_doc_ids": [
+        "cropdp:龟蜡蚧:0",
+        "cropdp:菠菜猝倒病:0",
+        "cropdp:日本龟蜡蚧:0",
+        "cropdp:毛尾地种蝇:0",
+        "cropdp:红蜡蚧:0"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "cropdp:龟蜡蚧:0",
+          "bm25_rank": 0,
+          "dense_rank": null,
+          "bm25_score": 76.78751497443524,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "cropdp:菠菜猝倒病:0",
+          "bm25_rank": null,
+          "dense_rank": 0,
+          "bm25_score": 0.0,
+          "dense_score": 0.5876360535621643
+        },
+        {
+          "doc_id": "cropdp:日本龟蜡蚧:0",
+          "bm25_rank": 1,
+          "dense_rank": null,
+          "bm25_score": 60.814698785360775,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "cropdp:毛尾地种蝇:0",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.5662117600440979
+        },
+        {
+          "doc_id": "cropdp:红蜡蚧:0",
+          "bm25_rank": 2,
+          "dense_rank": null,
+          "bm25_score": 29.27089175405773,
+          "dense_score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "title:curated:cucumber-transplant-fertigation",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "curated",
+      "kind": "agronomy",
+      "query": "温室黄瓜移栽初期的水肥查证要点（UAF 来源释义）",
+      "expected_doc_ids": [
+        "curated:cucumber-transplant-fertigation"
+      ],
+      "actual_doc_ids": [
+        "curated:cucumber-transplant-fertigation",
+        "curated:greenhouse-perlite-fertigation"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "curated:cucumber-transplant-fertigation",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 148.5995887692959,
+          "dense_score": 0.6955510973930359
+        },
+        {
+          "doc_id": "curated:greenhouse-perlite-fertigation",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 61.72174502993801,
+          "dense_score": 0.662408709526062
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:curated:cucumber-transplant-fertigation",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "curated",
+      "kind": "agronomy",
+      "query": "温室黄瓜移栽初期的水肥查证要点（UAF 来源释义）",
+      "meta_filters": {
+        "crop": "黄瓜"
+      },
+      "expected_doc_ids": [
+        "curated:cucumber-transplant-fertigation"
+      ],
+      "actual_doc_ids": [
+        "curated:cucumber-transplant-fertigation"
+      ]
+    },
+    {
+      "id": "title:curated:greenhouse-perlite-fertigation",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "curated",
+      "kind": "agronomy",
+      "query": "温室珍珠岩无土栽培的定植灌溉检查（UF/IFAS 来源释义）",
+      "expected_doc_ids": [
+        "curated:greenhouse-perlite-fertigation"
+      ],
+      "actual_doc_ids": [
+        "curated:greenhouse-perlite-fertigation",
+        "curated:cucumber-transplant-fertigation"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "curated:greenhouse-perlite-fertigation",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 172.38238483729586,
+          "dense_score": 0.6462717056274414
+        },
+        {
+          "doc_id": "curated:cucumber-transplant-fertigation",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 72.99543157958456,
+          "dense_score": 0.45562848448753357
+        }
+      ]
+    },
+    {
+      "id": "title:plantinquiry:apple.disease_fungal.black_rot:lookalikes",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "diagnosis",
+      "query": "apple·black rot",
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.black_rot:lookalikes"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.black_rot:lookalikes",
+        "plantinquiry:apple.disease_fungal.scab:lookalikes",
+        "plantinquiry:grape.disease_fungal.black_rot:lookalikes",
+        "plantinquiry:grape.disease_fungal.isariopsis_leaf_spot:lookalikes",
+        "plantinquiry:grape.disease_fungal.anthracnose:lookalikes"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.black_rot:lookalikes",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 22.454772537266848,
+          "dense_score": 0.7674242258071899
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.scab:lookalikes",
+          "bm25_rank": 1,
+          "dense_rank": 3,
+          "bm25_score": 19.473352943265333,
+          "dense_score": 0.6056807041168213
+        },
+        {
+          "doc_id": "plantinquiry:grape.disease_fungal.black_rot:lookalikes",
+          "bm25_rank": 2,
+          "dense_rank": 4,
+          "bm25_score": 14.422437133178622,
+          "dense_score": 0.6045228242874146
+        },
+        {
+          "doc_id": "plantinquiry:grape.disease_fungal.isariopsis_leaf_spot:lookalikes",
+          "bm25_rank": 8,
+          "dense_rank": 1,
+          "bm25_score": 12.233541715447657,
+          "dense_score": 0.6152219176292419
+        },
+        {
+          "doc_id": "plantinquiry:grape.disease_fungal.anthracnose:lookalikes",
+          "bm25_rank": 7,
+          "dense_rank": 2,
+          "bm25_score": 12.339513139548377,
+          "dense_score": 0.6067253351211548
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:apple.disease_fungal.black_rot:lookalikes",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "diagnosis",
+      "query": "apple·black rot",
+      "meta_filters": {
+        "crop": "apple"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.black_rot:lookalikes"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.black_rot:lookalikes",
+        "plantinquiry:apple.disease_fungal.scab:lookalikes",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:lookalikes",
+        "plantinquiry:apple.healthy.healthy:lookalikes"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:litchi.unknown.fungal_stripe_damage:lookalikes",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "diagnosis",
+      "query": "Litchi·Fungal stripe damage",
+      "expected_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:lookalikes"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:lookalikes",
+        "plantinquiry:litchi.unknown.pest_damage:lookalikes",
+        "plantinquiry:litchi.disease_fungal.black_spot:lookalikes",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:lookalikes",
+        "plantinquiry:litchi.physiological_symptom.senescence_or_dry:lookalikes"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:litchi.unknown.fungal_stripe_damage:lookalikes",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 33.0846295752572,
+          "dense_score": 0.6258985996246338
+        },
+        {
+          "doc_id": "plantinquiry:litchi.unknown.pest_damage:lookalikes",
+          "bm25_rank": 1,
+          "dense_rank": 3,
+          "bm25_score": 20.1739554296864,
+          "dense_score": 0.5542100667953491
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.black_spot:lookalikes",
+          "bm25_rank": 2,
+          "dense_rank": 2,
+          "bm25_score": 17.09735098111651,
+          "dense_score": 0.5594927072525024
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.leaf_blight:lookalikes",
+          "bm25_rank": 5,
+          "dense_rank": 1,
+          "bm25_score": 14.187567613077231,
+          "dense_score": 0.587002158164978
+        },
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.senescence_or_dry:lookalikes",
+          "bm25_rank": 4,
+          "dense_rank": 5,
+          "bm25_score": 15.572540026626704,
+          "dense_score": 0.5067774653434753
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:litchi.unknown.fungal_stripe_damage:lookalikes",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "diagnosis",
+      "query": "Litchi·Fungal stripe damage",
+      "meta_filters": {
+        "crop": "Litchi"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:lookalikes"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:lookalikes",
+        "plantinquiry:litchi.unknown.pest_damage:lookalikes",
+        "plantinquiry:litchi.disease_fungal.black_spot:lookalikes",
+        "plantinquiry:litchi.physiological_symptom.senescence_or_dry:lookalikes",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:lookalikes"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:tomato.unknown.pest_damage:lookalikes",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "diagnosis",
+      "query": "tomato·Pest Damage",
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:lookalikes"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:lookalikes",
+        "plantinquiry:grape.unknown.pest_damage:lookalikes",
+        "plantinquiry:eggplant.unknown.pest_damage:lookalikes",
+        "plantinquiry:eggplant.disease_fungal.leaf_spot:lookalikes",
+        "plantinquiry:eggplant.healthy.healthy:lookalikes"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:lookalikes",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 19.86735060669368,
+          "dense_score": 0.6523780822753906
+        },
+        {
+          "doc_id": "plantinquiry:grape.unknown.pest_damage:lookalikes",
+          "bm25_rank": 8,
+          "dense_rank": 5,
+          "bm25_score": 15.024913621354898,
+          "dense_score": 0.5119872689247131
+        },
+        {
+          "doc_id": "plantinquiry:eggplant.unknown.pest_damage:lookalikes",
+          "bm25_rank": 7,
+          "dense_rank": 15,
+          "bm25_score": 15.16950669270145,
+          "dense_score": 0.4557529091835022
+        },
+        {
+          "doc_id": "plantinquiry:eggplant.disease_fungal.leaf_spot:lookalikes",
+          "bm25_rank": 13,
+          "dense_rank": 10,
+          "bm25_score": 12.763399724569553,
+          "dense_score": 0.47488871216773987
+        },
+        {
+          "doc_id": "plantinquiry:eggplant.healthy.healthy:lookalikes",
+          "bm25_rank": 20,
+          "dense_rank": 13,
+          "bm25_score": 11.826428781946582,
+          "dense_score": 0.46494290232658386
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:tomato.unknown.pest_damage:lookalikes",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "diagnosis",
+      "query": "tomato·Pest Damage",
+      "meta_filters": {
+        "crop": "tomato"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:lookalikes"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:lookalikes",
+        "plantinquiry:tomato.pest_mite.spider_mites:lookalikes",
+        "plantinquiry:tomato.physiological_symptom.yellowing_symptom:lookalikes",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes",
+        "plantinquiry:tomato.pest_insect.leaf_miner:lookalikes"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:apple.disease_fungal.alternaria_blotch:card",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "disease_card",
+      "query": "apple·Alternaria Blotch",
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:card"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:card",
+        "plantinquiry:apple.disease_fungal.scab:card",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:card",
+        "plantinquiry:apple.healthy.healthy:card",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:card"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:card",
+          "bm25_rank": 0,
+          "dense_rank": 1,
+          "bm25_score": 33.0595482568137,
+          "dense_score": 0.7646940350532532
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.scab:card",
+          "bm25_rank": 8,
+          "dense_rank": 0,
+          "bm25_score": 9.495457842284429,
+          "dense_score": 0.7664270401000977
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.cedar_apple_rust:card",
+          "bm25_rank": 7,
+          "dense_rank": 3,
+          "bm25_score": 10.290887331122134,
+          "dense_score": 0.7061036825180054
+        },
+        {
+          "doc_id": "plantinquiry:apple.healthy.healthy:card",
+          "bm25_rank": 5,
+          "dense_rank": 5,
+          "bm25_score": 10.735492396110432,
+          "dense_score": 0.6082857847213745
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.powdery_mildew:card",
+          "bm25_rank": 9,
+          "dense_rank": 2,
+          "bm25_score": 9.463734916187239,
+          "dense_score": 0.7616667747497559
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:apple.disease_fungal.alternaria_blotch:card",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "disease_card",
+      "query": "apple·Alternaria Blotch",
+      "meta_filters": {
+        "crop": "apple"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:card"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:card",
+        "plantinquiry:apple.disease_fungal.scab:card",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:card",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:card",
+        "plantinquiry:apple.healthy.healthy:card"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:litchi.physiological_symptom.white_spot:card",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "disease_card",
+      "query": "litchi·white spot",
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:card"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:card",
+        "plantinquiry:litchi.disease_fungal.black_spot:card",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:card",
+        "plantinquiry:tea.disease_fungal.red_leaf_spot:card",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:card"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.white_spot:card",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 25.287821079219245,
+          "dense_score": 0.6716418266296387
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.black_spot:card",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 17.386925153432582,
+          "dense_score": 0.4998454749584198
+        },
+        {
+          "doc_id": "plantinquiry:litchi.unknown.fungal_stripe_damage:card",
+          "bm25_rank": 4,
+          "dense_rank": 6,
+          "bm25_score": 10.957636815557224,
+          "dense_score": 0.39160552620887756
+        },
+        {
+          "doc_id": "plantinquiry:tea.disease_fungal.red_leaf_spot:card",
+          "bm25_rank": 17,
+          "dense_rank": 3,
+          "bm25_score": 7.972013345739281,
+          "dense_score": 0.4499567747116089
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.leaf_blight:card",
+          "bm25_rank": 7,
+          "dense_rank": 16,
+          "bm25_score": 10.633579301495473,
+          "dense_score": 0.35811859369277954
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:litchi.physiological_symptom.white_spot:card",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "disease_card",
+      "query": "litchi·white spot",
+      "meta_filters": {
+        "crop": "litchi"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:card"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:card",
+        "plantinquiry:litchi.disease_fungal.black_spot:card",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:card",
+        "plantinquiry:litchi.disease_fungal.red_rust_disease:card",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:card"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:tomato.unknown.pest_damage:card",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "disease_card",
+      "query": "tomato·Pest Damage",
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:card"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:card",
+        "plantinquiry:grape.unknown.pest_damage:card",
+        "plantinquiry:tomato.unknown.flea_beetle_injury:card",
+        "plantinquiry:cotton.unknown.herbicide_growth_damage:card",
+        "plantinquiry:tomato.physiological_symptom.yellowing_symptom:card"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:card",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 23.232978546954737,
+          "dense_score": 0.7182122468948364
+        },
+        {
+          "doc_id": "plantinquiry:grape.unknown.pest_damage:card",
+          "bm25_rank": 2,
+          "dense_rank": 4,
+          "bm25_score": 17.84890958598841,
+          "dense_score": 0.5582432150840759
+        },
+        {
+          "doc_id": "plantinquiry:tomato.unknown.flea_beetle_injury:card",
+          "bm25_rank": 11,
+          "dense_rank": 6,
+          "bm25_score": 12.092894556736553,
+          "dense_score": 0.5322113037109375
+        },
+        {
+          "doc_id": "plantinquiry:cotton.unknown.herbicide_growth_damage:card",
+          "bm25_rank": 15,
+          "dense_rank": 3,
+          "bm25_score": 10.457274992197542,
+          "dense_score": 0.5807698965072632
+        },
+        {
+          "doc_id": "plantinquiry:tomato.physiological_symptom.yellowing_symptom:card",
+          "bm25_rank": 20,
+          "dense_rank": 1,
+          "bm25_score": 6.676070767541689,
+          "dense_score": 0.6518226861953735
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:tomato.unknown.pest_damage:card",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "disease_card",
+      "query": "tomato·Pest Damage",
+      "meta_filters": {
+        "crop": "tomato"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:card"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:card",
+        "plantinquiry:tomato.unknown.flea_beetle_injury:card",
+        "plantinquiry:tomato.physiological_symptom.yellowing_symptom:card",
+        "plantinquiry:tomato.healthy.healthy:card",
+        "plantinquiry:tomato.pest_insect.leaf_miner:card"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:apple.disease_fungal.alternaria_blotch:environment",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "environment",
+      "query": "apple·Alternaria Blotch",
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:environment"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:environment",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:environment",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:environment",
+        "plantinquiry:apple.healthy.healthy:environment",
+        "plantinquiry:apple.disease_fungal.black_rot:environment"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:environment",
+          "bm25_rank": 0,
+          "dense_rank": 1,
+          "bm25_score": 23.997613185822964,
+          "dense_score": 0.5359839797019958
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.powdery_mildew:environment",
+          "bm25_rank": 5,
+          "dense_rank": 0,
+          "bm25_score": 6.902391713119144,
+          "dense_score": 0.585523247718811
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.cedar_apple_rust:environment",
+          "bm25_rank": 2,
+          "dense_rank": 3,
+          "bm25_score": 9.310499176140082,
+          "dense_score": 0.5230847597122192
+        },
+        {
+          "doc_id": "plantinquiry:apple.healthy.healthy:environment",
+          "bm25_rank": 3,
+          "dense_rank": 5,
+          "bm25_score": 9.05319606295332,
+          "dense_score": 0.4991968870162964
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.black_rot:environment",
+          "bm25_rank": 7,
+          "dense_rank": 2,
+          "bm25_score": 6.543638200726,
+          "dense_score": 0.5286867618560791
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:apple.disease_fungal.alternaria_blotch:environment",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "environment",
+      "query": "apple·Alternaria Blotch",
+      "meta_filters": {
+        "crop": "apple"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:environment"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:environment",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:environment",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:environment",
+        "plantinquiry:apple.disease_fungal.scab:environment",
+        "plantinquiry:apple.disease_fungal.black_rot:environment"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:litchi.physiological_symptom.burned_leaf:environment",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "environment",
+      "query": "litchi·Burned Leaf",
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:environment"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:environment",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:environment",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:environment",
+        "plantinquiry:litchi.disease_fungal.black_spot:environment",
+        "plantinquiry:litchi.physiological_symptom.white_spot:environment"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.burned_leaf:environment",
+          "bm25_rank": 0,
+          "dense_rank": 1,
+          "bm25_score": 25.556839900992692,
+          "dense_score": 0.6104898452758789
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.leaf_blight:environment",
+          "bm25_rank": 1,
+          "dense_rank": 0,
+          "bm25_score": 12.23063300100598,
+          "dense_score": 0.6121501922607422
+        },
+        {
+          "doc_id": "plantinquiry:litchi.unknown.fungal_stripe_damage:environment",
+          "bm25_rank": 2,
+          "dense_rank": 2,
+          "bm25_score": 11.517136556116627,
+          "dense_score": 0.5716054439544678
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.black_spot:environment",
+          "bm25_rank": 3,
+          "dense_rank": 7,
+          "bm25_score": 11.01403400464476,
+          "dense_score": 0.5032252669334412
+        },
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.white_spot:environment",
+          "bm25_rank": 6,
+          "dense_rank": 6,
+          "bm25_score": 8.929569967217505,
+          "dense_score": 0.5099787712097168
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:litchi.physiological_symptom.burned_leaf:environment",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "environment",
+      "query": "litchi·Burned Leaf",
+      "meta_filters": {
+        "crop": "litchi"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:environment"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:environment",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:environment",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:environment",
+        "plantinquiry:litchi.disease_fungal.black_spot:environment",
+        "plantinquiry:litchi.physiological_symptom.white_spot:environment"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:tomato.unknown.pest_damage:environment",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "environment",
+      "query": "tomato·Pest Damage",
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:environment"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:environment",
+        "plantinquiry:tomato.disease_fungal.late_blight:environment",
+        "plantinquiry:tomato.physiological_symptom.yellowing_symptom:environment",
+        "plantinquiry:tomato.disease_bacterial.bacterial_spot:environment",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:environment"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:environment",
+          "bm25_rank": 0,
+          "dense_rank": 7,
+          "bm25_score": 18.91972631283111,
+          "dense_score": 0.5724833607673645
+        },
+        {
+          "doc_id": "plantinquiry:tomato.disease_fungal.late_blight:environment",
+          "bm25_rank": 20,
+          "dense_rank": 0,
+          "bm25_score": 5.134024364939178,
+          "dense_score": 0.6447672843933105
+        },
+        {
+          "doc_id": "plantinquiry:tomato.physiological_symptom.yellowing_symptom:environment",
+          "bm25_rank": 14,
+          "dense_rank": 6,
+          "bm25_score": 5.82962471397167,
+          "dense_score": 0.5725498199462891
+        },
+        {
+          "doc_id": "plantinquiry:tomato.disease_bacterial.bacterial_spot:environment",
+          "bm25_rank": 21,
+          "dense_rank": 5,
+          "bm25_score": 5.079454220724836,
+          "dense_score": 0.5845630168914795
+        },
+        {
+          "doc_id": "plantinquiry:litchi.unknown.fungal_stripe_damage:environment",
+          "bm25_rank": 12,
+          "dense_rank": 14,
+          "bm25_score": 6.625315153166596,
+          "dense_score": 0.51569664478302
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:tomato.unknown.pest_damage:environment",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "environment",
+      "query": "tomato·Pest Damage",
+      "meta_filters": {
+        "crop": "tomato"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:environment"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:environment",
+        "plantinquiry:tomato.disease_fungal.late_blight:environment",
+        "plantinquiry:tomato.disease_fungal.target_spot:environment",
+        "plantinquiry:tomato.disease_viral.yellow_leaf_curl_virus:environment",
+        "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:environment"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:apple.disease_fungal.alternaria_blotch:management",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "management",
+      "query": "apple·Alternaria Blotch",
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:management",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:management",
+        "plantinquiry:apple.disease_fungal.black_rot:management",
+        "plantinquiry:apple.healthy.healthy:management",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:management"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:management",
+          "bm25_rank": 0,
+          "dense_rank": 2,
+          "bm25_score": 22.980470362703652,
+          "dense_score": 0.5442101955413818
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.cedar_apple_rust:management",
+          "bm25_rank": 3,
+          "dense_rank": 0,
+          "bm25_score": 9.189682131131573,
+          "dense_score": 0.5855293273925781
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.black_rot:management",
+          "bm25_rank": 5,
+          "dense_rank": 1,
+          "bm25_score": 6.282414179056946,
+          "dense_score": 0.5707365274429321
+        },
+        {
+          "doc_id": "plantinquiry:apple.healthy.healthy:management",
+          "bm25_rank": 4,
+          "dense_rank": 4,
+          "bm25_score": 7.7207492139638125,
+          "dense_score": 0.4768540561199188
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.powdery_mildew:management",
+          "bm25_rank": 6,
+          "dense_rank": 3,
+          "bm25_score": 6.159470219389285,
+          "dense_score": 0.4950578808784485
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:apple.disease_fungal.alternaria_blotch:management",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "management",
+      "query": "apple·Alternaria Blotch",
+      "meta_filters": {
+        "crop": "apple"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:management",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:management",
+        "plantinquiry:apple.disease_fungal.black_rot:management",
+        "plantinquiry:apple.healthy.healthy:management",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:management"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:litchi.physiological_symptom.white_spot:management",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "management",
+      "query": "litchi·white spot",
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:management",
+        "plantinquiry:litchi.disease_fungal.black_spot:management",
+        "plantinquiry:litchi.healthy.healthy:management",
+        "plantinquiry:litchi.physiological_symptom.senescence_or_dry:management",
+        "plantinquiry:litchi.disease_viral.yellow_mosaic_virus:management"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.white_spot:management",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 18.11582785902828,
+          "dense_score": 0.5460635423660278
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.black_spot:management",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 12.550197613237174,
+          "dense_score": 0.4080323874950409
+        },
+        {
+          "doc_id": "plantinquiry:litchi.healthy.healthy:management",
+          "bm25_rank": 3,
+          "dense_rank": 4,
+          "bm25_score": 8.856256259414764,
+          "dense_score": 0.28791970014572144
+        },
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.senescence_or_dry:management",
+          "bm25_rank": 5,
+          "dense_rank": 3,
+          "bm25_score": 7.249268437130648,
+          "dense_score": 0.29554903507232666
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_viral.yellow_mosaic_virus:management",
+          "bm25_rank": 7,
+          "dense_rank": 2,
+          "bm25_score": 7.013595682763045,
+          "dense_score": 0.3364090025424957
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:litchi.physiological_symptom.white_spot:management",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "management",
+      "query": "litchi·white spot",
+      "meta_filters": {
+        "crop": "litchi"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:management",
+        "plantinquiry:litchi.disease_fungal.black_spot:management",
+        "plantinquiry:litchi.healthy.healthy:management",
+        "plantinquiry:litchi.disease_viral.yellow_mosaic_virus:management",
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:management"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:tomato.unknown.pest_damage:management",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "management",
+      "query": "tomato·Pest Damage",
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:management",
+        "plantinquiry:grape.unknown.pest_damage:management",
+        "plantinquiry:cotton.unknown.herbicide_growth_damage:management",
+        "plantinquiry:tomato.healthy.healthy:management",
+        "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:management"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:management",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 17.851296880126174,
+          "dense_score": 0.5849686861038208
+        },
+        {
+          "doc_id": "plantinquiry:grape.unknown.pest_damage:management",
+          "bm25_rank": 1,
+          "dense_rank": 14,
+          "bm25_score": 14.733262336728991,
+          "dense_score": 0.4720318913459778
+        },
+        {
+          "doc_id": "plantinquiry:cotton.unknown.herbicide_growth_damage:management",
+          "bm25_rank": 12,
+          "dense_rank": 9,
+          "bm25_score": 9.388631407236787,
+          "dense_score": 0.49295318126678467
+        },
+        {
+          "doc_id": "plantinquiry:tomato.healthy.healthy:management",
+          "bm25_rank": 24,
+          "dense_rank": 3,
+          "bm25_score": 5.025059512476202,
+          "dense_score": 0.5403012037277222
+        },
+        {
+          "doc_id": "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:management",
+          "bm25_rank": 14,
+          "dense_rank": 12,
+          "bm25_score": 7.457573335341939,
+          "dense_score": 0.4788852632045746
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:tomato.unknown.pest_damage:management",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "management",
+      "query": "tomato·Pest Damage",
+      "meta_filters": {
+        "crop": "tomato"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:management",
+        "plantinquiry:tomato.physiological_symptom.yellowing_symptom:management",
+        "plantinquiry:tomato.unknown.flea_beetle_injury:management",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:management",
+        "plantinquiry:tomato.disease_viral.yellow_leaf_curl_virus:management"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:apple.disease_fungal.alternaria_blotch:severity",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "severity",
+      "query": "apple·Alternaria Blotch",
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:severity"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:severity",
+        "plantinquiry:apple.disease_fungal.scab:severity",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:severity",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:severity",
+        "plantinquiry:apple.healthy.healthy:severity"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:severity",
+          "bm25_rank": 0,
+          "dense_rank": 7,
+          "bm25_score": 24.30518400071366,
+          "dense_score": 0.459201842546463
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.scab:severity",
+          "bm25_rank": 5,
+          "dense_rank": 0,
+          "bm25_score": 6.927712399460271,
+          "dense_score": 0.5463454723358154
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.powdery_mildew:severity",
+          "bm25_rank": 6,
+          "dense_rank": 1,
+          "bm25_score": 6.754271146359012,
+          "dense_score": 0.5270764231681824
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.cedar_apple_rust:severity",
+          "bm25_rank": 3,
+          "dense_rank": 8,
+          "bm25_score": 8.467589736125179,
+          "dense_score": 0.453285276889801
+        },
+        {
+          "doc_id": "plantinquiry:apple.healthy.healthy:severity",
+          "bm25_rank": 4,
+          "dense_rank": 12,
+          "bm25_score": 7.505942072451668,
+          "dense_score": 0.4296649992465973
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:apple.disease_fungal.alternaria_blotch:severity",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "severity",
+      "query": "apple·Alternaria Blotch",
+      "meta_filters": {
+        "crop": "apple"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:severity"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:severity",
+        "plantinquiry:apple.disease_fungal.scab:severity",
+        "plantinquiry:apple.disease_fungal.cedar_apple_rust:severity",
+        "plantinquiry:apple.disease_fungal.powdery_mildew:severity",
+        "plantinquiry:apple.healthy.healthy:severity"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:litchi.physiological_symptom.white_spot:severity",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "severity",
+      "query": "litchi·white spot",
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:severity"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:severity",
+        "plantinquiry:litchi.disease_fungal.black_spot:severity",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:severity",
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:severity",
+        "plantinquiry:litchi.healthy.healthy:severity"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.white_spot:severity",
+          "bm25_rank": 0,
+          "dense_rank": 2,
+          "bm25_score": 20.024932901112326,
+          "dense_score": 0.4955615699291229
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.black_spot:severity",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 12.810259755308225,
+          "dense_score": 0.4961705803871155
+        },
+        {
+          "doc_id": "plantinquiry:litchi.disease_fungal.leaf_blight:severity",
+          "bm25_rank": 8,
+          "dense_rank": 0,
+          "bm25_score": 7.715961343357597,
+          "dense_score": 0.5218832492828369
+        },
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.burned_leaf:severity",
+          "bm25_rank": 3,
+          "dense_rank": 5,
+          "bm25_score": 7.827949610719644,
+          "dense_score": 0.4005314111709595
+        },
+        {
+          "doc_id": "plantinquiry:litchi.healthy.healthy:severity",
+          "bm25_rank": 2,
+          "dense_rank": 9,
+          "bm25_score": 7.856456458643599,
+          "dense_score": 0.38438326120376587
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:litchi.physiological_symptom.white_spot:severity",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "severity",
+      "query": "litchi·white spot",
+      "meta_filters": {
+        "crop": "litchi"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:severity"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.physiological_symptom.white_spot:severity",
+        "plantinquiry:litchi.disease_fungal.black_spot:severity",
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:severity",
+        "plantinquiry:litchi.disease_fungal.leaf_blight:severity",
+        "plantinquiry:litchi.healthy.healthy:severity"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:tomato.unknown.pest_damage:severity",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "severity",
+      "query": "tomato·Pest Damage",
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:severity"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:severity",
+        "plantinquiry:papaya.unknown.pest_damage:severity",
+        "plantinquiry:tomato.unknown.flea_beetle_injury:severity",
+        "plantinquiry:eggplant.unknown.pest_damage:severity",
+        "plantinquiry:mango.pest_insect.weevil:severity"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:severity",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 19.394399120040944,
+          "dense_score": 0.6806854009628296
+        },
+        {
+          "doc_id": "plantinquiry:papaya.unknown.pest_damage:severity",
+          "bm25_rank": 6,
+          "dense_rank": 4,
+          "bm25_score": 14.021034630865849,
+          "dense_score": 0.5973619818687439
+        },
+        {
+          "doc_id": "plantinquiry:tomato.unknown.flea_beetle_injury:severity",
+          "bm25_rank": 8,
+          "dense_rank": 3,
+          "bm25_score": 10.94913037624058,
+          "dense_score": 0.5979200601577759
+        },
+        {
+          "doc_id": "plantinquiry:eggplant.unknown.pest_damage:severity",
+          "bm25_rank": 2,
+          "dense_rank": 10,
+          "bm25_score": 15.17113340089545,
+          "dense_score": 0.5867277979850769
+        },
+        {
+          "doc_id": "plantinquiry:mango.pest_insect.weevil:severity",
+          "bm25_rank": 16,
+          "dense_rank": 11,
+          "bm25_score": 7.658127621981666,
+          "dense_score": 0.5787654519081116
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:tomato.unknown.pest_damage:severity",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "severity",
+      "query": "tomato·Pest Damage",
+      "meta_filters": {
+        "crop": "tomato"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:severity"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:severity",
+        "plantinquiry:tomato.unknown.flea_beetle_injury:severity",
+        "plantinquiry:tomato.disease_fungal.late_blight:severity",
+        "plantinquiry:tomato.pest_mite.spider_mites:severity",
+        "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:severity"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_fruit",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "symptom",
+      "query": "apple·Alternaria Blotch",
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_fruit",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_leaves",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_signs_microscopic_or_visible",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_stems",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_whole_plant"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_stems",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_fruit",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_signs_microscopic_or_visible",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_whole_plant",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_leaves"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_stems",
+          "bm25_rank": 0,
+          "dense_rank": 4,
+          "bm25_score": 33.461354445262884,
+          "dense_score": 0.6386427879333496
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_fruit",
+          "bm25_rank": 3,
+          "dense_rank": 1,
+          "bm25_score": 30.852019382222085,
+          "dense_score": 0.6614693403244019
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_signs_microscopic_or_visible",
+          "bm25_rank": 2,
+          "dense_rank": 3,
+          "bm25_score": 30.97897525653336,
+          "dense_score": 0.6457855105400085
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_whole_plant",
+          "bm25_rank": 1,
+          "dense_rank": 11,
+          "bm25_score": 32.44920607193268,
+          "dense_score": 0.6160129308700562
+        },
+        {
+          "doc_id": "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_leaves",
+          "bm25_rank": 4,
+          "dense_rank": null,
+          "bm25_score": 26.517113349340605,
+          "dense_score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_fruit",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "symptom",
+      "query": "apple·Alternaria Blotch",
+      "meta_filters": {
+        "crop": "apple"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_fruit",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_leaves",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_signs_microscopic_or_visible",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_stems",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_whole_plant"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_stems",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_fruit",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_signs_microscopic_or_visible",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_whole_plant",
+        "plantinquiry:apple.disease_fungal.alternaria_blotch:symptom_leaves"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_leaves",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "symptom",
+      "query": "Litchi·Fungal stripe damage",
+      "expected_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_leaves",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_signs_microscopic_or_visible",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_whole_plant"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_leaves",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_signs_microscopic_or_visible",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_whole_plant",
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:symptom_leaves",
+        "plantinquiry:litchi.unknown.pest_damage:symptom_leaves"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_leaves",
+          "bm25_rank": 2,
+          "dense_rank": 0,
+          "bm25_score": 31.351513058954538,
+          "dense_score": 0.735590934753418
+        },
+        {
+          "doc_id": "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_signs_microscopic_or_visible",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 37.94475969546608,
+          "dense_score": 0.6075183749198914
+        },
+        {
+          "doc_id": "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_whole_plant",
+          "bm25_rank": 0,
+          "dense_rank": 4,
+          "bm25_score": 39.65759302518289,
+          "dense_score": 0.5517227053642273
+        },
+        {
+          "doc_id": "plantinquiry:litchi.physiological_symptom.burned_leaf:symptom_leaves",
+          "bm25_rank": 7,
+          "dense_rank": 2,
+          "bm25_score": 17.532581012662476,
+          "dense_score": 0.6019739508628845
+        },
+        {
+          "doc_id": "plantinquiry:litchi.unknown.pest_damage:symptom_leaves",
+          "bm25_rank": 8,
+          "dense_rank": 3,
+          "bm25_score": 15.27947278466278,
+          "dense_score": 0.5676599144935608
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_leaves",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "symptom",
+      "query": "Litchi·Fungal stripe damage",
+      "meta_filters": {
+        "crop": "Litchi"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_leaves",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_signs_microscopic_or_visible",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_whole_plant"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_leaves",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_signs_microscopic_or_visible",
+        "plantinquiry:litchi.unknown.fungal_stripe_damage:symptom_whole_plant",
+        "plantinquiry:litchi.physiological_symptom.burned_leaf:symptom_leaves",
+        "plantinquiry:litchi.unknown.pest_damage:symptom_leaves"
+      ]
+    },
+    {
+      "id": "title:plantinquiry:tomato.unknown.pest_damage:symptom_whole_plant",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "symptom",
+      "query": "tomato·Pest Damage",
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:symptom_fruit",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_leaves",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_signs_microscopic_or_visible",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_stems",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_whole_plant"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:symptom_fruit",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_stems",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_whole_plant",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_leaves",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_signs_microscopic_or_visible"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:symptom_fruit",
+          "bm25_rank": 2,
+          "dense_rank": 0,
+          "bm25_score": 22.16152516423846,
+          "dense_score": 0.7576059103012085
+        },
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:symptom_stems",
+          "bm25_rank": 0,
+          "dense_rank": 2,
+          "bm25_score": 22.74743654731552,
+          "dense_score": 0.730283796787262
+        },
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:symptom_whole_plant",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 22.212451781066072,
+          "dense_score": 0.7539960741996765
+        },
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:symptom_leaves",
+          "bm25_rank": 4,
+          "dense_rank": 3,
+          "bm25_score": 19.54621012087683,
+          "dense_score": 0.7046849727630615
+        },
+        {
+          "doc_id": "plantinquiry:tomato.unknown.pest_damage:symptom_signs_microscopic_or_visible",
+          "bm25_rank": 3,
+          "dense_rank": 6,
+          "bm25_score": 20.932472803193136,
+          "dense_score": 0.6809980273246765
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:plantinquiry:tomato.unknown.pest_damage:symptom_whole_plant",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "plantinquiry",
+      "kind": "symptom",
+      "query": "tomato·Pest Damage",
+      "meta_filters": {
+        "crop": "tomato"
+      },
+      "expected_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:symptom_fruit",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_leaves",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_signs_microscopic_or_visible",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_stems",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_whole_plant"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.unknown.pest_damage:symptom_fruit",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_stems",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_whole_plant",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_leaves",
+        "plantinquiry:tomato.unknown.pest_damage:symptom_signs_microscopic_or_visible"
+      ]
+    },
+    {
+      "id": "title:qa_en:KisanVaani/agriculture-qa-english-only:0003c76ba3986266",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "qa_en",
+      "kind": "qa_pair",
+      "query": "what is plant biotechnology",
+      "expected_doc_ids": [
+        "qa_en:KisanVaani/agriculture-qa-english-only:0003c76ba3986266"
+      ],
+      "actual_doc_ids": [
+        "qa_en:KisanVaani/agriculture-qa-english-only:0003c76ba3986266",
+        "qa_en:KisanVaani/agriculture-qa-english-only:4be3cc182e8e8317",
+        "qa_en:KisanVaani/agriculture-qa-english-only:3230481883e1c239",
+        "qa_en:talhakk/agriculture-qa:6bc213e352dbd1a9",
+        "qa_en:talhakk/agriculture-qa:01f0a8cac76f567a"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "qa_en:KisanVaani/agriculture-qa-english-only:0003c76ba3986266",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 23.97673596225524,
+          "dense_score": 0.7977880239486694
+        },
+        {
+          "doc_id": "qa_en:KisanVaani/agriculture-qa-english-only:4be3cc182e8e8317",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 18.214513309572627,
+          "dense_score": 0.6855524778366089
+        },
+        {
+          "doc_id": "qa_en:KisanVaani/agriculture-qa-english-only:3230481883e1c239",
+          "bm25_rank": null,
+          "dense_rank": 2,
+          "bm25_score": 0.0,
+          "dense_score": 0.6130285263061523
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:6bc213e352dbd1a9",
+          "bm25_rank": 2,
+          "dense_rank": null,
+          "bm25_score": 13.321613809761324,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:01f0a8cac76f567a",
+          "bm25_rank": null,
+          "dense_rank": 3,
+          "bm25_score": 0.0,
+          "dense_score": 0.5973550081253052
+        }
+      ]
+    },
+    {
+      "id": "title:qa_en:talhakk/agriculture-qa:1b05d90a6e65a26d",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "qa_en",
+      "kind": "qa_pair",
+      "query": "asking about planting distance of host plant of muga silkworm",
+      "expected_doc_ids": [
+        "qa_en:talhakk/agriculture-qa:1b05d90a6e65a26d"
+      ],
+      "actual_doc_ids": [
+        "qa_en:talhakk/agriculture-qa:1b05d90a6e65a26d",
+        "qa_en:talhakk/agriculture-qa:3ca88dad81d9a5f8",
+        "qa_en:talhakk/agriculture-qa:5aa9fbd88cfb1c6d",
+        "qa_en:talhakk/agriculture-qa:babe4b539741c88e",
+        "qa_en:talhakk/agriculture-qa:cfc1cf8f7599d8fe"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:1b05d90a6e65a26d",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 73.0175939148413,
+          "dense_score": 0.9394062757492065
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:3ca88dad81d9a5f8",
+          "bm25_rank": 21,
+          "dense_rank": 8,
+          "bm25_score": 25.56332764437052,
+          "dense_score": 0.5844868421554565
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:5aa9fbd88cfb1c6d",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 23.715838424577427,
+          "dense_score": 0.6316114664077759
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:babe4b539741c88e",
+          "bm25_rank": 1,
+          "dense_rank": null,
+          "bm25_score": 27.851503084946962,
+          "dense_score": 0.0
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:cfc1cf8f7599d8fe",
+          "bm25_rank": 2,
+          "dense_rank": null,
+          "bm25_score": 27.790706577882332,
+          "dense_score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "title:qa_en:talhakk/agriculture-qa:fffbe2cb386bab3e",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "qa_en",
+      "kind": "qa_pair",
+      "query": "query regarding control measures of pest in paddy",
+      "expected_doc_ids": [
+        "qa_en:talhakk/agriculture-qa:fffbe2cb386bab3e"
+      ],
+      "actual_doc_ids": [
+        "qa_en:talhakk/agriculture-qa:fffbe2cb386bab3e",
+        "qa_en:talhakk/agriculture-qa:54126d15ac590922",
+        "qa_en:talhakk/agriculture-qa:456521223134b5bf",
+        "qa_en:talhakk/agriculture-qa:f0d0d12da588b78e",
+        "qa_en:talhakk/agriculture-qa:665a9573872aa195"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:fffbe2cb386bab3e",
+          "bm25_rank": 0,
+          "dense_rank": 1,
+          "bm25_score": 38.28839959250557,
+          "dense_score": 0.7832568883895874
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:54126d15ac590922",
+          "bm25_rank": 22,
+          "dense_rank": 25,
+          "bm25_score": 25.528185053457275,
+          "dense_score": 0.7196847796440125
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:456521223134b5bf",
+          "bm25_rank": 23,
+          "dense_rank": 24,
+          "bm25_score": 25.528185053457275,
+          "dense_score": 0.7202719449996948
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:f0d0d12da588b78e",
+          "bm25_rank": null,
+          "dense_rank": 0,
+          "bm25_score": 22.936448424507734,
+          "dense_score": 0.7924745082855225
+        },
+        {
+          "doc_id": "qa_en:talhakk/agriculture-qa:665a9573872aa195",
+          "bm25_rank": 1,
+          "dense_rank": null,
+          "bm25_score": 31.388780076557794,
+          "dense_score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "title:qa_zh:-0NxD5MCBuuR",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "qa_zh",
+      "kind": "qa_pair",
+      "query": "防治晚疫病时，可以选用哪些药物？",
+      "expected_doc_ids": [
+        "qa_zh:-0NxD5MCBuuR"
+      ],
+      "actual_doc_ids": [
+        "qa_zh:-0NxD5MCBuuR",
+        "qa_zh:2N-40loH2AX6",
+        "qa_zh:KOnHrlKCBHzG",
+        "qa_zh:3JJgBdDdyLdg",
+        "qa_zh:NNS8d9qDQXTG"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "qa_zh:-0NxD5MCBuuR",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 148.95231844689528,
+          "dense_score": 0.7025372982025146
+        },
+        {
+          "doc_id": "qa_zh:2N-40loH2AX6",
+          "bm25_rank": 3,
+          "dense_rank": 1,
+          "bm25_score": 90.15397614268842,
+          "dense_score": 0.676245927810669
+        },
+        {
+          "doc_id": "qa_zh:KOnHrlKCBHzG",
+          "bm25_rank": 1,
+          "dense_rank": 4,
+          "bm25_score": 99.0934348977498,
+          "dense_score": 0.620326817035675
+        },
+        {
+          "doc_id": "qa_zh:3JJgBdDdyLdg",
+          "bm25_rank": 5,
+          "dense_rank": 11,
+          "bm25_score": 84.27916616916696,
+          "dense_score": 0.5878115892410278
+        },
+        {
+          "doc_id": "qa_zh:NNS8d9qDQXTG",
+          "bm25_rank": 14,
+          "dense_rank": 5,
+          "bm25_score": 63.654632444977075,
+          "dense_score": 0.6202269792556763
+        }
+      ]
+    },
+    {
+      "id": "title:qa_zh:UuJVUlriC2Hi",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "qa_zh",
+      "kind": "qa_pair",
+      "query": "清明节后小麦进入哪个重要生长期？",
+      "expected_doc_ids": [
+        "qa_zh:UuJVUlriC2Hi"
+      ],
+      "actual_doc_ids": [
+        "qa_zh:UuJVUlriC2Hi",
+        "qa_zh:mQbNiHel-A9y",
+        "qa_zh:1RTksZ41106K",
+        "qa_zh:3y8Zn_IhhFhh",
+        "qa_zh:TkggTqty2mHQ"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "qa_zh:UuJVUlriC2Hi",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 247.8901175974719,
+          "dense_score": 0.8524460792541504
+        },
+        {
+          "doc_id": "qa_zh:mQbNiHel-A9y",
+          "bm25_rank": 8,
+          "dense_rank": 1,
+          "bm25_score": 57.02198364206827,
+          "dense_score": 0.6950885057449341
+        },
+        {
+          "doc_id": "qa_zh:1RTksZ41106K",
+          "bm25_rank": 3,
+          "dense_rank": 7,
+          "bm25_score": 69.84480130686376,
+          "dense_score": 0.6618617177009583
+        },
+        {
+          "doc_id": "qa_zh:3y8Zn_IhhFhh",
+          "bm25_rank": 4,
+          "dense_rank": 6,
+          "bm25_score": 63.722836302546334,
+          "dense_score": 0.6677051186561584
+        },
+        {
+          "doc_id": "qa_zh:TkggTqty2mHQ",
+          "bm25_rank": 1,
+          "dense_rank": 18,
+          "bm25_score": 87.69069728877788,
+          "dense_score": 0.6313570737838745
+        }
+      ]
+    },
+    {
+      "id": "title:qa_zh:zzuYWhz70JdX",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "qa_zh",
+      "kind": "qa_pair",
+      "query": "苦瓜根线虫侵害苦瓜根系时，会造成哪些具体症状？",
+      "expected_doc_ids": [
+        "qa_zh:zzuYWhz70JdX"
+      ],
+      "actual_doc_ids": [
+        "qa_zh:zzuYWhz70JdX",
+        "qa_zh:IR9_Oa6X9Rum",
+        "qa_zh:EdCGf8lhvOMs",
+        "qa_zh:lFO_FxqCc6Bw",
+        "qa_zh:3iiHbx53Pg_Y"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "qa_zh:zzuYWhz70JdX",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 243.5893692896671,
+          "dense_score": 0.791273295879364
+        },
+        {
+          "doc_id": "qa_zh:IR9_Oa6X9Rum",
+          "bm25_rank": 3,
+          "dense_rank": 3,
+          "bm25_score": 70.19818350412528,
+          "dense_score": 0.7567317485809326
+        },
+        {
+          "doc_id": "qa_zh:EdCGf8lhvOMs",
+          "bm25_rank": 10,
+          "dense_rank": 16,
+          "bm25_score": 55.79166232065994,
+          "dense_score": 0.7043173313140869
+        },
+        {
+          "doc_id": "qa_zh:lFO_FxqCc6Bw",
+          "bm25_rank": 16,
+          "dense_rank": 19,
+          "bm25_score": 48.56472559130586,
+          "dense_score": 0.6992177963256836
+        },
+        {
+          "doc_id": "qa_zh:3iiHbx53Pg_Y",
+          "bm25_rank": 17,
+          "dense_rank": 24,
+          "bm25_score": 48.04338976221913,
+          "dense_score": 0.6718587279319763
+        }
+      ]
+    },
+    {
+      "id": "title:seed:tomato-early-blight:diagnosis",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "diagnosis",
+      "query": "番茄晚疫病 vs 早疫病 · 鉴别要点",
+      "expected_doc_ids": [
+        "seed:tomato-early-blight:diagnosis"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-early-blight:diagnosis"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:tomato-early-blight:diagnosis",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 116.73648634458497,
+          "dense_score": 0.7384253740310669
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:tomato-early-blight:diagnosis",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "diagnosis",
+      "query": "番茄晚疫病 vs 早疫病 · 鉴别要点",
+      "meta_filters": {
+        "crop": "番茄"
+      },
+      "expected_doc_ids": [
+        "seed:tomato-early-blight:diagnosis"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-early-blight:diagnosis"
+      ]
+    },
+    {
+      "id": "title:seed:cucumber-downy-mildew:card",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "disease_card",
+      "query": "黄瓜·霜霉病",
+      "expected_doc_ids": [
+        "seed:cucumber-downy-mildew:card"
+      ],
+      "actual_doc_ids": [
+        "seed:cucumber-downy-mildew:card",
+        "seed:strawberry-gray-mold:card",
+        "seed:tomato-late-blight:card"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:cucumber-downy-mildew:card",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 63.87851446975131,
+          "dense_score": 0.4938368797302246
+        },
+        {
+          "doc_id": "seed:strawberry-gray-mold:card",
+          "bm25_rank": 1,
+          "dense_rank": 2,
+          "bm25_score": 21.153195417504975,
+          "dense_score": 0.39940351247787476
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:card",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.45768457651138306
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:cucumber-downy-mildew:card",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "disease_card",
+      "query": "黄瓜·霜霉病",
+      "meta_filters": {
+        "crop": "黄瓜"
+      },
+      "expected_doc_ids": [
+        "seed:cucumber-downy-mildew:card"
+      ],
+      "actual_doc_ids": [
+        "seed:cucumber-downy-mildew:card"
+      ]
+    },
+    {
+      "id": "title:seed:strawberry-gray-mold:card",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "disease_card",
+      "query": "草莓·灰霉病",
+      "expected_doc_ids": [
+        "seed:strawberry-gray-mold:card"
+      ],
+      "actual_doc_ids": [
+        "seed:strawberry-gray-mold:card",
+        "seed:cucumber-downy-mildew:card",
+        "seed:tomato-late-blight:card"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:strawberry-gray-mold:card",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 67.61334189715927,
+          "dense_score": 0.7530194520950317
+        },
+        {
+          "doc_id": "seed:cucumber-downy-mildew:card",
+          "bm25_rank": 1,
+          "dense_rank": 2,
+          "bm25_score": 20.383595519844217,
+          "dense_score": 0.3543369174003601
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:card",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.5036267042160034
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:strawberry-gray-mold:card",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "disease_card",
+      "query": "草莓·灰霉病",
+      "meta_filters": {
+        "crop": "草莓"
+      },
+      "expected_doc_ids": [
+        "seed:strawberry-gray-mold:card"
+      ],
+      "actual_doc_ids": [
+        "seed:strawberry-gray-mold:card"
+      ]
+    },
+    {
+      "id": "title:seed:tomato-late-blight:card",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "disease_card",
+      "query": "番茄·晚疫病",
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:card"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:card",
+        "seed:strawberry-gray-mold:card",
+        "seed:cucumber-downy-mildew:card"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:tomato-late-blight:card",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 81.71577616446777,
+          "dense_score": 0.8114286661148071
+        },
+        {
+          "doc_id": "seed:strawberry-gray-mold:card",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.5931309461593628
+        },
+        {
+          "doc_id": "seed:cucumber-downy-mildew:card",
+          "bm25_rank": null,
+          "dense_rank": 2,
+          "bm25_score": 0.0,
+          "dense_score": 0.558109700679779
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:tomato-late-blight:card",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "disease_card",
+      "query": "番茄·晚疫病",
+      "meta_filters": {
+        "crop": "番茄"
+      },
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:card"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:card"
+      ]
+    },
+    {
+      "id": "title:seed:equipment:demo-fan-v1:offline",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "equipment_manual",
+      "query": "DEMO-FAN-V1 / FAN-03 OFFLINE（演示手册）",
+      "expected_doc_ids": [
+        "seed:equipment:demo-fan-v1:offline"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:demo-fan-v1:offline",
+        "seed:equipment:demo-valve-v1:e04",
+        "seed:equipment:irrigation-valve-e04"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:equipment:demo-fan-v1:offline",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 103.0594820847665,
+          "dense_score": 0.6310686469078064
+        },
+        {
+          "doc_id": "seed:equipment:demo-valve-v1:e04",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 81.0086946035383,
+          "dense_score": 0.41687077283859253
+        },
+        {
+          "doc_id": "seed:equipment:irrigation-valve-e04",
+          "bm25_rank": 2,
+          "dense_rank": 2,
+          "bm25_score": 30.361854356968163,
+          "dense_score": 0.23558029532432556
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:equipment:demo-fan-v1:offline",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "equipment_manual",
+      "query": "DEMO-FAN-V1 / FAN-03 OFFLINE（演示手册）",
+      "meta_filters": {
+        "crop": "黄瓜"
+      },
+      "expected_doc_ids": [
+        "seed:equipment:demo-fan-v1:offline"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:demo-fan-v1:offline"
+      ]
+    },
+    {
+      "id": "title:seed:equipment:greenhouse-roller",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "equipment_manual",
+      "query": "温室卷帘机常见故障",
+      "expected_doc_ids": [
+        "seed:equipment:greenhouse-roller"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:greenhouse-roller",
+        "seed:equipment:demo-fan-v1:offline",
+        "seed:equipment:irrigation-valve-e04",
+        "seed:equipment:demo-valve-v1:e04"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:equipment:greenhouse-roller",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 130.1201452280753,
+          "dense_score": 0.7468184232711792
+        },
+        {
+          "doc_id": "seed:equipment:demo-fan-v1:offline",
+          "bm25_rank": 1,
+          "dense_rank": 2,
+          "bm25_score": 28.4472456720284,
+          "dense_score": 0.43495091795921326
+        },
+        {
+          "doc_id": "seed:equipment:irrigation-valve-e04",
+          "bm25_rank": 3,
+          "dense_rank": 1,
+          "bm25_score": 20.603578331827713,
+          "dense_score": 0.5160651803016663
+        },
+        {
+          "doc_id": "seed:equipment:demo-valve-v1:e04",
+          "bm25_rank": 2,
+          "dense_rank": 3,
+          "bm25_score": 26.992212440777,
+          "dense_score": 0.41657406091690063
+        }
+      ]
+    },
+    {
+      "id": "title:seed:equipment:irrigation-valve-e04",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "equipment_manual",
+      "query": "演示灌溉电磁阀 E04 故障处置",
+      "expected_doc_ids": [
+        "seed:equipment:irrigation-valve-e04"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:irrigation-valve-e04",
+        "seed:equipment:demo-valve-v1:e04",
+        "seed:equipment:demo-fan-v1:offline",
+        "seed:equipment:greenhouse-roller"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:equipment:irrigation-valve-e04",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 130.57901153713675,
+          "dense_score": 0.8036270141601562
+        },
+        {
+          "doc_id": "seed:equipment:demo-valve-v1:e04",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 72.03211975196379,
+          "dense_score": 0.5813260078430176
+        },
+        {
+          "doc_id": "seed:equipment:demo-fan-v1:offline",
+          "bm25_rank": 2,
+          "dense_rank": 2,
+          "bm25_score": 62.014907986226106,
+          "dense_score": 0.5238291025161743
+        },
+        {
+          "doc_id": "seed:equipment:greenhouse-roller",
+          "bm25_rank": 3,
+          "dense_rank": 3,
+          "bm25_score": 30.9644040181175,
+          "dense_score": 0.4509022831916809
+        }
+      ]
+    },
+    {
+      "id": "filter:device_id:seed:equipment:irrigation-valve-e04",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "equipment_manual",
+      "query": "演示灌溉电磁阀 E04 故障处置",
+      "meta_filters": {
+        "device_id": "irrigation_valve"
+      },
+      "expected_doc_ids": [
+        "seed:equipment:irrigation-valve-e04"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:irrigation-valve-e04"
+      ]
+    },
+    {
+      "id": "title:seed:cucumber-downy-mildew:management",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "management",
+      "query": "黄瓜霜霉病·防治方案",
+      "expected_doc_ids": [
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "actual_doc_ids": [
+        "seed:cucumber-downy-mildew:management",
+        "seed:tomato-late-blight:management",
+        "seed:strawberry-gray-mold:management"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:cucumber-downy-mildew:management",
+          "bm25_rank": 0,
+          "dense_rank": 2,
+          "bm25_score": 87.85157409131433,
+          "dense_score": 0.5181223750114441
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:management",
+          "bm25_rank": 2,
+          "dense_rank": 0,
+          "bm25_score": 38.2835835860313,
+          "dense_score": 0.6029031276702881
+        },
+        {
+          "doc_id": "seed:strawberry-gray-mold:management",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 58.44225871613102,
+          "dense_score": 0.57521653175354
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:cucumber-downy-mildew:management",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "management",
+      "query": "黄瓜霜霉病·防治方案",
+      "meta_filters": {
+        "crop": "黄瓜"
+      },
+      "expected_doc_ids": [
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "actual_doc_ids": [
+        "seed:cucumber-downy-mildew:management"
+      ]
+    },
+    {
+      "id": "title:seed:strawberry-gray-mold:management",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "management",
+      "query": "草莓灰霉病·防治方案",
+      "expected_doc_ids": [
+        "seed:strawberry-gray-mold:management"
+      ],
+      "actual_doc_ids": [
+        "seed:strawberry-gray-mold:management",
+        "seed:cucumber-downy-mildew:management",
+        "seed:tomato-late-blight:management"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:strawberry-gray-mold:management",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 91.90133302578612,
+          "dense_score": 0.758905291557312
+        },
+        {
+          "doc_id": "seed:cucumber-downy-mildew:management",
+          "bm25_rank": 1,
+          "dense_rank": 2,
+          "bm25_score": 55.482522881338454,
+          "dense_score": 0.33858150243759155
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:management",
+          "bm25_rank": 2,
+          "dense_rank": 1,
+          "bm25_score": 38.2835835860313,
+          "dense_score": 0.509618878364563
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:strawberry-gray-mold:management",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "management",
+      "query": "草莓灰霉病·防治方案",
+      "meta_filters": {
+        "crop": "草莓"
+      },
+      "expected_doc_ids": [
+        "seed:strawberry-gray-mold:management"
+      ],
+      "actual_doc_ids": [
+        "seed:strawberry-gray-mold:management"
+      ]
+    },
+    {
+      "id": "title:seed:tomato-late-blight:management",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "management",
+      "query": "番茄晚疫病·防治方案",
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:management"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:management",
+        "seed:strawberry-gray-mold:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:tomato-late-blight:management",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 76.5863906435411,
+          "dense_score": 0.7847186923027039
+        },
+        {
+          "doc_id": "seed:strawberry-gray-mold:management",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 47.951929518193765,
+          "dense_score": 0.5921816229820251
+        },
+        {
+          "doc_id": "seed:cucumber-downy-mildew:management",
+          "bm25_rank": 2,
+          "dense_rank": 2,
+          "bm25_score": 45.94703184634774,
+          "dense_score": 0.4657781720161438
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:tomato-late-blight:management",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "management",
+      "query": "番茄晚疫病·防治方案",
+      "meta_filters": {
+        "crop": "番茄"
+      },
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:management"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:management"
+      ]
+    },
+    {
+      "id": "title:seed:qa:continuous-cropping",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "qa_pair",
+      "query": "大棚连作障碍怎么缓解",
+      "expected_doc_ids": [
+        "seed:qa:continuous-cropping"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:continuous-cropping",
+        "seed:qa:greenhouse-humidity",
+        "seed:qa:tomato-fertigation"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:qa:continuous-cropping",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 109.74067968201126,
+          "dense_score": 0.4669729471206665
+        },
+        {
+          "doc_id": "seed:qa:greenhouse-humidity",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.3278834819793701
+        },
+        {
+          "doc_id": "seed:qa:tomato-fertigation",
+          "bm25_rank": null,
+          "dense_rank": 2,
+          "bm25_score": 0.0,
+          "dense_score": 0.3124382495880127
+        }
+      ]
+    },
+    {
+      "id": "title:seed:qa:greenhouse-humidity",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "qa_pair",
+      "query": "棚内湿度怎么控",
+      "expected_doc_ids": [
+        "seed:qa:greenhouse-humidity"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:greenhouse-humidity",
+        "seed:qa:continuous-cropping",
+        "seed:qa:tomato-fertigation"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:qa:greenhouse-humidity",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 72.30402900977563,
+          "dense_score": 0.7241380214691162
+        },
+        {
+          "doc_id": "seed:qa:continuous-cropping",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 34.09304285004874,
+          "dense_score": 0.5640439987182617
+        },
+        {
+          "doc_id": "seed:qa:tomato-fertigation",
+          "bm25_rank": 2,
+          "dense_rank": 2,
+          "bm25_score": 20.1019924324274,
+          "dense_score": 0.5102394819259644
+        }
+      ]
+    },
+    {
+      "id": "title:seed:qa:tomato-fertigation",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "qa_pair",
+      "query": "设施番茄如何做水肥一体化管理",
+      "expected_doc_ids": [
+        "seed:qa:tomato-fertigation"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:tomato-fertigation",
+        "seed:qa:continuous-cropping",
+        "seed:qa:greenhouse-humidity"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:qa:tomato-fertigation",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 136.9707835199493,
+          "dense_score": 0.7146210670471191
+        },
+        {
+          "doc_id": "seed:qa:continuous-cropping",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.5273019075393677
+        },
+        {
+          "doc_id": "seed:qa:greenhouse-humidity",
+          "bm25_rank": null,
+          "dense_rank": 2,
+          "bm25_score": 0.0,
+          "dense_score": 0.3248910903930664
+        }
+      ]
+    },
+    {
+      "id": "title:seed:safety:pesticide-interval",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "safety_rule",
+      "query": "施药安全间隔期与限制（规则框架）",
+      "expected_doc_ids": [
+        "seed:safety:pesticide-interval"
+      ],
+      "actual_doc_ids": [
+        "seed:safety:pesticide-interval"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:safety:pesticide-interval",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 155.46346815026203,
+          "dense_score": 0.8068258762359619
+        }
+      ]
+    },
+    {
+      "id": "title:seed:tomato-late-blight:severity",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "severity",
+      "query": "番茄晚疫病·严重度判定",
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:severity"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:severity"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:tomato-late-blight:severity",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 108.14844386740874,
+          "dense_score": 0.8136328458786011
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:tomato-late-blight:severity",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "severity",
+      "query": "番茄晚疫病·严重度判定",
+      "meta_filters": {
+        "crop": "番茄"
+      },
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:severity"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:severity"
+      ]
+    },
+    {
+      "id": "title:seed:soil:default-profile",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "soil_reference",
+      "query": "地块土壤本底档案（示例模板）",
+      "expected_doc_ids": [
+        "seed:soil:default-profile"
+      ],
+      "actual_doc_ids": [
+        "seed:soil:default-profile",
+        "seed:soil:field-07:demo",
+        "seed:soil:gh-09:demo"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:soil:default-profile",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 157.28707079575346,
+          "dense_score": 0.704709529876709
+        },
+        {
+          "doc_id": "seed:soil:field-07:demo",
+          "bm25_rank": 1,
+          "dense_rank": 1,
+          "bm25_score": 66.45539840949819,
+          "dense_score": 0.45587092638015747
+        },
+        {
+          "doc_id": "seed:soil:gh-09:demo",
+          "bm25_rank": 2,
+          "dense_rank": 2,
+          "bm25_score": 66.45539840949819,
+          "dense_score": 0.4454624652862549
+        }
+      ]
+    },
+    {
+      "id": "title:seed:soil:field-07:demo",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "soil_reference",
+      "query": "FIELD-07 设施番茄土壤档案（演示值）",
+      "expected_doc_ids": [
+        "seed:soil:field-07:demo"
+      ],
+      "actual_doc_ids": [
+        "seed:soil:field-07:demo",
+        "seed:soil:default-profile",
+        "seed:soil:gh-09:demo"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:soil:field-07:demo",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 140.06482982209081,
+          "dense_score": 0.5873035192489624
+        },
+        {
+          "doc_id": "seed:soil:default-profile",
+          "bm25_rank": 2,
+          "dense_rank": 1,
+          "bm25_score": 54.24151290775171,
+          "dense_score": 0.5805647969245911
+        },
+        {
+          "doc_id": "seed:soil:gh-09:demo",
+          "bm25_rank": 1,
+          "dense_rank": 2,
+          "bm25_score": 105.24801142245572,
+          "dense_score": 0.47768276929855347
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:soil:field-07:demo",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "soil_reference",
+      "query": "FIELD-07 设施番茄土壤档案（演示值）",
+      "meta_filters": {
+        "crop": "番茄"
+      },
+      "expected_doc_ids": [
+        "seed:soil:field-07:demo"
+      ],
+      "actual_doc_ids": [
+        "seed:soil:field-07:demo"
+      ]
+    },
+    {
+      "id": "title:seed:soil:gh-09:demo",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "soil_reference",
+      "query": "GH-09 设施黄瓜土壤档案（演示值）",
+      "expected_doc_ids": [
+        "seed:soil:gh-09:demo"
+      ],
+      "actual_doc_ids": [
+        "seed:soil:gh-09:demo",
+        "seed:soil:default-profile",
+        "seed:soil:field-07:demo"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:soil:gh-09:demo",
+          "bm25_rank": 0,
+          "dense_rank": 1,
+          "bm25_score": 146.09552664092917,
+          "dense_score": 0.5618206262588501
+        },
+        {
+          "doc_id": "seed:soil:default-profile",
+          "bm25_rank": 2,
+          "dense_rank": 0,
+          "bm25_score": 58.016637294812604,
+          "dense_score": 0.6938905715942383
+        },
+        {
+          "doc_id": "seed:soil:field-07:demo",
+          "bm25_rank": 1,
+          "dense_rank": 2,
+          "bm25_score": 108.07776446070746,
+          "dense_score": 0.5217578411102295
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:soil:gh-09:demo",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "soil_reference",
+      "query": "GH-09 设施黄瓜土壤档案（演示值）",
+      "meta_filters": {
+        "crop": "黄瓜"
+      },
+      "expected_doc_ids": [
+        "seed:soil:gh-09:demo"
+      ],
+      "actual_doc_ids": [
+        "seed:soil:gh-09:demo"
+      ]
+    },
+    {
+      "id": "title:seed:cucumber-downy-mildew:symptom-leaf",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "symptom",
+      "query": "黄瓜霜霉病·叶片症状",
+      "expected_doc_ids": [
+        "seed:cucumber-downy-mildew:symptom-leaf"
+      ],
+      "actual_doc_ids": [
+        "seed:cucumber-downy-mildew:symptom-leaf",
+        "seed:tomato-late-blight:symptom-leaf",
+        "seed:tomato-late-blight:symptom-fruit"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:cucumber-downy-mildew:symptom-leaf",
+          "bm25_rank": 0,
+          "dense_rank": 1,
+          "bm25_score": 85.85860318529343,
+          "dense_score": 0.46986937522888184
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:symptom-leaf",
+          "bm25_rank": 1,
+          "dense_rank": 0,
+          "bm25_score": 35.53889847501293,
+          "dense_score": 0.5223321914672852
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:symptom-fruit",
+          "bm25_rank": null,
+          "dense_rank": 2,
+          "bm25_score": 0.0,
+          "dense_score": 0.35071682929992676
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:cucumber-downy-mildew:symptom-leaf",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "symptom",
+      "query": "黄瓜霜霉病·叶片症状",
+      "meta_filters": {
+        "crop": "黄瓜"
+      },
+      "expected_doc_ids": [
+        "seed:cucumber-downy-mildew:symptom-leaf"
+      ],
+      "actual_doc_ids": [
+        "seed:cucumber-downy-mildew:symptom-leaf"
+      ]
+    },
+    {
+      "id": "title:seed:tomato-late-blight:symptom-fruit",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "symptom",
+      "query": "番茄晚疫病·果实症状",
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:symptom-fruit"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:symptom-fruit",
+        "seed:tomato-late-blight:symptom-leaf",
+        "seed:cucumber-downy-mildew:symptom-leaf"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:tomato-late-blight:symptom-fruit",
+          "bm25_rank": 0,
+          "dense_rank": 0,
+          "bm25_score": 101.97225833336647,
+          "dense_score": 0.8770803213119507
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:symptom-leaf",
+          "bm25_rank": 1,
+          "dense_rank": 2,
+          "bm25_score": 67.2672656532751,
+          "dense_score": 0.4877259135246277
+        },
+        {
+          "doc_id": "seed:cucumber-downy-mildew:symptom-leaf",
+          "bm25_rank": null,
+          "dense_rank": 1,
+          "bm25_score": 0.0,
+          "dense_score": 0.6321938633918762
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:tomato-late-blight:symptom-fruit",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "symptom",
+      "query": "番茄晚疫病·果实症状",
+      "meta_filters": {
+        "crop": "番茄"
+      },
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:symptom-fruit"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:symptom-fruit",
+        "seed:tomato-late-blight:symptom-leaf"
+      ]
+    },
+    {
+      "id": "title:seed:tomato-late-blight:symptom-leaf",
+      "category": "title_retrieval",
+      "passed": true,
+      "source": "seed",
+      "kind": "symptom",
+      "query": "番茄晚疫病·叶片症状",
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:symptom-leaf"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:symptom-leaf",
+        "seed:tomato-late-blight:symptom-fruit",
+        "seed:cucumber-downy-mildew:symptom-leaf"
+      ],
+      "relevant_rank": 1,
+      "actual_hits": [
+        {
+          "doc_id": "seed:tomato-late-blight:symptom-leaf",
+          "bm25_rank": 0,
+          "dense_rank": 2,
+          "bm25_score": 85.3853568288849,
+          "dense_score": 0.548507034778595
+        },
+        {
+          "doc_id": "seed:tomato-late-blight:symptom-fruit",
+          "bm25_rank": 1,
+          "dense_rank": 0,
+          "bm25_score": 80.76921875511256,
+          "dense_score": 0.852471649646759
+        },
+        {
+          "doc_id": "seed:cucumber-downy-mildew:symptom-leaf",
+          "bm25_rank": 2,
+          "dense_rank": 1,
+          "bm25_score": 35.47874732682201,
+          "dense_score": 0.6837438941001892
+        }
+      ]
+    },
+    {
+      "id": "filter:crop:seed:tomato-late-blight:symptom-leaf",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "seed",
+      "kind": "symptom",
+      "query": "番茄晚疫病·叶片症状",
+      "meta_filters": {
+        "crop": "番茄"
+      },
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:symptom-leaf"
+      ],
+      "actual_doc_ids": [
+        "seed:tomato-late-blight:symptom-leaf",
+        "seed:tomato-late-blight:symptom-fruit"
+      ]
+    },
+    {
+      "id": "filter:secondary_dataset:KisanVaani/agriculture-qa-english-only",
+      "category": "metadata_filter",
+      "passed": true,
+      "source": "qa_en",
+      "query": "What are the symptoms of damping off in chilli seedlings?",
+      "meta_filters": {
+        "dataset": "KisanVaani/agriculture-qa-english-only"
+      },
+      "expected_doc_ids": [
+        "qa_en:talhakk/agriculture-qa:002fe8a49671a91c"
+      ],
+      "actual_doc_ids": [
+        "qa_en:talhakk/agriculture-qa:002fe8a49671a91c",
+        "qa_en:talhakk/agriculture-qa:2d74a20b00aacfb5",
+        "qa_en:talhakk/agriculture-qa:dea5094a6accd413",
+        "qa_en:talhakk/agriculture-qa:c5b341815f7aee22",
+        "qa_en:talhakk/agriculture-qa:7caff04f10f27c63"
+      ]
+    },
+    {
+      "id": "reject:empty",
+      "category": "index_negative",
+      "passed": true,
+      "query": "",
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:whitespace",
+      "category": "index_negative",
+      "passed": true,
+      "query": "  \n ",
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:generic_zh",
+      "category": "index_negative",
+      "passed": true,
+      "query": "请问有哪些相关知识和管理防治方法",
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:generic_en",
+      "category": "index_negative",
+      "passed": true,
+      "query": "please tell me disease management and treatment methods",
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:unrelated_en",
+      "category": "index_negative",
+      "passed": true,
+      "query": "quasarflux xenonwarp qzxv98473",
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:unknown_source",
+      "category": "index_negative",
+      "passed": true,
+      "query": "番茄·晚疫病",
+      "filters": {
+        "sources": [
+          "__unknown_source__"
+        ]
+      },
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:unknown_meta",
+      "category": "index_negative",
+      "passed": true,
+      "query": "番茄·晚疫病",
+      "filters": {
+        "meta_filters": {
+          "crop": "__unknown_crop__"
+        }
+      },
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:unknown_dataset",
+      "category": "index_negative",
+      "passed": true,
+      "query": "番茄·晚疫病",
+      "filters": {
+        "meta_filters": {
+          "dataset": "__unknown_dataset__"
+        }
+      },
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "reject:empty_ids",
+      "category": "index_negative",
+      "passed": true,
+      "query": "番茄·晚疫病",
+      "filters": {
+        "allowed_doc_ids": []
+      },
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "domain:unknown_crop",
+      "category": "domain_negative",
+      "passed": true,
+      "crop": "__unknown_crop__",
+      "query": "暗绿色水浸状病斑 白色霉层",
+      "actual_candidates": [],
+      "evidence_count": 0
+    },
+    {
+      "id": "domain:empty_symptom",
+      "category": "domain_negative",
+      "passed": true,
+      "crop": "番茄",
+      "query": "",
+      "actual_candidates": [],
+      "evidence_count": 0
+    },
+    {
+      "id": "domain:unrelated_symptom",
+      "category": "domain_negative",
+      "passed": true,
+      "crop": "番茄",
+      "query": "quasarflux xenonwarp",
+      "actual_candidates": [],
+      "evidence_count": 0
+    },
+    {
+      "id": "domain:unknown_disease",
+      "category": "domain_negative",
+      "passed": true,
+      "query": "完全未收录的病害XYZ98473",
+      "crop": "番茄",
+      "actual_doc_ids": []
+    },
+    {
+      "id": "domain:cross_crop_treatment",
+      "category": "domain_negative",
+      "passed": true,
+      "query": "番茄晚疫病",
+      "crop": "黄瓜",
+      "actual_doc_ids": []
+    },
+    {
+      "id": "domain:treatment:番茄晚疫病",
+      "category": "domain_positive",
+      "passed": true,
+      "query": "番茄晚疫病",
+      "crop": "番茄",
+      "expected_doc_ids": [
+        "seed:tomato-late-blight:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.disease_fungal.late_blight:management",
+        "seed:tomato-late-blight:management"
+      ]
+    },
+    {
+      "id": "domain:treatment:黄瓜霜霉病",
+      "category": "domain_positive",
+      "passed": true,
+      "query": "黄瓜霜霉病",
+      "crop": "黄瓜",
+      "expected_doc_ids": [
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ]
+    },
+    {
+      "id": "domain:seed:soil:field-07:demo",
+      "category": "domain_positive",
+      "passed": true,
+      "kind": "soil_reference",
+      "arguments": [
+        "FIELD-07"
+      ],
+      "expected_doc_ids": [
+        "seed:soil:field-07:demo"
+      ],
+      "actual_doc_ids": [
+        "seed:soil:field-07:demo"
+      ]
+    },
+    {
+      "id": "domain:seed:soil:gh-09:demo",
+      "category": "domain_positive",
+      "passed": true,
+      "kind": "soil_reference",
+      "arguments": [
+        "GH-09"
+      ],
+      "expected_doc_ids": [
+        "seed:soil:gh-09:demo"
+      ],
+      "actual_doc_ids": [
+        "seed:soil:gh-09:demo"
+      ]
+    },
+    {
+      "id": "domain:seed:equipment:demo-fan-v1:offline",
+      "category": "domain_positive",
+      "passed": true,
+      "kind": "equipment_manual",
+      "arguments": [
+        "FAN-03",
+        "OFFLINE"
+      ],
+      "expected_doc_ids": [
+        "seed:equipment:demo-fan-v1:offline"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:demo-fan-v1:offline"
+      ]
+    },
+    {
+      "id": "domain:seed:equipment:demo-valve-v1:e04",
+      "category": "domain_positive",
+      "passed": true,
+      "kind": "equipment_manual",
+      "arguments": [
+        "VALVE-11",
+        "E04"
+      ],
+      "expected_doc_ids": [
+        "seed:equipment:demo-valve-v1:e04"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:demo-valve-v1:e04"
+      ]
+    },
+    {
+      "id": "domain:seed:equipment:irrigation-valve-e04",
+      "category": "domain_positive",
+      "passed": true,
+      "kind": "equipment_manual",
+      "arguments": [
+        "irrigation_valve",
+        "E04"
+      ],
+      "expected_doc_ids": [
+        "seed:equipment:irrigation-valve-e04"
+      ],
+      "actual_doc_ids": [
+        "seed:equipment:irrigation-valve-e04"
+      ]
+    },
+    {
+      "id": "domain:unknown_site",
+      "category": "domain_negative",
+      "passed": true,
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "domain:unknown_device",
+      "category": "domain_negative",
+      "passed": true,
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "domain:unknown_fault",
+      "category": "domain_negative",
+      "passed": true,
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "domain:empty_device",
+      "category": "domain_negative",
+      "passed": true,
+      "actual_doc_ids": [],
+      "expected_doc_ids": []
+    },
+    {
+      "id": "domain:diagnose:番茄",
+      "category": "domain_positive",
+      "passed": true,
+      "crop": "番茄",
+      "query": "暗绿色水浸状病斑 白色霉状物",
+      "expected_entity": "晚疫病",
+      "actual_candidates": [
+        "番茄晚疫病",
+        "番茄早疫病",
+        "番茄枯萎病",
+        "菜潜蝇",
+        "番茄灰斑病"
+      ]
+    },
+    {
+      "id": "domain:diagnose:黄瓜",
+      "category": "domain_positive",
+      "passed": true,
+      "crop": "黄瓜",
+      "query": "受叶脉限制的多角形病斑 叶背灰黑色霉层",
+      "expected_entity": "霜霉病",
+      "actual_candidates": [
+        "黄瓜霜霉病",
+        "黄瓜黑星病",
+        "anthracnose",
+        "甜瓜黑星病",
+        "gummy stem blight"
+      ]
+    },
+    {
+      "id": "domain:diagnose:tomato",
+      "category": "domain_positive",
+      "passed": true,
+      "crop": "tomato",
+      "query": "dark green water-soaked lesions white mold",
+      "expected_entity": "晚疫病",
+      "actual_candidates": [
+        "番茄晚疫病",
+        "番茄早疫病",
+        "番茄灰斑病",
+        "leaf mold",
+        "番茄疮痂病"
+      ]
+    },
+    {
+      "id": "natural_agronomy_01",
+      "category": "natural_query",
+      "passed": true,
+      "query": "番茄棚里已经出现晚疫病，除了打药，还能怎样减缓蔓延？",
+      "expected_doc_ids": [
+        "plantinquiry:tomato.disease_fungal.late_blight:management",
+        "seed:tomato-late-blight:management",
+        "qa_zh:dPQK8wLZcYIq"
+      ],
+      "gold_present_doc_ids": [
+        "plantinquiry:tomato.disease_fungal.late_blight:management",
+        "qa_zh:dPQK8wLZcYIq",
+        "seed:tomato-late-blight:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:tomato.disease_fungal.late_blight:management",
+        "seed:tomato-late-blight:management"
+      ],
+      "actual_titles": [
+        "late blight · 处置原文",
+        "番茄晚疫病 · 处置原文"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_02",
+      "category": "natural_query",
+      "passed": true,
+      "query": "黄瓜叶背出现灰黑色霉层，怀疑霜霉病，棚内管理要做哪些调整？",
+      "expected_doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "gold_present_doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "actual_titles": [
+        "downy mildew · 处置原文",
+        "黄瓜霜霉病 · 处置原文"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_03",
+      "category": "natural_query",
+      "passed": true,
+      "query": "番茄结果以后该怎样调整浇水和施肥？",
+      "expected_doc_ids": [
+        "seed:qa:tomato-fertigation",
+        "qa_zh:CtHUEuvTTOch"
+      ],
+      "gold_present_doc_ids": [
+        "qa_zh:CtHUEuvTTOch",
+        "seed:qa:tomato-fertigation"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:tomato-fertigation",
+        "qa_zh:WVCO2D9M08Rp",
+        "qa_zh:94Tkoyd781En"
+      ],
+      "actual_titles": [
+        "设施番茄如何做水肥一体化管理",
+        "冲施肥在特殊环境中有哪些特殊效果？",
+        "如何在收获期追肥以提高西红柿的产量和品质？"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_04",
+      "category": "natural_query",
+      "passed": true,
+      "query": "黄瓜刚栽进温室，浇水施肥有哪些注意事项？",
+      "expected_doc_ids": [
+        "curated:cucumber-transplant-fertigation",
+        "curated:greenhouse-perlite-fertigation"
+      ],
+      "gold_present_doc_ids": [
+        "curated:cucumber-transplant-fertigation",
+        "curated:greenhouse-perlite-fertigation"
+      ],
+      "actual_doc_ids": [
+        "curated:cucumber-transplant-fertigation",
+        "curated:greenhouse-perlite-fertigation",
+        "qa_zh:_gfT8r5kiCT7"
+      ],
+      "actual_titles": [
+        "温室黄瓜移栽初期的水肥查证要点（UAF 来源释义）",
+        "温室珍珠岩无土栽培的定植灌溉检查（UF/IFAS 来源释义）",
+        "在防治西葫芦黑星病时，可以采取哪些农业防治措施？"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_05",
+      "category": "natural_query",
+      "passed": true,
+      "query": "一块大棚连续几年种番茄，越种长势越差，怎么改善连作问题？",
+      "expected_doc_ids": [
+        "seed:qa:continuous-cropping",
+        "qa_zh:UPah9LLFeDex"
+      ],
+      "gold_present_doc_ids": [
+        "qa_zh:UPah9LLFeDex",
+        "seed:qa:continuous-cropping"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:continuous-cropping",
+        "qa_zh:yjq-a3v1qnww",
+        "qa_en:talhakk/agriculture-qa:9a1fd27196fc8f80"
+      ],
+      "actual_titles": [
+        "大棚连作障碍怎么缓解",
+        "随着大棚蔬菜连作年限的增加，土壤中哪些微生物的种类和数量会发生变化？",
+        "Why is crop rotation important for tomato cultivation, and how should it be implemented?"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_06",
+      "category": "natural_query",
+      "passed": true,
+      "query": "黄瓜在同一个棚里连着种，怎样减少土传病害？",
+      "expected_doc_ids": [
+        "seed:qa:continuous-cropping",
+        "qa_zh:UPah9LLFeDex"
+      ],
+      "gold_present_doc_ids": [
+        "qa_zh:UPah9LLFeDex",
+        "seed:qa:continuous-cropping"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:continuous-cropping",
+        "qa_zh:YYKPagHQu2c3",
+        "qa_zh:UPah9LLFeDex"
+      ],
+      "actual_titles": [
+        "大棚连作障碍怎么缓解",
+        "如何有效防治土传病害？",
+        "防治连作障碍的方法有哪些？"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_07",
+      "category": "natural_query",
+      "passed": true,
+      "query": "最近阴雨天番茄棚湿度很高，叶子早上总有露水，应该如何管理？",
+      "expected_doc_ids": [
+        "seed:qa:greenhouse-humidity",
+        "qa_zh:Ew1Ga-1FKo8P",
+        "qa_zh:HXiW38dM9fP0"
+      ],
+      "gold_present_doc_ids": [
+        "qa_zh:Ew1Ga-1FKo8P",
+        "qa_zh:HXiW38dM9fP0",
+        "seed:qa:greenhouse-humidity"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:greenhouse-humidity",
+        "qa_zh:dNTR3o23LmOB",
+        "qa_zh:Wz9jHa4C39kR"
+      ],
+      "actual_titles": [
+        "棚内湿度怎么控",
+        "在日光温室中，如何通过浇水来管理空气湿度？",
+        "温室大棚空气湿度调节的主要目的是什么？"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_08",
+      "category": "natural_query",
+      "passed": true,
+      "query": "冬天黄瓜棚既要保温又要降湿，怎么安排通风和浇水？",
+      "expected_doc_ids": [
+        "seed:qa:greenhouse-humidity",
+        "qa_zh:EGdjT9XKJby2",
+        "qa_zh:6JJq1kUX_Etd",
+        "qa_zh:HXiW38dM9fP0"
+      ],
+      "gold_present_doc_ids": [
+        "qa_zh:6JJq1kUX_Etd",
+        "qa_zh:EGdjT9XKJby2",
+        "qa_zh:HXiW38dM9fP0",
+        "seed:qa:greenhouse-humidity"
+      ],
+      "actual_doc_ids": [
+        "qa_zh:c9q88pj9pUh5",
+        "seed:qa:greenhouse-humidity",
+        "qa_zh:3j22CPIuozgy"
+      ],
+      "actual_titles": [
+        "连栋温室中，除了通风换气，还有哪些方法可以降低室内空气湿度？",
+        "棚内湿度怎么控",
+        "利用哪些方法可以在温室大棚中降低空气湿度？"
+      ],
+      "relevant_rank": 2,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_09",
+      "category": "natural_query",
+      "passed": true,
+      "query": "番茄根区盐分越来越高，水肥管理怎样调整？",
+      "expected_doc_ids": [
+        "seed:qa:tomato-fertigation"
+      ],
+      "gold_present_doc_ids": [
+        "seed:qa:tomato-fertigation"
+      ],
+      "actual_doc_ids": [
+        "seed:qa:tomato-fertigation",
+        "qa_zh:qeAOpzo6t-xB",
+        "qa_zh:0Vi-ruPJkbc4"
+      ],
+      "actual_titles": [
+        "设施番茄如何做水肥一体化管理",
+        "温室土壤盐渍化的原因有哪些？",
+        "滴灌等水肥一体化技术如何控制病害？"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "natural_agronomy_10",
+      "category": "natural_query",
+      "passed": true,
+      "query": "黄瓜霜霉病怎么做农业防治，哪些措施能减少叶面潮湿？",
+      "expected_doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "gold_present_doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "actual_doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "actual_titles": [
+        "downy mildew · 处置原文",
+        "黄瓜霜霉病 · 处置原文"
+      ],
+      "relevant_rank": 1,
+      "coverage_gap": false,
+      "declared_crop_conflicts": []
+    },
+    {
+      "id": "integrity:dense_exercised",
+      "category": "integrity",
+      "passed": true,
+      "dense_hits": 186
+    }
+  ]
+}

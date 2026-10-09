@@ -1,0 +1,481 @@
+{
+  "mode": "live_read_only_diagnosis_agent",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "passed": true,
+  "missing_tools": [],
+  "index_dir": "C:\\Users\\colorful\\.agriagents\\rag",
+  "corpus_sha256": "7b0bc6753492b49395bff16d35a28dbb8a2dd3cff4c1054c9088ee010471f8aa",
+  "scenario_checks": {
+    "query_pest_disease_library:tomato": true,
+    "get_treatment_options:tomato": true,
+    "query_pest_disease_library:cucumber": true,
+    "get_treatment_options:cucumber": true,
+    "soil:FIELD-07": true,
+    "soil:GH-09": true,
+    "equipment:VALVE-11:E04": true,
+    "equipment:FAN-03:OFFLINE": true,
+    "dataset:talhakk/agriculture-qa": true,
+    "dataset:KisanVaani/agriculture-qa-english-only": true,
+    "dataset:manifesta/verified-agronomy-17k": true
+  },
+  "missing_scenarios": [],
+  "evidence_sources": [
+    "cropdp",
+    "curated",
+    "plantinquiry",
+    "qa_en",
+    "qa_zh",
+    "seed"
+  ],
+  "missing_sources": [],
+  "tool_calls": [
+    {
+      "tool": "list_knowledge_bases",
+      "status": "success",
+      "arguments": {},
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"available\": true, \"documents\": 51124, \"sources\": [{\"source\": \"cropdp\", \"documents\": 2578, \"kinds\": {\"kg_entity\": 2578}, \"datasets\": [\"CropDP-KG\"], \"demo_documents\": 0}, {\"source\": \"curated\", \"documents\": 2, \"kinds\": {\"agronomy\": 2}, \"datasets\": [], \"demo_documents\": 0}, {\"source\": \"plantinquiry\", \"documents\": 1946, \"kinds\": {\"diagnosis\": 186, \"disease_card\": 203, \"environment\": 193, \"management\": 203, \"severity\": 203, \"symptom\": 958}, \"datasets\": [\"PlantInquiryVQA\"], \"demo_documents\": 0}, {\"source\": \"qa_en\", \"documents\": 40583, \"kinds\": {\"qa_pair\": 40583}, \"datasets\": [\"KisanVaani/agriculture-qa-english-only\", \"manifesta/verified-agronomy-17k\", \"talhakk/agriculture-qa\"], \"demo_documents\": 0}, {\"source\": \"qa_zh\", \"documents\": 5993, \"kinds\": {\"qa_pair\": 5993}, \"datasets\": [\"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\"], \"demo_documents\": 0}, {\"source\": \"seed\", \"documents\": 22, \"kinds\": {\"diagnosis\": 1, \"disease_card\": 3, \"equipment_manual\": 4, \"management\": 3, \"qa_pair\": 3, \"safety_rule\": 1, \"severity\": 1, \"soil_reference\": 3, \"symptom\": 3}, \"datasets\": [], \"demo_documents\": 22}], \"graph\": {\"entities\": 2550, \"symptoms\": 21061, \"with_crops\": 1197, \"with_symptoms\": 2027}, \"tools\": {\"病虫害\": \"query_pest_disease_library(crop, symptom)\", \"农艺问答\": \"query_agronomy_knowledge(question)\", \"处置方案\": \"get_treatment_options(diagnosis, crop)\", \"土壤档案\": \"query_soil_reference(site_id)\", \"设备手册\": \"query_equipment_manual(device_id, fault_code)\", \"指定语料源查证\": \"search_knowledge_base(query, source, kind)\"}, \"note\": \"目录仅反映已加载内容；seed/is_demo 为演示资料，不是实测证据。\"}"
+    },
+    {
+      "tool": "query_pest_disease_library",
+      "status": "success",
+      "arguments": {
+        "crop": "番茄",
+        "symptom": "叶片暗绿色水浸状病斑，自叶缘起始，潮湿时叶背白色霉层"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "cropdp:番茄晚疫病:0",
+        "seed:tomato-late-blight:symptom-leaf",
+        "plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.late_blight:symptom_stems",
+        "plantinquiry:tomato.disease_fungal.late_blight:lookalikes",
+        "seed:tomato-early-blight:diagnosis",
+        "seed:tomato-late-blight:symptom-fruit",
+        "cropdp:番茄灰斑病:0",
+        "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves",
+        "cropdp:番茄枯萎病:0",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_stems",
+        "cropdp:美洲斑潜蝇:0",
+        "plantinquiry:tomato.pest_insect.leaf_miner:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_signs_microscopic_or_visible",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_stems",
+        "seed:tomato-late-blight:symptom-leaf",
+        "plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes",
+        "plantinquiry:tomato.pest_insect.leaf_miner:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_signs_microscopic_or_visible",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_leaves",
+        "plantinquiry:tomato.disease_bacterial.bacterial_spot:symptom_fruit",
+        "plantinquiry:tomato.disease_fungal.late_blight:symptom_stems",
+        "plantinquiry:tomato.disease_bacterial.bacterial_spot:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.late_blight:lookalikes",
+        "plantinquiry:tomato.pest_mite.spider_mites:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_stems",
+        "plantinquiry:tomato.unknown.flea_beetle_injury:symptom_leaves",
+        "seed:tomato-early-blight:diagnosis",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes",
+        "seed:tomato-late-blight:symptom-fruit",
+        "plantinquiry:tomato.disease_fungal.cercospora_leaf_spot:symptom_leaves",
+        "plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_stems"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 病虫害查询：作物=番茄，症状=叶片暗绿色水浸状病斑，自叶缘起始，潮湿时叶背白色霉层\n\n■ 候选病害（按证据检索排序，共 5 条）\n\n1. 番茄晚疫病（Phytophthora infestans）  检索排序分 0.0325  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:番茄晚疫病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-leaf；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:symptom_stems；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-early-blight:diagnosis；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   交叉证据：【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-fruit；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   命中的症状：暗绿色水浸状不整形病斑；白色霉状物；病斑呈不明显的油浸状大斑\n   危害部位：叶片、茎部、果实\n   危害作物：番茄\n   适宜发生条件：以上，空气湿度；地势低洼；排水不良\n   适宜温度：24℃\n   英文名/别名：Tomato late blight\n\n2. 番茄灰斑病（Septoria lycopersici）  检索排序分 0.0318  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:番茄灰斑病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：暗绿色水浸状；呈水浸状黄褐色凹陷斑；边缘暗色\n   危害部位：叶部、茎部、果实\n   危害作物：番茄\n   英文名/别名：Tomato grey spot\n\n3. 番茄枯萎病（Fusarium oxysporum f. sp. lycopersici）  检索排序分 0.0279  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:番茄枯萎病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_stems；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：叶片开始发黄；粉红色霉；叶片萎蔫发黄\n   危害作物：番茄\n   适宜发生条件：土壤湿度过低\n   英文名/别名：Tomato Fusarium wilt\n\n4. 美洲斑潜蝇（Liriomyza sativae）  检索排序分 0.0246  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:美洲斑潜蝇:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.pest_insect.leaf_miner:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：叶片逐渐萎蔫；不规则蛇形白色虫道；tomato / Leaf Miner（Liriomyza spp.） 叶片症状： - Winding, serpentine, or blotchy white to tan trails (mines) are visible on the leaf surface. - Mines are located be…\n   危害作物：蔬菜、多种、黄瓜、菜豆、番茄、白菜、油菜、芹菜\n   英文名/别名：Vegetable leafminer\n\n5. leaf mold（Passalora fulva）  检索排序分 0.0161  [已关联英文防治卡片]\n   source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:symptom_signs_microscopic_or_visible；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:symptom_stems；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：tomato / leaf mold（Passalora fulva） 鉴别诊断要点： 易混淆：late blight - Leaf mold has olive-green/grayish, velvety mold on the leaf *underside*; late blight has white, f…；tomato / leaf mold（Passalora fulva） 病征（镜检/可见）症状： - The key visible sign is the velvety, olive-green to grayish-purple mold (sporulation) on the abaxial (lower)…；tomato / leaf mold（Passalora fulva） 叶片症状： - Initial symptoms are pale green or yellowish spots on the upper surface of older, lower leaves. - Spots have indefi…\n   危害作物：tomato\n   英文名/别名：Fulvia fulva；Cladosporium fulvum\n\n■ 检索到的补充证据（20 条）\n - 【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-leaf；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   番茄晚疫病·叶片症状：番茄晚疫病 叶片症状 - 自叶尖或叶缘出现暗绿色水浸状不整形病斑，迅速扩大。 - 湿度大时病斑边缘出现白色霉状物（孢子囊梗）。 - 病斑由暗绿转褐色，潮湿条件下扩展极快，干燥时停止扩展并变脆。 Leaf symptoms: dark green water-soaked spots/lesions, with white mold in humid conditions. (Demo translation of the Chinese symptoms above.)\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·late blight：tomato / late blight（Phytophthora infestans） 叶片症状： - Large, water-soaked, gray-green to dark brown lesions, often appearing on leaf edges or tips. - Lesions expand rapidly and have an irregular, blotchy shape. - A pale green or yellow halo may surround the necrotic lesion. - Under humid conditions, a fuzzy, white mold…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·leaf mold：tomato / leaf mold（Passalora fulva） 鉴别诊断要点： 易混淆：late blight - Leaf mold has olive-green/grayish, velvety mold on the leaf *underside*; late blight has white, fuzzy/downy mold, often at the lesion edge. - Leaf mold lesions are pale yellow on top; late blight lesions are large, water-soaked, dark-green to black, and gre…\n - source=plantinquiry；doc_id=plantinquiry:tomato.pest_insect.leaf_miner:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·Leaf Miner：tomato / Leaf Miner（Liriomyza spp.） 叶片症状： - Winding, serpentine, or blotchy white to tan trails (mines) are visible on the leaf surface. - Mines are located between the upper and lower leaf epidermis. - Mines widen as the larva grows, showing a progression from narrow to broad. - Small, dark specks or a thin black lin…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:symptom_signs_microscopic_or_visible；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·leaf mold：tomato / leaf mold（Passalora fulva） 病征（镜检/可见）症状： - The key visible sign is the velvety, olive-green to grayish-purple mold (sporulation) on the abaxial (lower) leaf surface.\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·leaf mold：tomato / leaf mold（Passalora fulva） 叶片症状： - Initial symptoms are pale green or yellowish spots on the upper surface of older, lower leaves. - Spots have indefinite, diffuse borders, unlike the sharp borders of other leaf spots. - As spots enlarge, the upper surface becomes a brighter yellow, but typically does not bec…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_bacterial.bacterial_spot:symptom_fruit；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·bacterial spot：tomato / bacterial spot（Xanthomonas spp. (e.g., X. perforans, X. euvesicatoria, X. vesicatoria, X. gardneri)） 果实症状： - On green fruit, spots start as small, slightly raised, water-soaked pimples. - Lesions enlarge to become dark brown to black, scabby, and slightly sunken, often up to 8 mm. - The scabby texture is a ke…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:symptom_stems；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·late blight：tomato / late blight（Phytophthora infestans） 茎秆症状： - Large, dark brown to black, greasy-appearing lesions. - Lesions can girdle the stem, causing the plant parts above to wilt and die. - White, fuzzy mold may also appear on stem lesions in high humidity.\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_bacterial.bacterial_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·bacterial spot：tomato / bacterial spot（Xanthomonas spp. (e.g., X. perforans, X. euvesicatoria, X. vesicatoria, X. gardneri)） 叶片症状： - Initial symptoms are small (<3 mm), dark green to black, water-soaked circular spots. - Lesions become angular as their expansion is limited by small leaf veins. - A greasy or oily appearance is often …\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·septoria leaf spot：tomato / septoria leaf spot（Septoria lycopersici） 叶片症状： - Starts on lower, older leaves and progresses upwards. - Initial symptoms are small, water-soaked spots (1-2 mm). - Lesions develop into circular spots (3-6 mm) with dark brown or purplish-brown borders. - Mature lesion centers are typically tan, gray, or white.…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·late blight：tomato / late blight（Phytophthora infestans） 鉴别诊断要点： 易混淆：early blight - Early blight lesions have distinct concentric rings ('target spots'), which are absent in late blight. - Late blight lesions are larger, more water-soaked and irregular. - Early blight typically starts on lower, older leaves, while late blight can…\n - source=plantinquiry；doc_id=plantinquiry:tomato.pest_mite.spider_mites:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·Spider Mites：tomato / Spider Mites（Tetranychus urticae） 叶片症状： - Fine, pale yellow or white stippling (tiny dots) on the upper leaf surface. - Leaves may appear dusty or dirty, particularly on the underside. - With increasing damage, stippled areas coalesce, causing leaves to turn yellow, then bronze. - Affected leaves become dry, …\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   Tomato·Fusarium wilt：Tomato / Fusarium wilt（Fusarium oxysporum f. sp. lycopersici） 叶片症状： - Yellowing of lower, older leaves, often starting on one side of a leaf or branch (unilateral). - Affected leaves wilt during the day and may recover slightly at night initially. - Petioles (leaf stalks) bend downwards, creating a drooping appearance…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.leaf_mold:symptom_stems；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·leaf mold：tomato / leaf mold（Passalora fulva） 茎秆症状： - Stem and petiole infections are uncommon but can occur under severe disease pressure, appearing as dark, moldy patches.\n - source=plantinquiry；doc_id=plantinquiry:tomato.unknown.flea_beetle_injury:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·flea beetle injury：tomato / flea beetle injury（Epitrix spp.） 叶片症状： - Numerous small, round, 'shot-holes' (1-2 mm) that penetrate the leaf. - Small pits or scraped areas on the leaf surface that do not go all the way through. - Damage is most concentrated on cotyledons and the youngest leaves. - Heavy feeding can cause leaves to appear t…\n - 【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-early-blight:diagnosis；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   番茄晚疫病 vs 早疫病 · 鉴别要点：鉴别诊断要点 易混淆：番茄早疫病（Alternaria solani） - 早疫病病斑有明显同心轮纹（靶心状），晚疫病病斑无轮纹、呈水浸状。 - 早疫病从下部老叶开始发病，晚疫病可从中上部叶片与果实同时发生。 - 早疫病病斑边缘清晰有黄晕，晚疫病边缘不清且扩展快。 易混淆：番茄叶霉病 - 叶霉病叶背有橄榄绿至褐色绒状霉层，正面为边界不清的黄斑；晚疫病霉层为白色。\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   Tomato·Fusarium wilt：Tomato / Fusarium wilt（Fusarium oxysporum f. sp. lycopersici） 鉴别诊断要点： 易混淆：Late blight - Late blight causes large, dark, water-soaked lesions on leaves and dark brown lesions on stems, which are absent in Fusarium wilt. - Late blight can show fuzzy white mold on the underside of leaf lesions in humid conditions; Fusari…\n - 【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:symptom-fruit；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   番茄晚疫病·果实症状：番茄晚疫病 果实症状 - 青果期最易受害，果面出现油浸状暗绿至褐色不规则斑块。 - 病斑边缘不清晰，质地硬，后期可扩展至整个果面。 - 与早疫病的区别：早疫病病斑有明显的同心轮纹，晚疫病没有。\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.cercospora_leaf_spot:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   tomato·cercospora leaf spot：tomato / cercospora leaf spot（Cercospora spp.） 叶片症状： - Initial symptoms are small, circular, water-soaked spots, primarily on older, lower leaves. - Lesions enlarge to 2-6 mm in diameter. - Mature lesions have a distinct tan to grayish-white center. - A dark brown to black border surrounds the necrotic center. - The c…\n - source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.fusarium_wilt:symptom_stems；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   Tomato·Fusarium wilt：Tomato / Fusarium wilt（Fusarium oxysporum f. sp. lycopersici） 茎秆症状： - No external lesions, spots, or cankers are typically visible on the stem. - When the main stem is cut open lengthwise near the soil line, a distinct dark brown discoloration of the vascular tissue (xylem) is visible. - The pith (the central core of …\n\n置信提示：检索排序分用于融合图谱和文本证据的名次，不是诊断概率或诊断结论。必须结合现场影像、环境条件与鉴别要点复核后再定级。"
+    },
+    {
+      "tool": "query_pest_disease_library",
+      "status": "success",
+      "arguments": {
+        "crop": "黄瓜",
+        "symptom": "叶片多角形黄褐色病斑，叶背灰黑色霉层"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "cropdp:黄瓜根结线虫病:0",
+        "plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves",
+        "cropdp:甜瓜黑星病:0",
+        "seed:cucumber-downy-mildew:symptom-leaf",
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves",
+        "plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves",
+        "cropdp:黄瓜黑星病:0",
+        "seed:cucumber-downy-mildew:symptom-leaf",
+        "plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves",
+        "plantinquiry:cucumber.healthy.healthy:symptom_leaves",
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves",
+        "plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves",
+        "plantinquiry:cucumber.disease_bacterial.bacterial_wilt:symptom_leaves"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 病虫害查询：作物=黄瓜，症状=叶片多角形黄褐色病斑，叶背灰黑色霉层\n\n■ 候选病害（按证据检索排序，共 5 条）\n\n1. 黄瓜根结线虫病（Colletotrichum orbiculare）  检索排序分 0.0269  [已关联英文防治卡片]\n   source=cropdp；doc_id=cropdp:黄瓜根结线虫病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：淡褐色腐烂；cucumber / anthracnose（Colletotrichum orbiculare） 叶片症状： - Begins as small, water-soaked spots. - Spots enlarge into circular lesions, 1-2 cm in diameter, that …\n   危害作物：黄瓜\n   适宜发生条件：地势高燥；土壤疏松；盐分低\n   英文名/别名：Cucumber root-knot nematode disease\n\n2. 甜瓜黑星病（Cladosporium cucumerinum）  检索排序分 0.0164  [无关联卡片]\n   source=cropdp；doc_id=cropdp:甜瓜黑星病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   命中的症状：灰黑色霉层；见灰黑色霉；为淡黄褐色水渍状条\n   危害部位：叶、茎\n   危害作物：黄瓜、甜瓜、南瓜、西葫芦\n   英文名/别名：Muskmelon scab\n\n3. 黄瓜霜霉病  检索排序分 0.0164  [已关联英文防治卡片]\n   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:cucumber-downy-mildew:symptom-leaf；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   交叉证据：source=plantinquiry；doc_id=plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：黄瓜霜霉病 叶片症状 - 叶正面出现受叶脉限制的多角形黄绿至黄褐色病斑——这是与炭疽病、靶斑病最关键的区别。 - 湿度大时叶背面长出灰黑色霉层。 - 病斑由下部叶片向上蔓延，严重时全叶干枯，田块呈「跑马干」状。；cucumber / downy mildew（Pseudoperonospora cubensis） 叶片症状： - Initial symptoms are pale green to yellow, angular spots on the upper leaf surface. - Lesions are s…\n   危害部位：叶片\n   危害作物：黄瓜\n\n4. gummy stem blight（Stagonosporopsis cucurbitacearum）  检索排序分 0.0161  [已关联英文防治卡片]\n   source=plantinquiry；doc_id=plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   命中的症状：cucumber / gummy stem blight（Stagonosporopsis cucurbitacearum） 叶片症状： - Circular, water-soaked spots, often starting at the leaf margin. - Lesions enlarge, turn…\n   危害部位：leaves\n   危害作物：cucumber\n   英文名/别名：black rot；Didymella blight\n\n5. 黄瓜黑星病（Alternaria cucumerina）  检索排序分 0.0161  [无关联卡片]\n   source=cropdp；doc_id=cropdp:黄瓜黑星病:0；出处=https://github.com/dadadaray/CropDP-KG/tree/Dataset\n   命中的症状：灰黑绿色霉层；淡黄褐；褐色或黑褐色\n   危害部位：叶片、茎蔓、瓜条、卷须、整株\n   危害作物：黄瓜\n   适宜发生条件：低温高湿；光照少；通风不良\n   英文名/别名：Cucumber scab\n\n■ 检索到的补充证据（6 条）\n - 【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:cucumber-downy-mildew:symptom-leaf；出处=agriagents/rag/seed/knowledge_seed.jsonl\n   黄瓜霜霉病·叶片症状：黄瓜霜霉病 叶片症状 - 叶正面出现受叶脉限制的多角形黄绿至黄褐色病斑——这是与炭疽病、靶斑病最关键的区别。 - 湿度大时叶背面长出灰黑色霉层。 - 病斑由下部叶片向上蔓延，严重时全叶干枯，田块呈「跑马干」状。\n - source=plantinquiry；doc_id=plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   cucumber·gummy stem blight：cucumber / gummy stem blight（Stagonosporopsis cucurbitacearum） 叶片症状： - Circular, water-soaked spots, often starting at the leaf margin. - Lesions enlarge, turn tan to dark brown, and may develop a 'shot-hole' appearance as the center dries and falls out. - A yellow halo may surround older leaf lesions.\n - source=plantinquiry；doc_id=plantinquiry:cucumber.healthy.healthy:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   Cucumber·Healthy：Cucumber / Healthy（） 叶片症状： - Uniformly green color, consistent with the cultivar. - Leaves are fully expanded, turgid, and appropriately sized. - Surfaces are free of spots, lesions, yellowing (chlorosis), or necrosis. - No powdery, downy, or sooty mold growth is visible on either leaf surface. - Leaf margins are inta…\n - source=plantinquiry；doc_id=plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   cucumber·downy mildew：cucumber / downy mildew（Pseudoperonospora cubensis） 叶片症状： - Initial symptoms are pale green to yellow, angular spots on the upper leaf surface. - Lesions are sharply defined and bounded by leaf veins, creating a blocky or mosaic-like pattern. - As the disease progresses, lesions enlarge and turn bright yellow, then ta…\n - source=plantinquiry；doc_id=plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   cucumber·anthracnose：cucumber / anthracnose（Colletotrichum orbiculare） 叶片症状： - Begins as small, water-soaked spots. - Spots enlarge into circular lesions, 1-2 cm in diameter, that turn brown to black. - A distinct yellow halo may surround the dark lesions. - The center of older lesions becomes dry, brittle, and often falls out, creating a…\n - source=plantinquiry；doc_id=plantinquiry:cucumber.disease_bacterial.bacterial_wilt:symptom_leaves；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\n   cucumber·Bacterial Wilt：cucumber / Bacterial Wilt（Erwinia tracheiphila） 叶片症状： - Individual leaves suddenly wilt, appearing limp and dull green. - Wilting occurs rapidly without significant prior yellowing or spotting. - Affected leaves eventually turn necrotic and brown but remain attached to the vine. - Wilting often starts on a single leaf…\n\n置信提示：检索排序分用于融合图谱和文本证据的名次，不是诊断概率或诊断结论。必须结合现场影像、环境条件与鉴别要点复核后再定级。"
+    },
+    {
+      "tool": "query_soil_reference",
+      "status": "success",
+      "arguments": {
+        "site_id": "FIELD-07"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "seed:soil:field-07:demo"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 土壤本底档案：FIELD-07\n\n1. FIELD-07 设施番茄土壤档案（演示值）\n   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:soil:field-07:demo；出处=AgriAgents fictional fixture; not a field laboratory report（命中方式 元数据精确匹配）\n   【演示档案：以下数值均为虚构测试值，不是现场取样或实测，不得用于真实水肥处方】\n   对象：FIELD-07；作物：设施番茄。\n   演示记录时间：2026-09-25T08:00:00+08:00。\n   演示 pH：6.4（无量纲，模拟 1:2.5 土水比）；演示 EC：0.32 mS/cm（模拟 1:5 浸提）；演示有机质：22.0 g/kg；演示质地：壤土。\n   用途：测试按精确地块标识检索及单位展示。真实数据需以该地块最新检测报告替换。"
+    },
+    {
+      "tool": "query_soil_reference",
+      "status": "success",
+      "arguments": {
+        "site_id": "GH-09"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "seed:soil:gh-09:demo"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 土壤本底档案：GH-09\n\n1. GH-09 设施黄瓜土壤档案（演示值）\n   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:soil:gh-09:demo；出处=AgriAgents fictional fixture; not a field laboratory report（命中方式 元数据精确匹配）\n   【演示档案：以下数值均为虚构测试值，不是现场取样或实测，不得用于真实水肥处方】\n   对象：GH-09；作物：设施黄瓜。\n   演示记录时间：2026-09-25T08:00:00+08:00。\n   演示 pH：6.7（无量纲，模拟 1:2.5 土水比）；演示 EC：0.41 mS/cm（模拟 1:5 浸提）；演示有机质：24.0 g/kg；演示质地：壤土。\n   用途：测试按精确地块标识检索及单位展示。真实数据需以该地块最新检测报告替换。"
+    },
+    {
+      "tool": "query_equipment_manual",
+      "status": "success",
+      "arguments": {
+        "device_id": "VALVE-11",
+        "fault_code": "E04"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "seed:equipment:demo-valve-v1:e04"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 设备手册：VALVE-11 / E04\n\n1. DEMO-VALVE-V1 / VALVE-11 E04（演示手册）\n   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:equipment:demo-valve-v1:e04；出处=AgriAgents fictional device fixture; not a manufacturer manual（命中方式 元数据精确匹配）\n   【演示手册：虚构型号与故障约定，不是厂商技术资料，不可据此操作真实设备】\n   型号：DEMO-VALVE-V1；设备标识：VALVE-11；故障码：E04；演示场景：FIELD-07 设施番茄。\n   模拟故障：开阀后没有流量反馈。演示排查流程：核对模拟控制器与流量记录时间，检查模拟通信状态，记录异常并转人工复核。演示停止条件：指令状态与流量反馈矛盾时停止后续指令。真实检修必须查阅对应厂商型号手册，由授权人员断电隔离后进行。"
+    },
+    {
+      "tool": "query_equipment_manual",
+      "status": "success",
+      "arguments": {
+        "device_id": "FAN-03",
+        "fault_code": "OFFLINE"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "seed:equipment:demo-fan-v1:offline"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 设备手册：FAN-03 / OFFLINE\n\n1. DEMO-FAN-V1 / FAN-03 OFFLINE（演示手册）\n   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:equipment:demo-fan-v1:offline；出处=AgriAgents fictional device fixture; not a manufacturer manual（命中方式 元数据精确匹配）\n   【演示手册：虚构型号与故障约定，不是厂商技术资料，不可据此操作真实设备】\n   型号：DEMO-FAN-V1；设备标识：FAN-03；故障码：OFFLINE；演示场景：GH-09 设施黄瓜。\n   模拟故障：风机控制器离线。演示排查流程：检查模拟网关心跳和供电状态字段，核对设备地址，记录最后在线时间后转人工复核。演示停止条件：没有可靠状态反馈时不发送重启或转速指令。真实电气和机械检查必须遵守对应厂商型号手册与隔离规定。"
+    },
+    {
+      "tool": "query_agronomy_knowledge",
+      "status": "success",
+      "arguments": {
+        "question": "番茄生育期水肥策略与灌溉湿度管理，叶片病斑发生后的水分控制"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "seed:qa:tomato-fertigation",
+        "qa_zh:0Vi-ruPJkbc4",
+        "qa_zh:0S04AxSzs_DO",
+        "qa_zh:Iaj88aGpAZgD",
+        "qa_zh:MtDa8yW6T7xY"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 农艺知识检索：番茄生育期水肥策略与灌溉湿度管理，叶片病斑发生后的水分控制\n命中 5 条：\n\n1. 设施番茄如何做水肥一体化管理\n   【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:qa:tomato-fertigation；出处=agriagents/rag/seed/knowledge_seed.jsonl（命中方式 bm25#3+dense#1）\n   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。\n   问：设施番茄如何做水肥一体化管理？ 答：按生育期分阶段控制。定植至缓苗期保持土壤相对含水量 70%–80%，少施或不施肥；开花坐果期适当控水蹲苗，防止徒长；果实膨大期加大水肥供应，每次灌水随水追施高钾水溶肥；采收后期减少氮肥，避免植株贪青。 注意： - 每次灌溉后要检查根区 EC 值，过高说明盐分累积，需要加大淋洗量。 - 阴天不灌或少灌，避免棚内湿度升高诱发灰霉与晚疫。\n\n2. 滴灌等水肥一体化技术如何控制病害？\n   source=qa_zh；doc_id=qa_zh:0Vi-ruPJkbc4；出处=https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery（命中方式 bm25#1+dense#4）\n   适用范围：通用农艺资料，尚未验证对所问作物的适用性。\n   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。\n   问：滴灌等水肥一体化技术如何控制病害？ 答：采用滴灌等水肥一体化技术可以直接控制土传病害的发生。滴灌还可以降低棚内的湿度，减轻病害的发生。\n\n3. 滴灌系统如何控制保护地内的湿度并减少药物的施用量？\n   source=qa_zh；doc_id=qa_zh:0S04AxSzs_DO；出处=https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery（命中方式 bm25#5+dense#5）\n   适用范围：通用农艺资料，尚未验证对所问作物的适用性。\n   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。\n   问：滴灌系统如何控制保护地内的湿度并减少药物的施用量？ 答：通过滴灌系统提供的充足水分和养分，使土壤水分处于能满足作物要求的稳定和较低吸力状态，从而有效控制保护地内的湿度，降低作物病虫害的发生频率和药物的施用量。\n\n4. 滴灌施肥有哪些优点？\n   source=qa_zh；doc_id=qa_zh:Iaj88aGpAZgD；出处=https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery（命中方式 bm25#2+dense#12）\n   适用范围：通用农艺资料，尚未验证对所问作物的适用性。\n   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。\n   问：滴灌施肥有哪些优点？ 答：滴灌施肥可以减少病害的传播，特别是随水传播的病害，如枯萎病；因为滴灌是单株灌溉的，滴灌时水分向土壤入渗，地面相对干燥，降低了株行间湿度，发病也会显著减轻；滴灌施肥只湿润根层，行间没有水肥供应，杂草生长也会显著减少。\n\n5. 与传统灌溉方式相比，滴灌的主要优势是什么？\n   source=qa_zh；doc_id=qa_zh:MtDa8yW6T7xY；出处=https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery（命中方式 bm25#4）\n   适用范围：通用农艺资料，尚未验证对所问作物的适用性。\n   使用约束：主题相关原文；通用资料未验证具体作物适用性，不替代处置方案、实测档案或型号手册。\n   问：与传统灌溉方式相比，滴灌的主要优势是什么？ 答：与传统灌溉方式相比，滴灌的主要优势包括节约水资源和电能源，保护土壤养分以及提高肥料利用率，降低空气湿度减少植物病害发生。\n\n说明：以上为知识库原文或标有来源的摘要。「上游标注已验证」不代表人工或本项目专家审核。条目冲突时须标注分歧并核对适用范围与原始来源。"
+    },
+    {
+      "tool": "get_treatment_options",
+      "status": "success",
+      "arguments": {
+        "diagnosis": "番茄晚疫病",
+        "crop": "番茄"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "plantinquiry:tomato.disease_fungal.late_blight:management",
+        "seed:tomato-late-blight:management"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 处置方案查询：番茄晚疫病，作物=番茄\n\n■ 方案 1：late blight（作物 tomato）\n  source=plantinquiry；doc_id=plantinquiry:tomato.disease_fungal.late_blight:management；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl（linked-card）\n  tomato / late blight（Phytophthora infestans）\n  栽培措施：\n  - Use certified disease-free seeds and transplants.\n  - Ensure good air circulation through proper plant spacing and pruning.\n  - Avoid overhead irrigation; use drip irrigation to keep foliage dry.\n  - Remove and destroy infected plants and debris promptly.\n  - Rotate crops, avoiding planting tomatoes or potatoes in the same spot for 3-4 years.\n  生物防治：\n  - Application of bio-fungicides containing Bacillus subtilis or copper-based compounds (e.g., copper hydroxide) can be suppressive.\n  化学防治：\n  - Preventative application of protectant fungicides like chlorothalonil or mancozeb.\n  - Curative application of systemic fungicides like metalaxyl, mefenoxam, or cymoxanil once disease is detected.\n  注意事项：Consult local extension services for recommended fungicides and spray schedules, as resistance management is critical. Predictive models based on weather data can help time applications.\n■ 方案 2：番茄晚疫病（作物 番茄）\n  【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:tomato-late-blight:management；出处=agriagents/rag/seed/knowledge_seed.jsonl（exact-disease-crop）\n  原文缺失字段：剂量、安全间隔期、最大用药次数、禁用情形\n  番茄晚疫病 防治方案（结构性示例）\n  栽培措施：\n  - 控制棚内湿度，避免叶面长时间结露；上午通风排湿。\n  - 合理密植，及时整枝打杈并清出病残体。\n  - 与非茄科作物轮作，避免连作。\n  生物防治：\n  - 预防期可选用登记用于卵菌的生物制剂（示例占位，需按当地登记目录核对）。\n  化学防治：\n  - 发病初期及时用药，注意轮换作用机理不同的药剂以延缓抗性。\n  - 【占位】具体药剂品种、用量、安全间隔期与最大用药次数未收录，须由人工按当地登记标准确认。\n\n■ 关联卡片摘要\n  病害类型：disease_oomycete\n  作物：tomato\n  病原学名：Phytophthora infestans\n\n⚠ 字段完整性：知识库收录的是防治**方向**（栽培/生物/化学措施），通常**不含**具体用药量、安全间隔期与禁用情形。这些字段缺失时不得由模型补全；涉及化学药剂须转人工确认后方可执行。"
+    },
+    {
+      "tool": "get_treatment_options",
+      "status": "success",
+      "arguments": {
+        "diagnosis": "黄瓜霜霉病",
+        "crop": "黄瓜"
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+        "seed:cucumber-downy-mildew:management"
+      ],
+      "evidence_valid": true,
+      "result": "[local_rag] 处置方案查询：黄瓜霜霉病，作物=黄瓜\n\n■ 方案 1：downy mildew（作物 cucumber）\n  source=plantinquiry；doc_id=plantinquiry:cucumber.disease_fungal.downy_mildew:management；出处=https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl（linked-card）\n  cucumber / downy mildew（Pseudoperonospora cubensis）\n  栽培措施：\n  - Plant resistant or tolerant cucumber varieties.\n  - Maximize air circulation by increasing plant spacing and using trellising.\n  - Avoid overhead irrigation to minimize leaf wetness duration; use drip irrigation instead.\n  - Scout plants regularly, especially the undersides of leaves, for early detection.\n  生物防治：\n  - Biofungicides based on *Bacillus* species or neem oil may provide some preventative suppression but are generally less effective than chemical options during high disease pressure.\n  化学防治：\n  - Apply preventative fungicides when environmental conditions are favorable for disease development.\n  - Ensure thorough spray coverage, especially on the undersides of leaves where the pathogen sporulates.\n  - Rotate fungicides with different modes of action (FRAC groups) to manage the risk of resistance.\n  注意事项：Downy mildew is an aggressive pathogen that can overcome host resistance and develop fungicide resistance rapidly. Timely and preventative management is critical.\n■ 方案 2：黄瓜霜霉病（作物 黄瓜）\n  【演示/模拟数据，非现场实测，不可直接用于生产】 source=seed；doc_id=seed:cucumber-downy-mildew:management；出处=agriagents/rag/seed/knowledge_seed.jsonl（exact-disease-crop）\n  原文缺失字段：剂量、安全间隔期、最大用药次数\n  黄瓜霜霉病 防治方案（结构性示例）\n  栽培措施：\n  - 控制夜间温度不低于 12℃，减少叶面结露时间。\n  - 高温闷棚（晴天上下午密闭升温至 44–46℃ 保持 2 小时）是常用生态防治手段，但须严格控温，避免药害式灼伤。\n  - 及时摘除下部病叶，改善通风。\n  化学防治：\n  - 【占位】药剂品种、剂量、安全间隔期未收录，须人工确认。\n\n■ 关联卡片摘要\n  病害类型：disease_oomycete\n  作物：cucumber\n  病原学名：Pseudoperonospora cubensis\n\n⚠ 字段完整性：知识库收录的是防治**方向**（栽培/生物/化学措施），通常**不含**具体用药量、安全间隔期与禁用情形。这些字段缺失时不得由模型补全；涉及化学药剂须转人工确认后方可执行。"
+    },
+    {
+      "tool": "search_knowledge_base",
+      "status": "success",
+      "arguments": {
+        "query": "crop rotation",
+        "source": "qa_en",
+        "dataset": "talhakk/agriculture-qa",
+        "top_k": 3
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a",
+        "qa_en:talhakk/agriculture-qa:8b6d3409bfb3e6b2",
+        "qa_en:talhakk/agriculture-qa:a249103de393367c"
+      ],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"query\": \"crop rotation\", \"source_filter\": \"qa_en\", \"kind_filter\": \"\", \"crop_filter\": \"\", \"dataset_filter\": \"talhakk/agriculture-qa\", \"found\": true, \"reason\": \"\", \"evidence\": [{\"doc_id\": \"qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"what is the importance of crop rotation.\", \"text\": \"问题：what is the importance of crop rotation.\\n解答：Implementing crop rotation practices helps to break the cycle of soil erosion. Alternating maize cultivation with other crops, such as legumes or root crops, helps to improve soil health, reduce erosion, and mitigate nutrient depletion.\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\", \"dataset_provenance\": [{\"dataset\": \"talhakk/agriculture-qa\", \"original_doc_id\": \"qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\"}, {\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:7c5bf803e56ddd4a\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}], \"matched_dataset\": {\"dataset\": \"talhakk/agriculture-qa\", \"original_doc_id\": \"qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [\"maize\"], \"dataset\": \"talhakk/agriculture-qa\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\", \"verified_by\": \"\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"inferred\", \"crop_metadata_basis\": \"answer\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#5+dense#3\"}, {\"doc_id\": \"qa_en:talhakk/agriculture-qa:8b6d3409bfb3e6b2\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"what is crop rotation in soil management?\", \"text\": \"问题：what is crop rotation in soil management?\\n解答：a technique used in soil management to reduce soil-borne diseases and pests and improve soil fertility\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\", \"dataset_provenance\": [{\"dataset\": \"talhakk/agriculture-qa\", \"original_doc_id\": \"qa_en:talhakk/agriculture-qa:8b6d3409bfb3e6b2\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\"}, {\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:8b6d3409bfb3e6b2\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}], \"matched_dataset\": {\"dataset\": \"talhakk/agriculture-qa\", \"original_doc_id\": \"qa_en:talhakk/agriculture-qa:8b6d3409bfb3e6b2\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"talhakk/agriculture-qa\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\", \"verified_by\": \"\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#9+dense#1\"}, {\"doc_id\": \"qa_en:talhakk/agriculture-qa:a249103de393367c\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"why is crop rotation important in farming?\", \"text\": \"问题：why is crop rotation important in farming?\\n解答：This helps to prevent soil erosion and depletion, and can also help to control pests and diseases\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\", \"dataset_provenance\": [{\"dataset\": \"talhakk/agriculture-qa\", \"original_doc_id\": \"qa_en:talhakk/agriculture-qa:a249103de393367c\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\"}, {\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:a249103de393367c\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}], \"matched_dataset\": {\"dataset\": \"talhakk/agriculture-qa\", \"original_doc_id\": \"qa_en:talhakk/agriculture-qa:a249103de393367c\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"talhakk/agriculture-qa\", \"source_ref\": \"https://huggingface.co/datasets/talhakk/agriculture-qa\", \"verified_by\": \"\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#8+dense#2\"}], \"usage\": \"检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。\"}"
+    },
+    {
+      "tool": "search_knowledge_base",
+      "status": "success",
+      "arguments": {
+        "query": "crop rotation",
+        "source": "qa_en",
+        "dataset": "KisanVaani/agriculture-qa-english-only",
+        "top_k": 3
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42",
+        "qa_en:KisanVaani/agriculture-qa-english-only:5faa20c549c71452",
+        "qa_en:KisanVaani/agriculture-qa-english-only:5251be6768307325"
+      ],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"query\": \"crop rotation\", \"source_filter\": \"qa_en\", \"kind_filter\": \"\", \"crop_filter\": \"\", \"dataset_filter\": \"KisanVaani/agriculture-qa-english-only\", \"found\": true, \"reason\": \"\", \"evidence\": [{\"doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"what is crop rotation\", \"text\": \"问题：what is crop rotation\\n解答：Crop rotation is the practice of growing a series of different crops in the same area over several seasons\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\", \"dataset_provenance\": [{\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}], \"matched_dataset\": {\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\", \"verified_by\": \"\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#1+dense#2\"}, {\"doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:5faa20c549c71452\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"what is Crop rotation.\", \"text\": \"问题：what is Crop rotation.\\n解答：The practice of growing a series of different types of crops in the same area in sequenced\\nseasons or years\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\", \"dataset_provenance\": [{\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:5faa20c549c71452\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}], \"matched_dataset\": {\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:5faa20c549c71452\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\", \"verified_by\": \"\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#10+dense#1\"}, {\"doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:5251be6768307325\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"why is crop rotation important?\", \"text\": \"问题：why is crop rotation important?\\n解答：help to maintain soil health and improve crop yields over time\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\", \"dataset_provenance\": [{\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:5251be6768307325\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}], \"matched_dataset\": {\"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"original_doc_id\": \"qa_en:KisanVaani/agriculture-qa-english-only:5251be6768307325\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"KisanVaani/agriculture-qa-english-only\", \"source_ref\": \"https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only\", \"verified_by\": \"\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#9+dense#4\"}], \"usage\": \"检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。\"}"
+    },
+    {
+      "tool": "search_knowledge_base",
+      "status": "success",
+      "arguments": {
+        "query": "hectares acres conversion",
+        "source": "qa_en",
+        "dataset": "manifesta/verified-agronomy-17k",
+        "top_k": 3
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "qa_en:manifesta/verified-agronomy-17k:f_units_0000040",
+        "qa_en:manifesta/verified-agronomy-17k:f_units_0000659",
+        "qa_en:manifesta/verified-agronomy-17k:f_units_0000042"
+      ],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"query\": \"hectares acres conversion\", \"source_filter\": \"qa_en\", \"kind_filter\": \"\", \"crop_filter\": \"\", \"dataset_filter\": \"manifesta/verified-agronomy-17k\", \"found\": true, \"reason\": \"\", \"evidence\": [{\"doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000040\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"How many acres is 319.7 hectares?\", \"text\": \"问题：How many acres is 319.7 hectares?\\n解答：790 ac\\n推导过程：1 ha = 2.47105 ac.\\n319.7 x 2.47105 = 790 ac.\\n\\nThe final answer is $\\\\boxed{790 ac}$.\\n来源：SI / US customary conversion factors\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\", \"dataset_provenance\": [{\"dataset\": \"manifesta/verified-agronomy-17k\", \"original_doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000040\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\"}], \"matched_dataset\": {\"dataset\": \"manifesta/verified-agronomy-17k\", \"original_doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000040\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"manifesta/verified-agronomy-17k\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\", \"verified_by\": \"closed-form\", \"project_human_verified\": false, \"evidence_status\": \"upstream_claim\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#18+dense#3\"}, {\"doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000659\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"How many acres is 41.7 hectares?\", \"text\": \"问题：How many acres is 41.7 hectares?\\n解答：103.04 ac\\n推导过程：1 ha = 2.47105 ac.\\n41.7 x 2.47105 = 103.04 ac.\\n\\nThe final answer is $\\\\boxed{103.04 ac}$.\\n来源：SI / US customary conversion factors\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\", \"dataset_provenance\": [{\"dataset\": \"manifesta/verified-agronomy-17k\", \"original_doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000659\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\"}], \"matched_dataset\": {\"dataset\": \"manifesta/verified-agronomy-17k\", \"original_doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000659\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"manifesta/verified-agronomy-17k\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\", \"verified_by\": \"closed-form\", \"project_human_verified\": false, \"evidence_status\": \"upstream_claim\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#26+dense#10\"}, {\"doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000042\", \"source\": \"qa_en\", \"kind\": \"qa_pair\", \"title\": \"How many acres is 23 hectares?\", \"text\": \"问题：How many acres is 23 hectares?\\n解答：56.83 ac\\n推导过程：1 ha = 2.47105 ac.\\n23 x 2.47105 = 56.83 ac.\\n\\nThe final answer is $\\\\boxed{56.83 ac}$.\\n来源：SI / US customary conversion factors\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\", \"dataset_provenance\": [{\"dataset\": \"manifesta/verified-agronomy-17k\", \"original_doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000042\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\"}], \"matched_dataset\": {\"dataset\": \"manifesta/verified-agronomy-17k\", \"original_doc_id\": \"qa_en:manifesta/verified-agronomy-17k:f_units_0000042\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\"}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"dataset\": \"manifesta/verified-agronomy-17k\", \"source_ref\": \"https://huggingface.co/datasets/manifesta/verified-agronomy-17k\", \"verified_by\": \"closed-form\", \"project_human_verified\": false, \"evidence_status\": \"upstream_claim\", \"crop_scope\": \"general\", \"crop_metadata_basis\": \"none\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#1\"}], \"usage\": \"检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。\"}"
+    },
+    {
+      "tool": "search_knowledge_base",
+      "status": "success",
+      "arguments": {
+        "query": "番茄施肥",
+        "source": "qa_zh",
+        "top_k": 3
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "qa_zh:lHvAy9SZx2mO",
+        "qa_zh:R3oiNAPFTf94",
+        "qa_zh:LSlMdfl-pZdg"
+      ],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"query\": \"番茄施肥\", \"source_filter\": \"qa_zh\", \"kind_filter\": \"\", \"crop_filter\": \"\", \"dataset_filter\": \"\", \"found\": true, \"reason\": \"\", \"evidence\": [{\"doc_id\": \"qa_zh:lHvAy9SZx2mO\", \"source\": \"qa_zh\", \"kind\": \"qa_pair\", \"title\": \"番茄叶霉病的治疗方法是什么？\", \"text\": \"问：番茄叶霉病的治疗方法是什么？\\n答：西红柿得了番茄叶霉病后，将西红柿的病叶剪掉并集中烧毁，切断传染源。修剪完病叶后，可以给西红柿喷洒福美双、多菌灵、百菌清或加瑞农等药剂。药剂7~8天使用1次，中途不要停用，连续使用2~3次后可除去番茄叶霉病。\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"dataset_provenance\": [{\"dataset\": \"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"original_doc_id\": \"qa_zh:lHvAy9SZx2mO\", \"source_ref\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [\"番茄\"], \"dataset\": \"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"source_ref\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"explicit\", \"crop_metadata_basis\": \"question\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#2+dense#5\"}, {\"doc_id\": \"qa_zh:R3oiNAPFTf94\", \"source\": \"qa_zh\", \"kind\": \"qa_pair\", \"title\": \"如何通过巧用白糖来防止西红柿早衰？\", \"text\": \"问：如何通过巧用白糖来防止西红柿早衰？\\n答：在西红柿定植时，定植穴内加入白糖，每穴用量为10-15克，不仅有利于西红柿产生不定根，促进缓苗，防止西红柿早衰，而且可以改变西红柿品质，增强西红柿的抗性。\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"dataset_provenance\": [{\"dataset\": \"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"original_doc_id\": \"qa_zh:R3oiNAPFTf94\", \"source_ref\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [\"番茄\"], \"dataset\": \"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"source_ref\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"explicit\", \"crop_metadata_basis\": \"question\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#3+dense#4\"}, {\"doc_id\": \"qa_zh:LSlMdfl-pZdg\", \"source\": \"qa_zh\", \"kind\": \"qa_pair\", \"title\": \"西红柿含有的哪种成分具有抑制细菌的作用？\", \"text\": \"问：西红柿含有的哪种成分具有抑制细菌的作用？\\n答：“番茄素”是西红柿含有的成分，具有抑制细菌的作用。\", \"truncated\": false, \"citation\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"dataset_provenance\": [{\"dataset\": \"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"original_doc_id\": \"qa_zh:LSlMdfl-pZdg\", \"source_ref\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [\"番茄\"], \"dataset\": \"Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"source_ref\": \"https://huggingface.co/datasets/Mxode/Chinese-QA-Agriculture_Forestry_Animal_Husbandry_Fishery\", \"project_human_verified\": false, \"evidence_status\": \"unreviewed_public_qa\", \"crop_scope\": \"explicit\", \"crop_metadata_basis\": \"question\", \"crop_metadata_inferred\": true}, \"match_method\": \"bm25#1+dense#7\"}], \"usage\": \"检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。\"}"
+    },
+    {
+      "tool": "search_knowledge_base",
+      "status": "success",
+      "arguments": {
+        "query": "番茄晚疫病",
+        "source": "cropdp",
+        "top_k": 3
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "cropdp:番茄晚疫病:0",
+        "cropdp:葱疫病:0",
+        "cropdp:大蒜疫病:0"
+      ],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"query\": \"番茄晚疫病\", \"source_filter\": \"cropdp\", \"kind_filter\": \"\", \"crop_filter\": \"\", \"dataset_filter\": \"\", \"found\": true, \"reason\": \"\", \"evidence\": [{\"doc_id\": \"cropdp:番茄晚疫病:0\", \"source\": \"cropdp\", \"kind\": \"kg_entity\", \"title\": \"番茄晚疫病\", \"text\": \"【番茄晚疫病】Phytophthora infestans\\n英文名/别名：Tomato late blight\\n危害作物：番茄（tomato）\\n危害部位：叶片、茎部、果实（blade；Stem；fruit）\\n典型症状：暗绿色水浸状不整形病斑、白色霉状物、病斑呈绿褐色、水渍状变暗褐色至黑褐色、稍向下凹陷、植株萎蔫、茎叶枯死、病斑呈不明显的油浸状大斑、病斑稍凹陷、边缘不变红（Dark green water-soaked irregular lesions；White mold；Green-brown lesions；Water-soaked dark brown to black brown；Slightly concave；Plant wilting；Stem and leaf death；The lesions are large, inconspicuous, oil-soaked spots；The lesion is slightly sunken；The edge does not turn red）\\n适宜发生条件：以上，空气湿度、地势低洼、排水不良（Above, air humidity；Low-lying terrain；Poor drainage）\\n适宜温度：24℃\", \"truncated\": false, \"citation\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\", \"dataset_provenance\": [{\"dataset\": \"CropDP-KG\", \"original_doc_id\": \"cropdp:番茄晚疫病:0\", \"source_ref\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [\"番茄\"], \"entity\": \"番茄晚疫病\", \"dataset\": \"CropDP-KG\", \"source_ref\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\", \"project_human_verified\": false, \"evidence_status\": \"public_knowledge_graph\"}, \"match_method\": \"bm25#1+dense#1\"}, {\"doc_id\": \"cropdp:葱疫病:0\", \"source\": \"cropdp\", \"kind\": \"kg_entity\", \"title\": \"葱疫病\", \"text\": \"【葱疫病】\\n英文名/别名：Onion Phytophthora blight\", \"truncated\": false, \"citation\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\", \"dataset_provenance\": [{\"dataset\": \"CropDP-KG\", \"original_doc_id\": \"cropdp:葱疫病:0\", \"source_ref\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"entity\": \"葱疫病\", \"dataset\": \"CropDP-KG\", \"source_ref\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\", \"project_human_verified\": false, \"evidence_status\": \"public_knowledge_graph\"}, \"match_method\": \"bm25#3+dense#2\"}, {\"doc_id\": \"cropdp:大蒜疫病:0\", \"source\": \"cropdp\", \"kind\": \"kg_entity\", \"title\": \"大蒜疫病\", \"text\": \"【大蒜疫病】\\n英文名/别名：Garlic Phytophthora blight\", \"truncated\": false, \"citation\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\", \"dataset_provenance\": [{\"dataset\": \"CropDP-KG\", \"original_doc_id\": \"cropdp:大蒜疫病:0\", \"source_ref\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [], \"entity\": \"大蒜疫病\", \"dataset\": \"CropDP-KG\", \"source_ref\": \"https://github.com/dadadaray/CropDP-KG/tree/Dataset\", \"project_human_verified\": false, \"evidence_status\": \"public_knowledge_graph\"}, \"match_method\": \"bm25#4+dense#4\"}], \"usage\": \"检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。\"}"
+    },
+    {
+      "tool": "search_knowledge_base",
+      "status": "success",
+      "arguments": {
+        "query": "cucumber downy mildew leaf symptoms",
+        "source": "plantinquiry",
+        "kind": "symptom",
+        "top_k": 3
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves",
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_stems",
+        "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_roots"
+      ],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"query\": \"cucumber downy mildew leaf symptoms\", \"source_filter\": \"plantinquiry\", \"kind_filter\": \"symptom\", \"crop_filter\": \"\", \"dataset_filter\": \"\", \"found\": true, \"reason\": \"\", \"evidence\": [{\"doc_id\": \"plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves\", \"source\": \"plantinquiry\", \"kind\": \"symptom\", \"title\": \"cucumber·downy mildew\", \"text\": \"cucumber / downy mildew（Pseudoperonospora cubensis）\\n叶片症状：\\n- Initial symptoms are pale green to yellow, angular spots on the upper leaf surface.\\n- Lesions are sharply defined and bounded by leaf veins, creating a blocky or mosaic-like pattern.\\n- As the disease progresses, lesions enlarge and turn bright yellow, then tan-brown and necrotic.\\n- Affected leaves may curl upwards at the margins.\\n- Severely infected leaves die but often remain attached to the vine.\", \"truncated\": false, \"citation\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\", \"dataset_provenance\": [{\"dataset\": \"PlantInquiryVQA\", \"original_doc_id\": \"plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves\", \"source_ref\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crop\": \"cucumber\", \"disease\": \"downy mildew\", \"disease_id\": \"cucumber.disease_fungal.downy_mildew\", \"part\": \"leaves\", \"dataset\": \"PlantInquiryVQA\", \"source_ref\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\", \"project_human_verified\": false, \"evidence_status\": \"public_disease_card\"}, \"match_method\": \"bm25#1+dense#3\"}, {\"doc_id\": \"plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_stems\", \"source\": \"plantinquiry\", \"kind\": \"symptom\", \"title\": \"cucumber·downy mildew\", \"text\": \"cucumber / downy mildew（Pseudoperonospora cubensis）\\n茎秆症状：\\n- Stems are typically not directly affected.\", \"truncated\": false, \"citation\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\", \"dataset_provenance\": [{\"dataset\": \"PlantInquiryVQA\", \"original_doc_id\": \"plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_stems\", \"source_ref\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crop\": \"cucumber\", \"disease\": \"downy mildew\", \"disease_id\": \"cucumber.disease_fungal.downy_mildew\", \"part\": \"stems\", \"dataset\": \"PlantInquiryVQA\", \"source_ref\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\", \"project_human_verified\": false, \"evidence_status\": \"public_disease_card\"}, \"match_method\": \"bm25#5+dense#1\"}, {\"doc_id\": \"plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_roots\", \"source\": \"plantinquiry\", \"kind\": \"symptom\", \"title\": \"cucumber·downy mildew\", \"text\": \"cucumber / downy mildew（Pseudoperonospora cubensis）\\n根系症状：\\n- Roots are not directly affected by the pathogen.\", \"truncated\": false, \"citation\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\", \"dataset_provenance\": [{\"dataset\": \"PlantInquiryVQA\", \"original_doc_id\": \"plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_roots\", \"source_ref\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\"}], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crop\": \"cucumber\", \"disease\": \"downy mildew\", \"disease_id\": \"cucumber.disease_fungal.downy_mildew\", \"part\": \"roots\", \"dataset\": \"PlantInquiryVQA\", \"source_ref\": \"https://github.com/syed-nazmus-sakib/PlantInquiryVQA/blob/main/diseases_knowledge_base/all_cards.jsonl\", \"project_human_verified\": false, \"evidence_status\": \"public_disease_card\"}, \"match_method\": \"bm25#6+dense#4\"}], \"usage\": \"检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。\"}"
+    },
+    {
+      "tool": "search_knowledge_base",
+      "status": "success",
+      "arguments": {
+        "query": "黄瓜温室定植水肥",
+        "source": "curated",
+        "top_k": 3
+      },
+      "local_rag": true,
+      "fallback": false,
+      "doc_ids": [
+        "curated:cucumber-transplant-fertigation",
+        "curated:greenhouse-perlite-fertigation"
+      ],
+      "evidence_valid": true,
+      "result": "{\"vendor\": \"local_rag\", \"query\": \"黄瓜温室定植水肥\", \"source_filter\": \"curated\", \"kind_filter\": \"\", \"crop_filter\": \"\", \"dataset_filter\": \"\", \"found\": true, \"reason\": \"\", \"evidence\": [{\"doc_id\": \"curated:cucumber-transplant-fertigation\", \"source\": \"curated\", \"kind\": \"agronomy\", \"title\": \"温室黄瓜移栽初期的水肥查证要点（UAF 来源释义）\", \"text\": \"适用范围：UAF 推广资料中的阿拉斯加温室黄瓜育苗与容器、基质栽培。\\n黄瓜移栽、定植初期的浇水施肥：苗期保持适当湿润，基质兼具保水和排水能力。供水和养分随植株大小、生长阶段调整，幼株营养液浓度从低开始，随后按生长需求调整。配方需结合灌溉水水质分析及作物需求。\\n这是原文的简短中文释义，不包含国外用量配方，也不是本地定量处方；土耕温室需另核验土壤、水质与栽培条件。\", \"truncated\": false, \"citation\": \"https://www.uaf.edu/ces/publications/database/gardening/growing-cucumbers-greenhouses.php\", \"dataset_provenance\": [], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crop\": \"黄瓜\", \"crops\": [\"黄瓜\"], \"source_ref\": \"https://www.uaf.edu/ces/publications/database/gardening/growing-cucumbers-greenhouses.php\", \"project_human_verified\": false, \"evidence_status\": \"source_summary\", \"publisher\": \"University of Alaska Fairbanks Cooperative Extension Service\", \"retrieved_at\": \"2026-09-29\", \"applicability\": \"阿拉斯加温室黄瓜育苗、容器与基质栽培；本地适用性和剂量须另核验\", \"crop_scope\": \"explicit\"}, \"match_method\": \"bm25#1+dense#2\"}, {\"doc_id\": \"curated:greenhouse-perlite-fertigation\", \"source\": \"curated\", \"kind\": \"agronomy\", \"title\": \"温室珍珠岩无土栽培的定植灌溉检查（UF/IFAS 来源释义）\", \"text\": \"适用范围：UF/IFAS 面向佛罗里达温室番茄、黄瓜的珍珠岩袋培无土系统。\\n移栽定植后，滴头先湿润苗坨附近基质；种植袋应充分排水，避免积水挤占根区通气空间。浇水施肥需结合灌溉水分析，并检查滴头流量及供液均匀性。持续记录供液、排液的 EC 和养分浓度，结合生长阶段观察变化。\\n这是来源的简短中文释义，不照搬国外灌溉频次、EC 阈值或肥料用量；土耕和其他基质应另行核验，不能直接套作本地处方。\", \"truncated\": false, \"citation\": \"https://ask.ifas.ufl.edu/publication/HS169\", \"dataset_provenance\": [], \"matched_dataset\": {}, \"is_demo\": false, \"applicability_validated\": false, \"required_tool\": \"\", \"metadata\": {\"crops\": [\"番茄\", \"黄瓜\"], \"source_ref\": \"https://ask.ifas.ufl.edu/publication/HS169\", \"project_human_verified\": false, \"evidence_status\": \"source_summary\", \"publisher\": \"University of Florida IFAS Extension\", \"retrieved_at\": \"2026-09-29\", \"applicability\": \"佛罗里达温室番茄、黄瓜珍珠岩袋培；其他介质和地区须另核验\", \"crop_scope\": \"explicit\"}, \"match_method\": \"bm25#2+dense#1\"}], \"usage\": \"检索结果是待核对的原文证据。处置方案、地块档案和设备故障须再用专用工具按作物/对象核对；不得把相似度作为诊断置信度。\"}"
+    }
+  ],
+  "answer": "# 知识库工具接线验收 + 诊断报告\n\n> **重要前提（对象档案声明）**：本轮为**检索链路验收**。FIELD-07 番茄、GH-09 黄瓜、VALVE-11、FAN-03 **均为演示场景，不是现场事实**；上游「感知报告」本身也标注为\"演示输入\"；土壤、设备、部分病害条目带有 `is_demo` / 演示标注。下列全部结论仅用于**验证工具接线与证据链格式**，不得作为生产诊断或作业依据。\n\n---\n\n## 一、工具接线验收结果\n\n| # | 工具 | 调用 | 结果 |\n|---|---|---|---|\n| 0 | `list_knowledge_bases` | 1 次 | ✅ 6 个 source：cropdp(2578)、curated(2)、plantinquiry(1946)、qa_en(40583)、qa_zh(5993)、seed(22, 全部 demo)；seed 有 22 条演示文档 |\n| 1 | `query_pest_disease_library` | 番茄 / 黄瓜 | ✅ 各返回 5 候选 |\n| 2 | `query_soil_reference` | FIELD-07 / GH-09 | ✅ 均按 site_id 精确命中（seed 演示档案） |\n| 3 | `query_equipment_manual` | VALVE-11/E04、FAN-03/OFFLINE | ✅ 均精确命中（seed 演示手册） |\n| 4 | `query_agronomy_knowledge` | 番茄水肥/湿度 | ✅ 命中 5 条（1 seed + 4 qa_zh） |\n| 5 | `get_treatment_options` | 番茄晚疫病 / 黄瓜霜霉病 | ✅ 两个锚点均命中，各返回 2 方案 |\n| 6 | `search_knowledge_base` | 7 组指定 source/dataset | ✅ 见下表 |\n\n**`search_knowledge_base` 分组接线**\n\n| 限定 | 命中 | 关键 doc_id |\n|---|---|---|\n| source=qa_en, dataset=talhakk/agriculture-qa, \"crop rotation\" | ✅ 3 条 | `qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a` |\n| source=qa_en, dataset=KisanVaani/agriculture-qa-english-only, 同词 | ✅ 3 条 | `qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42` |\n| source=qa_en, dataset=manifesta/verified-agronomy-17k, \"hectares acres conversion\" | ✅ 3 条 | `qa_en:manifesta/verified-agronomy-17k:f_units_0000040` |\n| source=qa_zh, \"番茄施肥\" | ✅ 3 条（**主题漂移，见下**） | `qa_zh:lHvAy9SZx2mO` |\n| source=cropdp, \"番茄晚疫病\" | ✅ 3 条 | `cropdp:番茄晚疫病:0` |\n| source=plantinquiry, kind=symptom, cucumber downy mildew | ✅ 3 条 | `plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves` |\n| source=curated, \"黄瓜温室定植水肥\" | ✅ 2 条（curated 全量 2 条） | `curated:cucumber-transplant-fertigation` |\n\n**接线发现（供维护）**：\n1. **talhakk 与 KisanVaani 的同一条目在不同 dataset 下共享同一 doc_id 后缀**（如 `7c5bf803e56ddd4a` 存在于两个 dataset 的 provenance）；`matched_dataset` 正确指向所筛数据集，但**溯源时须以 matched_dataset/source_ref 区分**，不能只看 hash。\n2 **检索≠精准**：`qa_zh` 查\"番茄施肥\"，返回的第 1 条是\"番茄叶霉病治疗\"（含福美双/多菌灵/百菌清及 7~8 天频次），第 3 条是\"番茄素抑菌\"——与施肥无关，属通用 QA 语料的主题漂移。**这类条目不得作为处置证据**（详见第四节红线）。\n3. seed 源的两条病害条目自带\"【演示/模拟数据，非现场实测】\"前缀，为合格演示。\n\n---\n\n## 二、诊断报告（番茄 · FIELD-07）\n\n### 候选假设与排除\n\n**H1 番茄晚疫病（Phytophthora infestans）— 支持**\n- 支持：报告\"叶片暗绿色水浸状病斑、潮湿时白色霉层\"，与图谱典型症状\"暗绿色水浸状不整形病斑、白色霉状物\"逐字吻合（`cropdp:番茄晚疫病:0`；`cropdp:番茄晚疫病:0` 另载\"病斑呈不明显的油浸状大斑\"）；`plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves` 载\"large, water-soaked... on leaf edges or tips... white mold\"。\n- 反证/缺失：**无实地影像、无环境温湿度读数、无面积/株数**；上游仅有\"演示输入\"文字。\n- 判定：**证据支持的判断（主因候选，属演示链路）**。\n\n**H2 番茄叶霉病（Passalora fulva）— 关键竞争假设，未排除**\n- 支持：同为叶背霉层、潮湿条件病害。\n- 反证（削弱）：`plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes` 明确鉴别点——\"Leaf mold has olive-green/grayish, velvety mold on the leaf *underside*; late blight has white, fuzzy/downy mold, often at the lesion edge\"。报告描述的是**白色霉层**，倾向支持 H1。\n- 判定：**尚未排除的可能**（需叶背霉层颜色/质地的近距离确认）。\n\n**H3 番茄早疫病（Alternaria solani）— 排除**\n- 反证：`plantinquiry:tomato.disease_fungal.late_blight:lookalikes` 载\"Early blight lesions have distinct concentric rings ('target spots'), which are absent in late blight\"；报告无同心轮纹。**已排除（症状学理由）**。\n\n**H4 番茄灰斑病（Septoria lycopersici）/ H5 枯萎病（Fusarium）/ H6 斑潜蝇 — 排序靠后，无支持**\n- `cropdp:番茄灰斑病:0` 主要特征为\"水浸状黄褐色凹陷斑、边缘暗色\"，无白霉；`plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes` 载枯萎病**\"No external lesions, spots, or cankers\"**、且与\"white mold\"无关；斑潜蝇为**蛇形白色虫道**，与病斑不符。判定：**已排除**。\n\n**H7 非生物因素（水肥/盐渍/缺素）**\n- 证据：FIELD-07 土壤档案 `seed:soil:field-07:demo`（**演示值**）：pH 6.4、EC 0.32 mS/cm、有机质 22.0 g/kg、壤土——**该演示值本身不构成盐渍或缺素证据**，也不能反证非生物因素。\n- 判定：**无法评估**（无真实土壤检测、无根区 EC 实测、无灌水量记录）。\n\n**H8 设备与环境因素（VALVE-11 / E04）**\n- 证据：`seed:equipment:demo-valve-v1:e04` —— 型号 DEMO-VALVE-V1，**模拟故障\"开阀后没有流量反馈\"**，演示排查为\"核对模拟控制器与流量记录时间、检查模拟通信状态、记录异常并转人工复核\"；停止条件：\"指令状态与流量反馈矛盾时停止后续指令\"。\n- 关联性：该演示场景**标注归属 FIELD-07**，即灌溉通道可能异常 → **可能造成叶面/棚内湿度管理失当，构成病害诱因**，但手册**未给出与晚疫病的因果条款**。\n- 判定：**合理怀疑（并发次要因素）**，作为田间湿度条件的可能来源，非病害主因证据。\n\n**H9 观测系统自身（感知链路）**\n- 无异常初筛报告（**属缺失，不是\"没有问题\"**）；无通道健康度、探头漂移、门限信息。判定：**无法评估**。\n\n### 主因判断\n- **主因（演示链路下的判断）：疑似番茄晚疫病（Phytophthora infestans）。置信度：medium。**\n  - 成立条件：叶背白色、蓬松/霜状霉层（非橄榄绿绒状）经近距离影像或镜检确认；存在高湿（结露/阴雨/排水不良）环境读数；病斑自叶缘/叶尖发起并快速扩展。\n  - 证伪条件：若叶背霉层呈**橄榄绿至灰紫绒状**、叶正面为边界不清的淡黄斑 → **改判叶霉病**；若出现**同心轮纹靶心斑** → **改判早疫病**；若根部/维管束褐变而无叶部霉层 → 考虑枯萎病；若灌溉与湿度记录显示无长期结露，病原诱因链需重估。\n  - 为何不给 high：缺环境读数、缺实地影像、土壤与设备数据均为演示值，环境条件链未闭合。\n\n### 严重度倾向与影响范围\n- 严重度倾向：**无法定级**。知识库未返回该场景的分级依据；图谱仅列\"植株萎蔫、茎叶枯死\"等进展性描述，不能折算为等级。\n- 影响范围：**无法量化**。原因是感知报告只给了症状描述，未给调查面积/株数/受害叶位比例。\n\n### 建议补检\n1. **叶部通道**：叶背霉层近距离（微距）影像 + 霉层颜色/质地记录（白/霜状 vs 橄榄绿绒状），必要时镜检孢子囊梗。\n2. **环境通道**：FIELD-07 棚内温湿度/结露时长记录（对照 24℃ 适宜温度项），确认是否满足高湿条件。\n3. **土壤通道**：FIELD-07 真实土壤/根区 EC 与含水量检测，替换演示值。\n4. **设备通道**：核对 VALVE-11 控制器状态与流量记录时间戳（按 `seed:equipment:demo-valve-v1:e04` 演示流程，仅记录并转人工复核，**不发送指令**）。\n5. **调查范围**：给出病株数/病叶率/分布（叶位、行向）。\n\n### 处置方向（仅引用知识库原文；不制定作业）\n- `get_treatment_options(\"番茄晚疫病\", crop=\"番茄\")` 命中：**方案 1** `plantinquiry:tomato.disease_fungal.late_blight:management`（tomato / late blight）：栽培措施含\"certified disease-free seeds and transplants\"\"good air circulation\"\"Avoid overhead irrigation; use drip irrigation to keep foliage dry\"\"Remove and destroy infected plants and debris promptly\"\"Rotate crops, avoiding planting tomatoes or potatoes in the same spot for 3-4 years\"；生物防治\"Bacillus subtilis or copper-based compounds\"；化学防治含\"chlorothalonil or mancozeb\"\"metalaxyl, mefenoxam, or cymoxanil\"，注意事项\"Consult local extension services... resistance management is critical\"。\n- **方案 2** `seed:tomato-late-blight:management`（演示）：原文**明确缺失字段：剂量、安全间隔期、最大用药次数、禁用情形**，并注明\"具体药剂品种、用量、安全间隔期与最大用药次数未收录，须由人工按当地登记标准确认\"。\n- **约束**：知识库收录的是防治**方向**，**不含**剂量、稀释倍数、安全间隔期、禁用情形。**涉及化学药剂的具体品种/用量/间隔期，一律须转人工确认后方可执行**（此为知识库原文要求，不是我的处方）。\n- 「诊断结论与安全约束可能冲突」迹象：未发现禁限用物资条目返回。\n\n---\n\n## 三、诊断报告（黄瓜 · GH-09）\n\n### 候选假设与排除\n\n**H1 黄瓜霜霉病（Pseudoperonospora cubensis）— 支持**\n- 支持：报告\"多角形黄褐色病斑、叶背灰黑色霉层\"与 `plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves` 高度一致：\"pale green to yellow, angular spots\"\"sharply defined and bounded by leaf veins, creating a blocky or mosaic-like pattern\"\"turn bright yellow, then tan-brown and necrotic\"；`plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves` 另载\"Affected leaves may curl upwards at the margins. Severely infected leaves die but often remain attached to the vine\"。\n- 交叉：`seed:cucumber-downy-mildew:symptom-leaf`（**演示**）载\"叶正面出现受叶脉限制的多角形黄绿至黄褐色病斑——这是与炭疽病、靶斑病最关键的区别\"\"湿度大时叶背面长出灰黑色霉层\"——与本例症状**逐字对应**。\n- 反证/缺失：无实地影像、无温湿度记录、无面积/株数。\n- 判定：**证据支持的判断（主因候选）**。\n\n**H2 黄瓜炭疽病（Colletotrichum orbiculare）— 排除**\n- 反证：`plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves` 载\"circular lesions, 1-2 cm in diameter, that turn brown to black\"\"A distinct yellow halo may surround\"——**圆形、有黄晕**，不是受叶脉限制的多角形。**已排除**。\n\n**H3 甜瓜黑星病 / 黄瓜黑星病（Cladosporium cucumerinum / Alternaria cucumerina）— 部分保留**\n- 支持：`cropdp:甜瓜黑星病:0` 命中\"灰黑色霉层\"\"见灰黑色霉\"；`cropdp:黄瓜黑星病:0` 命中\"灰黑绿色霉层\"，且适宜条件\"低温高湿；光照少；通风不良\"与**FAN-03 OFFLINE** 存在合理呼应。\n- 反证：两条目**均无 `plantinquiry` 关联卡片**（黑星病未附英文鉴别卡），且**未描述\"多角形\"病斑**。\n- 判定：**尚未排除的可能**，需形态学与霉层确认。\n\n**H4 gummy stem blight（Stagonosporopsis cucurbitacearum）— 排除**\n- 反证：`plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves` 载\"Circular, water-soaked spots, often starting at the leaf margin\"\"shot-hole' appearance\"\"A yellow halo\"——圆形+穿孔，非多角形。**已排除**。\n\n**H5 细菌性枯萎病（Erwinia tracheiphila）— 排除**\n- 反证：`plantinquiry:cucumber.disease_bacterial.bacterial_wilt:symptom_leaves` 载\"Individual leaves suddenly wilt... without significant prior yellowing or spotting\"——无斑即萎蔫，与多角形病斑矛盾。**已排除**。\n\n**H6 健康对照（Healthy）— 排除**（`plantinquiry:cucumber.healthy.healthy:symptom_leaves` 要求\"free of spots, lesions... No powdery, downy, or sooty mold\"）。\n\n**H7 非生物因素**\n- 证据：`seed:soil:gh-09:demo`（**演示值**）pH 6.7、EC 0.41 mS/cm、有机质 24.0 g/kg、壤土。同上，演示值既不支持也不排除。\n- 判定：**无法评估**（无真实土壤/根区实测）。\n\n**H8 设备与环境（FAN-03 / OFFLINE）**\n- 证据：`seed:equipment:demo-fan-v1:offline` —— 型号 DEMO-FAN-V1，**模拟故障\"风机控制器离线\"**；演示排查为\"检查模拟网关心跳和供电状态字段，核对设备地址，记录最后在线时间后转人工复核\"；停止条件：\"没有可靠状态反馈时不发送重启或转速指令\"。\n- 关联性：**该演示手册明确标注场景为 GH-09**，风机离线→通风不足→棚内高湿结露，与霜霉病及黑星病的\"通风不良/低温高湿\"发生条件方向一致；但手册**未给出与本诊断的因果条款**。\n- 判定：**合理怀疑（并发诱发因素）**，非独立的病害主因证据。\n\n**H9 观测系统自身**：同番茄，**无法评估**。\n\n### 主因判断\n- **主因（演示链路下的判断）：疑似黄瓜霜霉病（Pseudoperonospora cubensis）。置信度：medium。**\n  - 成立条件：叶背多角形病斑受限叶脉、灰黑霉层经近距离确认；通风不良/高湿环境读数；病斑自下部叶向上蔓延。\n  - 证伪条件：若病斑为**圆形带明显黄晕** → 改判炭疽病；若病斑**圆形后穿孔（shot-hole）** → 改判 gummy stem blight；若叶部霉层呈明显**橄榄绿绒状且伴茎/瓜条斑点** → 需重查黑星病；若全棚通风恢复后未见扩散 → 环境诱因权重下调。\n  - 为何不给 high：环境链未闭合，FAN-03 仅为演示离线记录，土壤为演示值。\n\n### 严重度倾向与影响范围\n- 严重度倾向：**无法定级**（知识库未返回分级依据；演示条目仅描述\"全叶干枯、跑马干\"等进展结局，不可折算等级）。\n- 影响范围：**无法量化**，原因同上（无面积/株数/病叶率）。\n\n### 建议补检\n1. **叶部通道**：叶正面病斑形态（是否受叶脉限制成多角形/镶嵌状）与叶背霉层颜色影像；下、中、上部叶分层抽样。\n2. **环境通道**：GH-09 棚内温湿度与夜间结露时长记录（对照\"控制夜间温度不低于 12℃、减少叶面结露\"方向）。\n3. **设备通道**：核对 FAN-03 网关/心跳/供电状态字段与最后在线时间（按 `seed:equipment:demo-fan-v1:offline` 演示流程，**不发送重启或转速指令**）。\n4. **土壤通道**：GH-09 真实土壤/基质与供液 EC 检测，替换演示值。\n5. **调查范围**：病株数、病叶率、分布行向与叶位梯度。\n\n### 处置方向（仅引用知识库原文）\n- `get_treatment_options(\"黄瓜霜霉病\", crop=\"黄瓜\")` 命中：**方案 1** `plantinquiry:cucumber.disease_fungal.downy_mildew:management`：栽培措施\"Plant resistant or tolerant cucumber varieties\"\"Maximize air circulation by increasing plant spacing and using trellising\"\"Avoid overhead irrigation... use drip irrigation instead\"\"Scout plants regularly, especially the undersides of leaves\"；生物防治\"*Bacillus* species or neem oil... less effective than chemical options during high disease pressure\"；化学防治\"Apply preventative fungicides when environmental conditions are favorable\"\"thorough spray coverage, especially on the undersides of leaves\"\"Rotate fungicides with different modes of action (FRAC groups)\"；注意事项\"can overcome host resistance and develop fungicide resistance rapidly\"。\n- **方案 2** `seed:cucumber-downy-mildew:management`（演示）：栽培措施含\"控制夜间温度不低于 12℃、减少叶面结露时间\"\"高温闷棚（晴天上下午密闭升温至 44–46℃ 保持 2 小时）\"并警示\"须严格控温，避免药害式灼伤\"；原文**缺失字段：剂量、安全间隔期、最大用药次数**，注明\"药剂品种、剂量、安全间隔期未收录，须人工确认\"。\n- **约束**：同番茄——具体药剂品种/剂量/稀释倍数/安全间隔期 **知识库未收录，须转人工确认**；「高温闷棚」为知识库原文记载的生态防治手段，具体温时与风险由人工核验，我不给作业参数。\n\n---\n\n## 四、关键证据完整 doc_id 清单（逐字复制，仅本轮主 doc_id）\n\n**图谱 / 病害**\n`cropdp:番茄晚疫病:0`\n`cropdp:番茄灰斑病:0`\n`cropdp:番茄枯萎病:0`\n`cropdp:美洲斑潜蝇:0`\n`cropdp:黄瓜根结线虫病:0`\n`cropdp:甜瓜黑星病:0`\n`cropdp:黄瓜黑星病:0`\n`plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves`\n`plantinquiry:tomato.disease_fungal.late_blight:symptom_stems`\n`plantinquiry:tomato.disease_fungal.late_blight:lookalikes`\n`plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes`\n`plantinquiry:tomato.disease_fungal.leaf_mold:symptom_signs_microscopic_or_visible`\n`plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes`\n`plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves`\n`plantinquiry:tomato.pest_insect.leaf_miner:symptom_leaves`\n`plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves`\n`plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_stems`\n`plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves`\n`plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves`\n`plantinquiry:cucumber.disease_bacterial.bacterial_wilt:symptom_leaves`\n`plantinquiry:cucumber.healthy.healthy:symptom_leaves`\n\n**演示（seed，标注为演示/模拟数据，非实测）**\n`seed:tomato-late-blight:symptom-leaf`\n`seed:tomato-late-blight:symptom-fruit`\n`seed:tomato-early-blight:diagnosis`\n`seed:cucumber-downy-mildew:symptom-leaf`\n`seed:tomato-late-blight:management`\n`seed:cucumber-downy-mildew:management`\n`seed:soil:field-07:demo`\n`seed:soil:gh-09:demo`\n`seed:equipment:demo-valve-v1:e04`\n`seed:equipment:demo-fan-v1:offline`\n`seed:qa:tomato-fertigation`\n\n**处置方案**\n`plantinquiry:tomato.disease_fungal.late_blight:management`\n`plantinquiry:cucumber.disease_fungal.downy_mildew:management`\n\n**指定语料源查证**\n`qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a`\n`qa_en:talhakk/agriculture-qa:8b6d3409bfb3e6b2`\n`qa_en:talhakk/agriculture-qa:a249103de393367c`\n`qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42`\n`qa_en:KisanVaani/agriculture-qa-english-only:5faa20c549c71452`\n`qa_en:KisanVaani/agriculture-qa-english-only:5251be6768307325`\n`qa_en:manifesta/verified-agronomy-17k:f_units_0000040`\n`qa_en:manifesta/verified-agronomy-17k:f_units_0000659`\n`qa_en:manifesta/verified-agronomy-17k:f_units_0000042`\n`qa_zh:lHvAy9SZx2mO`\n`qa_zh:R3oiNAPFTf94`\n`qa_zh:LSlMdfl-pZdg`\n`qa_zh:0Vi-ruPJkbc4`\n`qa_zh:0S04AxSzs_DO`\n`qa_zh:Iaj88aGpAZgD`\n`qa_zh:MtDa8yW6T7xY`\n`curated:cucumber-transplant-fertigation`\n`curated:greenhouse-perlite-fertigation`\n\n> 说明：`qa_zh:lHvAy9SZx2mO`（番茄叶霉病治疗）、`qa_zh:R3oiNAPFTf94`（白糖防早衰）、`qa_zh:LSlMdfl-pZdg`（番茄素）三条**与\"番茄施肥\"查询无关，属检索漂移**，列出仅为验证接线，**不作为任何诊断或处置证据**。\n\n---\n\n## 五、验收结论与红线声明\n\n1. **接线：7/7 工具全部可用**；`search_knowledge_base` 的 source 与 dataset 精确限定**全部生效**（talhakk / KisanVaani / manifesta 三个 qa_en 数据集可独立命中，`matched_dataset` 正确回填）。\n2. **cropdp 只有 `kg_entity`**（无 severity/management）；处置方案实际来自 `plantinquiry` 与 `seed`——与目录一致。\n3. **curated 仅 2 条**，已全量返回，其中 `curated:cucumber-transplant-fertigation` 明确**限定阿拉斯加温室黄瓜育苗/容器基质栽培**、不含国外用量配方；`curated:greenhouse-perlite-fertigation` 限定佛罗里达珍珠岩袋培——**两者均不可直接套作 GH-09 土耕处方**。\n4. **两条诊断均为 medium 置信度的演示链路结论**；关键缺口是**环境（温湿度/结露）通道与实地影像完全缺失，土壤与设备数据均为演示值**，故严格说三/四类假设中\"非生物\"与\"观测系统\"两类**无法评估**。\n5. **红线**：本轮未制定、未执行任何作业；**未给出药剂品种、剂量、稀释倍数、安全间隔期与作业参数**——知识库对番茄晚疫病、黄瓜霜霉病的**具体用药字段均标注缺失**，凡涉化学药剂**须转人工确认**。设备侧仅按手册原文\"记录异常并转人工复核\"，**不发送任何指令**。\n\n**须转人工**：①两者化学防治的具体药剂/剂量/安全间隔期；②VALVE-11 与 FAN-03 的真实检修（须按厂商型号手册、授权人员断电隔离）；③GH-09 若采用\"高温闷棚\"，其温时控制与灼伤风险须人工核验；④补充环境与影像证据后再定级。",
+  "cited_doc_ids": [
+    "cropdp:甜瓜黑星病:0",
+    "cropdp:番茄晚疫病:0",
+    "cropdp:番茄枯萎病:0",
+    "cropdp:番茄灰斑病:0",
+    "cropdp:美洲斑潜蝇:0",
+    "cropdp:黄瓜根结线虫病:0",
+    "cropdp:黄瓜黑星病:0",
+    "curated:cucumber-transplant-fertigation",
+    "curated:greenhouse-perlite-fertigation",
+    "plantinquiry:cucumber.disease_bacterial.bacterial_wilt:symptom_leaves",
+    "plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves",
+    "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+    "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves",
+    "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_stems",
+    "plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves",
+    "plantinquiry:cucumber.healthy.healthy:symptom_leaves",
+    "plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes",
+    "plantinquiry:tomato.disease_fungal.late_blight:lookalikes",
+    "plantinquiry:tomato.disease_fungal.late_blight:management",
+    "plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves",
+    "plantinquiry:tomato.disease_fungal.late_blight:symptom_stems",
+    "plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes",
+    "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_signs_microscopic_or_visible",
+    "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves",
+    "plantinquiry:tomato.pest_insect.leaf_miner:symptom_leaves",
+    "qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42",
+    "qa_en:KisanVaani/agriculture-qa-english-only:5251be6768307325",
+    "qa_en:KisanVaani/agriculture-qa-english-only:5faa20c549c71452",
+    "qa_en:manifesta/verified-agronomy-17k:f_units_0000040",
+    "qa_en:manifesta/verified-agronomy-17k:f_units_0000042",
+    "qa_en:manifesta/verified-agronomy-17k:f_units_0000659",
+    "qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a",
+    "qa_en:talhakk/agriculture-qa:8b6d3409bfb3e6b2",
+    "qa_en:talhakk/agriculture-qa:a249103de393367c",
+    "qa_zh:0S04AxSzs_DO",
+    "qa_zh:0Vi-ruPJkbc4",
+    "qa_zh:Iaj88aGpAZgD",
+    "qa_zh:LSlMdfl-pZdg",
+    "qa_zh:MtDa8yW6T7xY",
+    "qa_zh:R3oiNAPFTf94",
+    "qa_zh:lHvAy9SZx2mO",
+    "seed:cucumber-downy-mildew:management",
+    "seed:cucumber-downy-mildew:symptom-leaf",
+    "seed:equipment:demo-fan-v1:offline",
+    "seed:equipment:demo-valve-v1:e04",
+    "seed:qa:tomato-fertigation",
+    "seed:soil:field-07:demo",
+    "seed:soil:gh-09:demo",
+    "seed:tomato-early-blight:diagnosis",
+    "seed:tomato-late-blight:management",
+    "seed:tomato-late-blight:symptom-fruit",
+    "seed:tomato-late-blight:symptom-leaf"
+  ],
+  "unretrieved_citations": [],
+  "unformatted_citations": [],
+  "answer_citations_valid": true,
+  "runtime_citation_check": {
+    "cited_doc_ids": [
+      "cropdp:甜瓜黑星病:0",
+      "cropdp:番茄晚疫病:0",
+      "cropdp:番茄枯萎病:0",
+      "cropdp:番茄灰斑病:0",
+      "cropdp:美洲斑潜蝇:0",
+      "cropdp:黄瓜根结线虫病:0",
+      "cropdp:黄瓜黑星病:0",
+      "curated:cucumber-transplant-fertigation",
+      "curated:greenhouse-perlite-fertigation",
+      "plantinquiry:cucumber.disease_bacterial.bacterial_wilt:symptom_leaves",
+      "plantinquiry:cucumber.disease_fungal.anthracnose:symptom_leaves",
+      "plantinquiry:cucumber.disease_fungal.downy_mildew:management",
+      "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_leaves",
+      "plantinquiry:cucumber.disease_fungal.downy_mildew:symptom_stems",
+      "plantinquiry:cucumber.disease_fungal.gummy_stem_blight:symptom_leaves",
+      "plantinquiry:cucumber.healthy.healthy:symptom_leaves",
+      "plantinquiry:tomato.disease_fungal.fusarium_wilt:lookalikes",
+      "plantinquiry:tomato.disease_fungal.late_blight:lookalikes",
+      "plantinquiry:tomato.disease_fungal.late_blight:management",
+      "plantinquiry:tomato.disease_fungal.late_blight:symptom_leaves",
+      "plantinquiry:tomato.disease_fungal.late_blight:symptom_stems",
+      "plantinquiry:tomato.disease_fungal.leaf_mold:lookalikes",
+      "plantinquiry:tomato.disease_fungal.leaf_mold:symptom_signs_microscopic_or_visible",
+      "plantinquiry:tomato.disease_fungal.septoria_leaf_spot:symptom_leaves",
+      "plantinquiry:tomato.pest_insect.leaf_miner:symptom_leaves",
+      "qa_en:KisanVaani/agriculture-qa-english-only:499dff5aae54ff42",
+      "qa_en:KisanVaani/agriculture-qa-english-only:5251be6768307325",
+      "qa_en:KisanVaani/agriculture-qa-english-only:5faa20c549c71452",
+      "qa_en:manifesta/verified-agronomy-17k:f_units_0000040",
+      "qa_en:manifesta/verified-agronomy-17k:f_units_0000042",
+      "qa_en:manifesta/verified-agronomy-17k:f_units_0000659",
+      "qa_en:talhakk/agriculture-qa:7c5bf803e56ddd4a",
+      "qa_en:talhakk/agriculture-qa:8b6d3409bfb3e6b2",
+      "qa_en:talhakk/agriculture-qa:a249103de393367c",
+      "qa_zh:0S04AxSzs_DO",
+      "qa_zh:0Vi-ruPJkbc4",
+      "qa_zh:Iaj88aGpAZgD",
+      "qa_zh:LSlMdfl-pZdg",
+      "qa_zh:MtDa8yW6T7xY",
+      "qa_zh:R3oiNAPFTf94",
+      "qa_zh:lHvAy9SZx2mO",
+      "seed:cucumber-downy-mildew:management",
+      "seed:cucumber-downy-mildew:symptom-leaf",
+      "seed:equipment:demo-fan-v1:offline",
+      "seed:equipment:demo-valve-v1:e04",
+      "seed:qa:tomato-fertigation",
+      "seed:soil:field-07:demo",
+      "seed:soil:gh-09:demo",
+      "seed:tomato-early-blight:diagnosis",
+      "seed:tomato-late-blight:management",
+      "seed:tomato-late-blight:symptom-fruit",
+      "seed:tomato-late-blight:symptom-leaf"
+    ],
+    "unretrieved_citations": [],
+    "unformatted_citations": [],
+    "answer_citations_valid": true,
+    "retried": false,
+    "status": "passed"
+  },
+  "scope": "验证真实模型能够通过诊断Agent调用知识工具；不等同于现场诊断准确率。"
+}

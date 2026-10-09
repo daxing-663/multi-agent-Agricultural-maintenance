@@ -1,12 +1,9 @@
-<<<<<<< HEAD
-# multi-agent-Agricultural-maintenance
-=======
 # AgriAgents —— 多智能体协同农业维护框架（骨架）
 
 > **架构提取自 [TradingAgents](https://github.com/TauricResearch/TradingAgents)**，
 > 保留其分层方式与可复用设计模式；**系统提示词、技能包（SKILL.md）与工具层均已落地（2026-09-26）**，
 > 真实数据源与农艺规则仍留空（标为 `TODO(内容)`）。
-> 当前状态：内置合成演示数据源，零配置即可跑通全流程；接上真实数据源即可投产。
+> 当前状态：已接入五源本地知识库及合成演示数据；真实设备与生产规则仍需单独验证。
 
 ---
 
@@ -98,7 +95,7 @@ AgriAgents/
 │       ├── decision_log.py       追加式台账 + 历史教训检索
 │       ├── settlement.py         现场回填结算
 │       └── reflection.py         2-4 句复盘
-└── tests/                     离线自检 47 项（框架 9 / 提示词 9 / 工具 7 / 技能 6 / 收口 4 / RAG 12）
+└── tests/                     离线回归：框架、提示词、工具、知识库、构建与检索精度
 ```
 
 ---
@@ -263,7 +260,8 @@ cd C:\Users\colorful\Desktop\多agent项目\AgriAgents
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 
-# 2) 跑示例（离线桩模型，不需要任何 API key）
+# 2) 跑示例（显式选择离线桩模型，不需要 API key）
+$env:AGRIAGENTS_LLM_PROVIDER = "stub"
 .\.venv\Scripts\python.exe main.py
 
 # 3) 框架自检
@@ -369,143 +367,19 @@ finally:
 
 ---
 
-## 九、RAG 本地知识库：诊断 Agent 的查证来源
+## 九、RAG 本地知识库
 
-### 为什么必须有这一层
+知识库已按番茄、黄瓜设施农业场景补齐：六源共 **51,124 条知识文档**，包含 CropDP 图谱、PlantInquiry 卡片、中英文问答及明确标识的演示地块/设备资料。支持自有 JSONL 文档导入。
 
-框架有一条硬规则：**处置建议只能来自知识库，不允许 Agent 自创**。
-没有知识库，执行层的输入就没有合法来源——首次真实运行时模型也确实
-因此拒绝出结论（见"首次真实运行的观察"）。
-
-### 分层
-
-```
-agriagents/rag/
-├── config.py     配置解析（默认值仍集中在 default_config.py）
-├── text.py       规范化 + 分词（中文 uni/bi-gram，不引分词器）+ 切块
-├── embedder.py   嵌入后端：fastembed / hashing / none 三级回退
-├── index.py      BM25 + 稠密向量，RRF 融合；JSONL 落盘
-├── kg.py         CropDP-KG 图谱查询（症状 → 病害）
-├── normalize.py  多语言实体标准化（中 / 英 / 拉丁对齐）
-├── kb.py         知识库门面（跨源对齐 + 领域查询）
-├── seed/         内置示例语料（18 条，零下载）
-└── sources/      语料源适配器（加一个源 = 加一个文件 + 注册一行）
-```
-
-`rag/` 只负责"把知识找出来"；"找出来怎么用、失败怎么回退"在
-`dataflows/vendors/local_rag.py`。两边的边界是 `Doc` 与 `Hit` 两个数据结构。
-
-### 检索策略：为什么是混合检索
-
-| 路径 | 强项 | 弱项 |
-| --- | --- | --- |
-| BM25 | 专有名词精确命中（"番茄晚疫病"） | 同义改写无能为力 |
-| 稠密向量 | 语义泛化（"叶子发黄" ↔ "叶片黄化"） | 低频专名容易糊成近邻 |
-
-两条路用 **RRF 融合**：只看排名，天然尺度无关，不用调权重。
-打分是 `Σ 1/(60 + rank)`。
-
-**跨语言**是额外一层。中文症状配英文语料，光靠 BM25 永远对不上，
-所以有两道处理：`TermNormalizer.expand_query` 做实体改写，
-`diagnose()` / `treatments()` 再把已知作物名的多语言写法显式拼进查询串。
-缺了后者，`tomato` 就匹配不到 `番茄`。
-
-### 嵌入方案（一个硬约束）
-
-**DeepSeek 没有 embedding 接口**（`/v1/embeddings` 实测返回 404），
-所以嵌入只能在本地算。选 `fastembed`（ONNX Runtime）而不是
-`sentence-transformers`：后者要拖进 torch 约 2.5 GB，前者装上约 40 MB。
-
-三级回退，任何一级不可用都不影响框架可用：
-
-| 后端 | 依赖 | 适用 |
-| --- | --- | --- |
-| `fastembed` | +40 MB | 默认。多语言神经嵌入（384 维），中英混检 |
-| `hashing` | numpy | 断网 / 隔离环境的确定性兜底 |
-| `none` | 无 | 纯 BM25，仍然可用 |
-
-**运行期刻意不下载模型**：一次诊断请求不该卡在几百 MB 的下载上。
-模型没缓存、或维度与索引不符，都退化为 BM25，而不是抛错。
-国内直连 huggingface.co 常超时，配置里默认走 `hf-mirror` 镜像。
-
-### 语料源
-
-| 源 | 内容 | 规模 | 获取方式 |
-| --- | --- | --- | --- |
-| `seed` | **内置示例库（默认）** | 18 条 | 随项目分发，零下载 |
-| `cropdp` | CropDP-KG 中文图谱（6 张中英双语关系表） | 2550 实体 / 21k 症状 | GitHub `Dataset` 分支 |
-| `plantinquiry` | PlantInquiryVQA 病害卡片 | 203 卡 / 1946 文档 | GitHub raw |
-| `qa_en` | Agriculture-QA 系列（含人工核验子集） | ~11k | HF parquet 直连 |
-| `qa_zh` | 中文农林牧渔问答（按设施作物过滤） | ~6k | HF parquet 直连 |
-
-两个坑记在这里：CropDP-KG 真正的数据在 **`Dataset` 分支**，
-`main` 分支只有一个空 README；HF 分页端点约 135 行/秒，
-大语料要走 parquet 直连（中文集 92.7 万条，分页要 2 小时，parquet 几十秒）。
-
-`agrovoc`（FAO 多语言叙词表）是**默认关闭**的可选增强：
-它的 SPARQL 端点做全表扫描式的标签匹配，实测常见作物名要几十秒，
-会把构建拖住。加 `--agrovoc` 启用，且带总时长预算。
-
-### 五个知识工具的接线
-
-| 工具 | 数据来源 |
-| --- | --- |
-| `query_pest_disease_library` | 图谱症状反查 + 检索补证据 |
-| `get_treatment_options` | 三跳取方案：关联卡片 → 精确实体 → 检索兜底 |
-| `query_agronomy_knowledge` | 问答对 + 环境条件混合检索 |
-| `query_soil_reference` | 土壤档案（当前只有模板，返回时会显式标注） |
-| `query_equipment_manual` | 按故障码检索设备手册 |
-
-配置是 `data_vendors["agronomy_knowledge"] = "local_rag,stub_knowledge"`：
-索引不存在时自动回退到占位实现，不会中断整次 run。
-
-### 怎么跑
+诊断 Agent 可先用 `list_knowledge_bases()` 查看实际加载覆盖，再用八个知识工具进行定向查证。通用检索默认只返回短命中片段，只有片段不足以鉴别时才用 `get_knowledge_document(doc_id)` 精确读取一篇全文。处置方案按病害和作物绑定，土壤按地块编号、设备按型号/编号和故障码精确匹配；未知对象不借用邻近记录。每个结果保留来源与 doc_id。
 
 ```powershell
-# 1) 建索引。默认只建内置种子库，几秒完成
-.\.venv\Scripts\python.exe tools\build_rag_index.py --probe
-
-# 2) 验证智能体能检索到知识库（走真实模型）
-.\.venv\Scripts\python.exe tools\verify_kb_access.py
-
-# 3) 接真实知识库（图谱 + 卡片，约 4500 条，几分钟）
-.\.venv\Scripts\python.exe tools\build_rag_index.py --lean --probe
-
-# 4) 全量（含两个大型问答集）
-.\.venv\Scripts\python.exe tools\build_rag_index.py --all --probe
-
-# 看状态 / 看有哪些源
-.\.venv\Scripts\python.exe tools\build_rag_index.py --status
-.\.venv\Scripts\python.exe tools\build_rag_index.py --list
+.\.venv\Scripts\python.exe tools/build_rag_index.py --all --probe
+.\.venv\Scripts\python.exe tools/verify_kb_access.py --output-dir reports/kb/bm25
+.\.venv\Scripts\python.exe tools/verify_kb_access.py --dense --output-dir reports/kb/dense
 ```
 
-产物在 `~/.agriagents/rag/`：`corpus.jsonl`（知识块，一行一条，可 diff）、
-`kg.json`、`terms.json`、`vectors.npy`、`manifest.json`。
-原始语料缓存在 `raw/`，重复构建不重新下载。
-
-### 两条安全边界
-
-1. **查不到方案时，绝不给"相近病害"的方案。** 检索兜底要求文档*确实提到*
-   该诊断名（`KnowledgeBase._doc_mentions` 锚点校验）；不满足就 `found=False`，
-   上游必须转人工。没有这道校验时，查询一个根本不存在的病害也会返回一份
-   别的病害的用药方案——**看起来有出处，比查不到危险得多**。
-   由 `test_treatment_refuses_to_invent_when_not_found` 守着。
-2. **字段缺失要显式标注。** 知识库收录的是防治**方向**，通常不含具体剂量、
-   安全间隔期、禁用情形。这些字段缺失时返回文本里会写明"须转人工确认"，
-   不允许模型补全。
-
-### 实测结果（2026-09-26）
-
-`python tools/verify_kb_access.py` 用真实 DeepSeek 跑一次完整流程：
-
-```
-知识类工具调用次数：5
-实际命中 local_rag：4
-```
-
-命中的 4 次覆盖了土壤档案、设备手册、病虫害图谱、农艺问答。
-未命中的那次是 `get_treatment_options`——模型在"病因未定"时就要方案，
-知识库按设计拒绝了。**这个回退是正确行为，不是缺陷。**
+完整语料清单、演示档案、构建命令、失败恢复、自有文档格式和检索精度验收见 [知识库使用文档](docs/knowledge_base.md)。
 
 ---
 
@@ -596,21 +470,10 @@ agriagents/rag/
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest tests -q
-# 47 passed —— 框架（9）：图能装配并跑完、报告树与台账落盘、台账幂等、
-#                     结算需要回填、as-of 契约、资源账本未知语义、
-#                     路由分支、工具注册完整性、干跑保护
-#              提示词（9）：补采要求/上游证据/工单与审批进入提示词、
-#                     未批准不下发、演练放行口径、中枢动作与预算提醒、
-#                     四份提示词的硬边界
-#              工具（7）：合成源确定性、窗口校验、数值序列、安全规则拦截、
-#                     占位安全规则必须报错、执行台账区分演练/实发、演示档案进上下文
-#              技能（6）：四份手册可加载、未知名称被拒、缺失文件报错、
-#                     改完即时生效、摘要进签名、提示词携带手册正文
-#              收口（4）：正常收口沿用途中预判、强制收口产出 REVIEW 而不是定案结论、
-#                     理由里的等级词不得盖过 REVIEW 标签行、端到端兜底收口路径
-#              RAG（12）：索引构建与落盘、元数据过滤、图谱解析与症状反查、
-#                     跨语言命中、五个知识工具全部落到本地知识库、
-#                     索引缺失时回退占位、查不到方案时拒绝编造
+# 覆盖框架流程、提示词证据注入、工具接线、技能加载与收口逻辑；
+# RAG覆盖七个知识工具、作物/地块/设备精确匹配、中英术语、拒答负例、
+# 多源构建、下载完整性、失败保留旧库、缓存刷新与向量身份一致性。
+# 全库自然问句及来源覆盖验收见 docs/knowledge_base.md。
 ```
 
 **明确不做的事**（框架层面的边界，避免被误用）：
@@ -626,4 +489,3 @@ agriagents/rag/
 
 本项目是**框架骨架 + 研究工具**，不构成农艺、植保、设备操作或投资建议。
 把任何执行类工具接到真实设备之前，务必保持 `dry_run=True` 并完成现场安全评估。
->>>>>>> b337c3e (First_commit)

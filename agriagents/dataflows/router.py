@@ -23,6 +23,7 @@ from agriagents.dataflows.vendors import (
     actuators,
     imagery,
     knowledge,
+    knowledge_catalog,
     local_rag,
     ops,
     sensors,
@@ -53,6 +54,9 @@ DATA_CATEGORIES: dict[str, dict] = {
     "agronomy_knowledge": {
         "description": "农艺/病虫害/土壤/设备手册知识库",
         "tools": [
+            "list_knowledge_bases",
+            "search_knowledge_base",
+            "get_knowledge_document",
             "query_agronomy_knowledge",
             "query_pest_disease_library",
             "query_soil_reference",
@@ -84,6 +88,9 @@ TOOL_CATEGORY: dict[str, str] = {
 # 工具名 → {供应商名: 实现}
 # 接真实数据源时在这里注册，例如 "get_sensor_readings": {"real_sensors": sensors.get_sensor_readings}
 VENDOR_METHODS: dict[str, dict] = {
+    "list_knowledge_bases": {"local_rag": knowledge_catalog.list_knowledge_bases},
+    "search_knowledge_base": {"local_rag": knowledge_catalog.search_knowledge_base},
+    "get_knowledge_document": {"local_rag": knowledge_catalog.get_knowledge_document},
     "get_sensor_readings": {
         "synthetic_demo": synthetic.get_sensor_readings,
         "stub_sensors": sensors.get_sensor_readings,

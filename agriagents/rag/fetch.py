@@ -174,7 +174,18 @@ def _parquet_is_complete(path: str) -> bool:
             if fh.read(4) != _PARQUET_MAGIC:
                 return False
             fh.seek(-4, os.SEEK_END)
-            return fh.read(4) == _PARQUET_MAGIC
+            if fh.read(4) != _PARQUET_MAGIC:
+                return False
+        # Magic alone also accepts concatenated shards and corrupt metadata.
+        try:
+            import pyarrow.parquet as pq
+        except ImportError:
+            return True
+        try:
+            with pq.ParquetFile(path) as parquet:
+                return parquet.metadata is not None
+        except Exception:
+            return False
     except OSError:
         return False
 
@@ -198,6 +209,10 @@ def _fetch_parquet(files: list[str], endpoint: str, tmp: str, *, resume: bool) -
             # 否则会在截断的文件后面追加完整文件，得到一个更"完整"的坏文件。
             if offset and getattr(resp, "status", 200) != 206:
                 offset = 0
+            elif offset:
+                content_range = resp.headers.get("Content-Range", "")
+                if not content_range.startswith(f"bytes {offset}-"):
+                    raise RuntimeError("Range 响应起点不符，拒绝拼接损坏语料")
             with open(tmp, "ab" if offset else "wb") as out:
                 while True:
                     block = resp.read(1 << 20)
@@ -206,19 +221,27 @@ def _fetch_parquet(files: list[str], endpoint: str, tmp: str, *, resume: bool) -
                     out.write(block)
         return
 
-    if os.path.exists(tmp):
-        os.remove(tmp)
-    with open(tmp, "wb") as out:
-        for url in files:
-            req = urllib.request.Request(
-                url.replace(HF_HUB, endpoint, 1), headers={"User-Agent": USER_AGENT}
-            )
-            with urllib.request.urlopen(req, timeout=600) as resp:
-                while True:
-                    block = resp.read(1 << 20)
-                    if not block:
-                        break
-                    out.write(block)
+    # Parquet files cannot be concatenated byte-for-byte: footer offsets refer
+    # to each individual file. Rewrite row groups through a single writer.
+    import tempfile
+    import pyarrow.parquet as pq
+
+    writer = None
+    try:
+        with tempfile.TemporaryDirectory(prefix="agri-parquet-", dir=os.path.dirname(tmp)) as staging:
+            for index, url in enumerate(files):
+                shard = os.path.join(staging, f"{index}.parquet")
+                download(url.replace(HF_HUB, endpoint, 1), shard, timeout=600)
+                if not _parquet_is_complete(shard):
+                    raise RuntimeError(f"parquet 分片 {index} 下载不完整")
+                with pq.ParquetFile(shard) as parquet:
+                    if writer is None:
+                        writer = pq.ParquetWriter(tmp, parquet.schema_arrow)
+                    for batch in parquet.iter_batches(batch_size=2048):
+                        writer.write_batch(batch)
+    finally:
+        if writer is not None:
+            writer.close()
 
 
 def hf_download_parquet(
@@ -243,19 +266,20 @@ def hf_download_parquet(
     if os.path.exists(dest) and os.path.getsize(dest) > 0 and not force:
         if not validate or _parquet_is_complete(dest):
             return dest
-        os.remove(dest)   # 上次下坏了，重来
+        # Preserve the invalid cache until a validated replacement is ready.
 
     files = hf_parquet_urls(dataset, config=config, split=split)
     if not files:
         raise RuntimeError(f"{dataset} 没有可用的 parquet（config={config}, split={split}）")
 
-    endpoint = hf_endpoint() if prefer_mirror else HF_HUB
+    endpoints = list(dict.fromkeys([hf_endpoint(), HF_HUB])) if prefer_mirror else [HF_HUB]
     os.makedirs(os.path.dirname(os.path.abspath(dest)), exist_ok=True)
     tmp = dest + ".part"
 
     last_error: Exception | None = None
     for attempt in range(retries):
         try:
+            endpoint = endpoints[min(attempt, len(endpoints) - 1)]
             _fetch_parquet(files, endpoint, tmp, resume=attempt > 0)
             if validate and not _parquet_is_complete(tmp):
                 got = os.path.getsize(tmp) if os.path.exists(tmp) else 0

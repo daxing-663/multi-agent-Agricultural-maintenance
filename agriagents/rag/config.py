@@ -14,7 +14,9 @@ import agriagents.default_config as default_config
 KEYS = (
     "rag_index_dir",
     "rag_data_dir",
+    "rag_local_paths",
     "rag_embedding_backend",
+    "rag_embedding_threads",
     "rag_embedding_model",
     "rag_model_cache_dir",
     "rag_hf_endpoint",

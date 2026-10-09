@@ -64,11 +64,14 @@ def fetch_csvs(ctx: IngestContext) -> str:
 def build(ctx: IngestContext) -> SourceResult:
     csv_dir = fetch_csvs(ctx)
     kg = CropDpKg.from_csv_dir(csv_dir)
+    if not kg.entities:
+        raise ValueError("CropDP-KG 缓存中未解析出任何实体，请检查 CSV 字段与编码")
     docs = entity_docs(kg, limit=ctx.limit)
     return SourceResult(
         docs=docs,
         artifacts={"kg": kg, "csv_dir": csv_dir},
         notes=[f"实体 {len(kg.entities)} 个，症状 {len(kg._symptoms)} 条"],
+        details={"entities": len(kg.entities), "files": list(_FILES), "branch": _BRANCH},
     )
 
 
@@ -91,6 +94,12 @@ def entity_docs(kg: CropDpKg, *, limit: int | None = None) -> list[Doc]:
                     parent_id=f"cropdp:{entity.name}",
                     text=piece,
                     meta={
+                        "dataset": "CropDP-KG",
+                        "source_ref": HOMEPAGE + "/tree/" + _BRANCH,
+                        "citation": f"CropDP-KG ({_BRANCH}), entity={entity.name}",
+                        "record_id": entity.name,
+                        "evidence_status": "public_knowledge_graph",
+                        "project_human_verified": False,
                         "entity": entity.name,
                         "scientific_name": entity.scientific,
                         "english": entity.aliases,
@@ -104,7 +113,7 @@ def entity_docs(kg: CropDpKg, *, limit: int | None = None) -> list[Doc]:
                     },
                 )
             )
-    return docs
+    return docs[:limit] if limit is not None else docs
 
 
 def _has_cjk(text: str) -> bool:

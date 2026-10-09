@@ -143,6 +143,8 @@ def test_diagnosis_prompt_carries_upstream_evidence():
     assert "水渍状斑点" in prompt, "感知报告必须注入诊断提示词"
     assert "异常等级" in prompt, "异常初筛必须注入诊断提示词"
     assert "本轮上游证据" in prompt
+    assert "800～1200" in prompt
+    assert "本轮工具预算" in prompt
 
 
 def test_diagnosis_prompt_reports_absent_evidence_explicitly():

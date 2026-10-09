@@ -18,12 +18,22 @@ applies_to: agriagents/agents/diagnosis/diagnosis_agent.py
 
 ## 二、鉴别配方（按顺序）
 
+0. `list_knowledge_bases()`：确认已加载的 source/kind/数量。需要查某个公开语料源时，
+   使用 `search_knowledge_base(query, source, kind)`；它默认返回短命中片段。片段不足以完成鉴别时，
+   才对必要候选调用 `get_knowledge_document(doc_id)`；不得批量读取全文，也不得把未加载的源说成已检索。
+   每轮最多 2 次通用检索、1 次全文读取、8 次知识工具调用；预算用尽后基于已有证据收敛。
 1. `query_pest_disease_library(crop, symptom)`：症状描述要带部位与形态
    （例："叶片、暗绿色水渍状、自叶缘起始"），不要只写"叶子有问题"；
 2. `query_soil_reference(site_id)`：拿土壤本底与近期读数对照；
 3. `query_equipment_manual(device_id 或型号, 故障码/现象)`：设备侧假设必须查到条目；
 4. `query_agronomy_knowledge(question)`：管理层面的问题（水肥、湿度控制）；
-5. `get_treatment_options(诊断结论摘要)`：**最后**再取方案，摘要里必须包含诊断名。
+5. `get_treatment_options(明确病害名, crop=作物名)`：**最后**再取方案，优先使用候选的 disease 原值，不传整段报告。
+   诊断阶段默认不调用；仅在中枢明确询问处置方向时调用，报告中不展开完整方案。
+
+每次引用用反引号包围并逐字复制本轮返回的完整主 doc_id，保留出处，不省略、不去编号、不拼接 ID。
+土壤档案按地块编号、设备手册按型号/编号和故障码精确匹配；
+没有记录时明确写未收录，不能拿相邻对象替代。seed/is_demo 是演示资料，不是实测。
+病原相同不代表作物相同；番茄方案不得当作黄瓜方案。检索分数不是诊断概率。
 
 ## 三、置信度口径
 
@@ -50,4 +60,6 @@ applies_to: agriagents/agents/diagnosis/diagnosis_agent.py
 - [ ] 处置方向只引用知识库原文，没有自造药剂/用量/间隔期；
 - [ ] 给了成立条件与证伪条件（"若观察到 ×× 则应改判"）；
 - [ ] 建议补检项具体到部位/通道/方法，可供中枢决定是否补诊断。
+- [ ] 报告为 800～1200 个中文字符且绝不超过 1800；仅详细展开主因和 1 个竞争假设，补检不超过 3 项。
+- [ ] 未重复抄写感知报告、英文原文、完整处置方案或单独的长引用表。
 
