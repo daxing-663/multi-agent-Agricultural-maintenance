@@ -36,9 +36,11 @@ def _db_path(data_dir: str | Path, site_id: str) -> Path:
     return p / f"{safe}.db"
 
 
-def thread_id(site_id: str, as_of: str, signature: str = "") -> str:
+def thread_id(site_id: str, as_of: str, signature: str = "", run_id: str = "") -> str:
     """由 案件 + 基准日期(+图形态签名) 决定的稳定 thread ID。"""
     base = f"{site_id.upper()}:{as_of}"
+    if run_id:
+        base = f"{base}:run={run_id}"
     if signature:
         base = f"{base}:{signature}"
     return hashlib.sha256(base.encode()).hexdigest()[:16]
@@ -57,7 +59,12 @@ def get_checkpointer(data_dir: str | Path, site_id: str) -> Generator[SqliteSave
         conn.close()
 
 
-def checkpoint_step_exists(site_id: str, as_of: str, signature: str = "") -> bool:
+def checkpoint_step_exists(
+    site_id: str,
+    as_of: str,
+    signature: str = "",
+    run_id: str = "",
+) -> bool:
     """该 thread 是否已有检查点（决定"新起"还是"续跑"）。
 
     查不到一律按"没有"处理：宁可重跑一次，也不要因为读不到检查点而误判为续跑。
@@ -65,7 +72,7 @@ def checkpoint_step_exists(site_id: str, as_of: str, signature: str = "") -> boo
     db = _db_path(get_config()["data_cache_dir"], site_id)
     if not db.exists():
         return False
-    tid = thread_id(site_id, str(as_of), signature)
+    tid = thread_id(site_id, str(as_of), signature, run_id)
     try:
         conn = sqlite3.connect(str(db))
         try:
@@ -80,12 +87,18 @@ def checkpoint_step_exists(site_id: str, as_of: str, signature: str = "") -> boo
     return bool(rows)
 
 
-def clear_checkpoint(data_dir: str | Path, site_id: str, as_of: str, signature: str = "") -> None:
+def clear_checkpoint(
+    data_dir: str | Path,
+    site_id: str,
+    as_of: str,
+    signature: str = "",
+    run_id: str = "",
+) -> None:
     """删除该 thread 的检查点（成功收口后调用，避免下次误续）。"""
     db = _db_path(data_dir, site_id)
     if not db.exists():
         return
-    tid = thread_id(site_id, str(as_of), signature)
+    tid = thread_id(site_id, str(as_of), signature, run_id)
     conn = sqlite3.connect(str(db))
     try:
         for table in ("writes", "checkpoints"):

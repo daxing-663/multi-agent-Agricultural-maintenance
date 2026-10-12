@@ -260,8 +260,7 @@ cd C:\Users\colorful\Desktop\多agent项目\AgriAgents
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 
-# 2) 跑示例（显式选择离线桩模型，不需要 API key）
-$env:AGRIAGENTS_LLM_PROVIDER = "stub"
+# 2) 跑示例（main.py 固定使用离线桩模型，不需要 API key）
 .\.venv\Scripts\python.exe main.py
 
 # 3) 框架自检
@@ -272,38 +271,47 @@ $env:AGRIAGENTS_LLM_PROVIDER = "stub"
 .\.venv\Scripts\python.exe -m cli.main graph-nodes      # 打印节点清单
 ```
 
+### 启动后端 API 与驾驶舱
+
+后端把案件元数据保存在 `~/.agriagents/cache/api/cases.db`，每个案件的业务状态仍由
+LangGraph `SqliteSaver` checkpoint 保存。审批接口使用 `Command(resume=...)` 从原中断点恢复，
+不是重新运行案件。
+
+```powershell
+# 安装后端与开发依赖、构建前端
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]" --no-build-isolation
+cd frontend
+npm install
+npm run build
+cd ..
+
+# 同时提供 /api 和已构建的前端：http://127.0.0.1:8000
+.\.venv\Scripts\agriagents-api.exe
+```
+
+开发前端时运行 `npm run dev`（端口 8001），请求会代理到 8000 端口的 API。
+当前 HTTP API 仅绑定本机且强制 `dry_run=true`；在增加身份认证、权限控制和防重放机制前，
+不会通过 API 开放真实设备下发。
+
+主要接口：
+
+- `POST /api/cases`：创建案件并在后台运行到审批中断或结束；
+- `GET /api/cases`、`GET /api/cases/{id}`：读取案件与 LangGraph 状态投影；
+- `POST /api/cases/{id}/approval`：写入审批并从 checkpoint 恢复；
+- `GET /api/cases/{id}/report`：读取当前阶段或最终完整报告。
+
 > Windows 控制台默认是 GBK 代码页，中文可能显示成乱码（**文件本身是 UTF-8，没有问题**）。
 > 想看清控制台输出，先执行 `chcp 65001` 或设 `$env:PYTHONIOENCODING = "utf-8"`。
 
 ### 接入真实模型（当前已接 DeepSeek）
 
-密钥只放在项目根目录的 `.env`（已被 `.gitignore` 忽略），**不要写进代码**：
-
-```ini
-AGRIAGENTS_LLM_PROVIDER=deepseek
-AGRIAGENTS_DEEP_THINK_LLM=deepseek-v4-pro     # 协调决策 / 工单规划 / 回滚预案
-AGRIAGENTS_QUICK_THINK_LLM=deepseek-flash     # 感知 / 诊断 / 执行 / 初筛 / 安检
-DEEPSEEK_API_KEY=sk-...
-```
+API Key、供应商、快/深模型名和自定义端点统一放在项目上级目录的
+`C:\Users\colorful\Desktop\多agent项目\model.py`。项目通过 `MODEL_CONFIG`
+读取，不再从项目内 `.env` 或环境变量读取模型凭据。
 
 四个 Agent 用的是同一个 AI（同一个 key），只是按角色分给了两个档位。
-**想让四个 Agent 完全用同一个模型**，把两个键设成同一个模型名即可：
-
-```ini
-AGRIAGENTS_DEEP_THINK_LLM=deepseek-v4-pro
-AGRIAGENTS_QUICK_THINK_LLM=deepseek-v4-pro
-```
-
-换 OpenAI 或本地端点：
-
-```ini
-AGRIAGENTS_LLM_PROVIDER=openai
-AGRIAGENTS_DEEP_THINK_LLM=gpt-5.6-sol
-AGRIAGENTS_QUICK_THINK_LLM=gpt-5.6-luna
-OPENAI_API_KEY=sk-...
-```
-
-`openai_compatible` + `AGRIAGENTS_LLM_BACKEND_URL` 可接 vLLM / LM Studio / Ollama。
+**想让四个 Agent 完全用同一个模型**，在 `model.py` 中把快、深模型设成同一个名称即可。
+切换 OpenAI 或本地兼容端点时也只修改该文件。
 
 ### DeepSeek 的三个实测约束（2026-09，v4-pro / flash）
 
