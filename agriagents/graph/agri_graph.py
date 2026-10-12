@@ -16,9 +16,12 @@ import json
 import logging
 import os
 from contextlib import contextmanager
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+from langgraph.types import Command
 
 from agriagents.agents.context import (
     RESOURCE_CONTEXT_ABSENT,
@@ -26,23 +29,38 @@ from agriagents.agents.context import (
     render_resource_context,
 )
 from agriagents.agents.rating import parse_disposition
-from agriagents.agents.state import AgriState
 from agriagents.dataflows.config import run_config, set_config
 from agriagents.dataflows.symbols import safe_site_component
 from agriagents.dataflows.time_window import get_current_date
 from agriagents.default_config import DEFAULT_CONFIG
-from agriagents.graph.checkpointer import checkpoint_step_exists, clear_checkpoint, get_checkpointer, thread_id
+from agriagents.graph.checkpointer import (
+    checkpoint_step_exists,
+    clear_checkpoint,
+    get_checkpointer,
+    thread_id,
+)
 from agriagents.graph.conditional_logic import ConditionalLogic
 from agriagents.graph.propagation import Propagator
 from agriagents.graph.setup import GraphSetup
 from agriagents.llm import create_llm
-from agriagents.memory.decision_log import MaintenanceMemoryLog
-from agriagents.skills import skill_digest
-from agriagents.memory.reflection import Reflector
 from agriagents.memory import settlement
+from agriagents.memory.decision_log import MaintenanceMemoryLog
+from agriagents.memory.reflection import Reflector
 from agriagents.reporting import write_report_tree
+from agriagents.skills import skill_digest
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class CheckpointRun:
+    """一次可暂停 LangGraph 调用的公开结果。"""
+
+    state: dict
+    thread_id: str
+    lifecycle: str
+    interrupt: dict | None
+    next_nodes: tuple[str, ...]
 
 
 def _validate_as_of(as_of) -> str:
@@ -118,6 +136,9 @@ class AgriAgentsGraph:
     def _build_llm_kwargs(self) -> dict:
         """把通用 LLM 参数透传给客户端；None 表示交给供应商默认值。"""
         kwargs: dict = {}
+        api_key = self.config.get("api_key")
+        if api_key:
+            kwargs["api_key"] = api_key
         for key in ("temperature", "max_tokens", "llm_max_retries"):
             value = self.config.get(key)
             if value is not None:
@@ -170,7 +191,7 @@ class AgriAgentsGraph:
     # 断点续跑
     # ------------------------------------------------------------------
 
-    def begin_checkpoint(self, site_id: str, as_of: str) -> str | None:
+    def begin_checkpoint(self, site_id: str, as_of: str, run_id: str = "") -> str | None:
         """按需重编译带 checkpointer 的图，返回 thread_id（未开启则返回 None）。"""
         self._resuming = False
         if not self.config.get("checkpoint_enabled"):
@@ -180,8 +201,8 @@ class AgriAgentsGraph:
         saver = self._checkpointer_ctx.__enter__()
         self.graph = self.workflow.compile(checkpointer=saver)
 
-        tid = thread_id(site_id, str(as_of), signature)
-        self._resuming = checkpoint_step_exists(site_id, str(as_of), signature)
+        tid = thread_id(site_id, str(as_of), signature, run_id)
+        self._resuming = checkpoint_step_exists(site_id, str(as_of), signature, run_id)
         logger.info("%s %s / %s", "续跑" if self._resuming else "新起", site_id, as_of)
         return tid
 
@@ -194,9 +215,9 @@ class AgriAgentsGraph:
         self._resuming = False
 
     @contextmanager
-    def checkpoint_scope(self, site_id: str, as_of: str):
+    def checkpoint_scope(self, site_id: str, as_of: str, run_id: str = ""):
         try:
-            yield self.begin_checkpoint(site_id, as_of)
+            yield self.begin_checkpoint(site_id, as_of, run_id)
         finally:
             self.end_checkpoint()
 
@@ -217,14 +238,17 @@ class AgriAgentsGraph:
     # ------------------------------------------------------------------
 
     def create_run_state(self, site_id: str, as_of: str, site_type: str = "field",
-                         resources: dict | None = None) -> dict:
+                         resources: dict | None = None, request_note: str = "") -> dict:
         """构造初始状态：先结算历史条目，再注入档案与教训。"""
         self.settle_pending(site_id)
+        site_context = self.resolve_site_context(site_id, site_type, as_of)
+        if request_note.strip():
+            site_context += f"\n巡检请求备注：{request_note.strip()}"
         return self.propagator.create_initial_state(
             site_id,
             as_of,
             site_type=site_type,
-            site_context=self.resolve_site_context(site_id, site_type, as_of),
+            site_context=site_context,
             resource_context=render_resource_context(resources) or RESOURCE_CONTEXT_ABSENT,
             past_context=self.memory_log.get_past_context(
                 site_id, as_of=self._memory_as_of(as_of)
@@ -241,6 +265,122 @@ class AgriAgentsGraph:
         as_of = _validate_as_of(as_of)
         with run_config(self.config), self.checkpoint_scope(site_id, as_of) as tid:
             return self._run_graph(site_id, as_of, site_type, tid, resources)
+
+    def start_checkpointed_case(
+        self,
+        site_id: str,
+        as_of: str,
+        site_type: str = "field",
+        resources: dict | None = None,
+        run_id: str = "",
+        request_note: str = "",
+    ) -> CheckpointRun:
+        """启动案件并运行到人工审批中断或流程结束。
+
+        与 :meth:`propagate` 不同，本方法保留成功后的 checkpoint，供 API 查询报告与
+        审批恢复使用。调用方必须开启 ``checkpoint_enabled`` 和人工审批。
+        """
+        as_of = _validate_as_of(as_of)
+        self._require_checkpointed_approval()
+        with run_config(self.config), self.checkpoint_scope(site_id, as_of, run_id) as tid:
+            if not tid:
+                raise RuntimeError("checkpoint 未开启")
+            if self._resuming:
+                raise RuntimeError(f"案件 {site_id}/{as_of} 已存在 checkpoint，不能重复创建")
+            initial = self.create_run_state(
+                site_id, as_of, site_type, resources, request_note=request_note
+            )
+            return self._stream_checkpointed(self.checkpoint_input(initial), tid)
+
+    def resume_checkpointed_case(
+        self,
+        site_id: str,
+        as_of: str,
+        *,
+        approved: bool,
+        approver: str,
+        note: str = "",
+        run_id: str = "",
+    ) -> CheckpointRun:
+        """把人工审批结果送入 ``Command(resume=...)`` 并从 checkpoint 继续。"""
+        as_of = _validate_as_of(as_of)
+        self._require_checkpointed_approval()
+        decision = {"approved": bool(approved), "approver": approver, "note": note}
+        with run_config(self.config), self.checkpoint_scope(site_id, as_of, run_id) as tid:
+            if not tid or not self._resuming:
+                raise RuntimeError(f"案件 {site_id}/{as_of} 没有可恢复的 checkpoint")
+            current = self._checkpoint_outcome(tid)
+            if current.lifecycle != "awaiting_approval":
+                raise RuntimeError(f"案件当前状态为 {current.lifecycle}，不接受审批")
+            return self._stream_checkpointed(Command(resume=decision), tid)
+
+    def read_checkpointed_case(
+        self,
+        site_id: str,
+        as_of: str,
+        *,
+        run_id: str = "",
+    ) -> CheckpointRun:
+        """只读返回 checkpoint 中的最新业务状态和中断信息。"""
+        as_of = _validate_as_of(as_of)
+        if not self.config.get("checkpoint_enabled"):
+            raise RuntimeError("读取案件需要开启 checkpoint_enabled")
+        with run_config(self.config), self.checkpoint_scope(site_id, as_of, run_id) as tid:
+            if not tid or not self._resuming:
+                raise RuntimeError(f"案件 {site_id}/{as_of} 没有 checkpoint")
+            return self._checkpoint_outcome(tid)
+
+    def _require_checkpointed_approval(self) -> None:
+        if not self.config.get("checkpoint_enabled"):
+            raise RuntimeError("API 案件必须开启 checkpoint_enabled")
+        if not self.config.get("require_human_approval"):
+            raise RuntimeError("API 案件必须开启 require_human_approval")
+
+    def _checkpoint_config(self, tid: str) -> dict:
+        config = dict(self.propagator.get_graph_args()["config"])
+        config["configurable"] = {"thread_id": tid}
+        return config
+
+    def _stream_checkpointed(self, graph_input, tid: str) -> CheckpointRun:
+        args = self.propagator.get_graph_args()
+        config = self._checkpoint_config(tid)
+        last_state: dict | None = None
+        for chunk in self.graph.stream(graph_input, **{**args, "config": config}):
+            if isinstance(chunk, dict) and "__interrupt__" not in chunk:
+                last_state = chunk
+            if self.debug:
+                self._print_progress(chunk)
+
+        outcome = self._checkpoint_outcome(tid, fallback=last_state)
+        if outcome.lifecycle == "completed":
+            decision = outcome.state.get("final_decision", "")
+            if decision:
+                self.memory_log.store_decision(
+                    outcome.state.get("site_of_interest", ""),
+                    outcome.state.get("as_of", ""),
+                    decision,
+                )
+        return outcome
+
+    def _checkpoint_outcome(self, tid: str, fallback: dict | None = None) -> CheckpointRun:
+        snapshot = self.graph.get_state(self._checkpoint_config(tid))
+        state = dict(snapshot.values or fallback or {})
+        interrupt_value = None
+        for task in getattr(snapshot, "tasks", ()):
+            for item in getattr(task, "interrupts", ()):
+                value = getattr(item, "value", item)
+                interrupt_value = value if isinstance(value, dict) else {"value": value}
+                break
+            if interrupt_value is not None:
+                break
+        next_nodes = tuple(getattr(snapshot, "next", ()) or ())
+        if interrupt_value is not None:
+            lifecycle = "awaiting_approval"
+        elif next_nodes:
+            lifecycle = "paused"
+        else:
+            lifecycle = "completed"
+        return CheckpointRun(state, tid, lifecycle, interrupt_value, next_nodes)
 
     def _run_graph(self, site_id: str, as_of: str, site_type: str, tid: str | None,
                    resources: dict | None) -> tuple[dict, str]:
@@ -305,5 +445,5 @@ def load_resources(path: str | None) -> dict | None:
     """从 JSON 文件读取资源账本（人力/机具/农资）。"""
     if not path:
         return None
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(path, encoding="utf-8") as handle:
         return json.load(handle)

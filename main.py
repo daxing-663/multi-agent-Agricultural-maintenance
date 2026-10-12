@@ -11,7 +11,10 @@ from agriagents.graph.agri_graph import AgriAgentsGraph
 
 config = DEFAULT_CONFIG.copy()
 
-# 演示用：自动放行（人工审批默认是开启的，这里关掉只为让示例一条命令跑完）
+# 演示固定使用离线模型并自动放行，让示例不依赖私有模型配置和网络。
+config["llm_provider"] = "stub"
+config["deep_think_llm"] = "stub"
+config["quick_think_llm"] = "stub"
 config["require_human_approval"] = False
 config["dry_run"] = True
 

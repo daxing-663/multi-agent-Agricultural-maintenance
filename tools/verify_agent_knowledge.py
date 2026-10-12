@@ -89,7 +89,12 @@ def main() -> int:
     config = {**DEFAULT_CONFIG, "rag_index_dir": args.index_dir, "dry_run": True}
     if config["llm_provider"] == "stub":
         parser.error("--live 需要真实模型供应商，当前 provider=stub")
-    kwargs = {"max_retries": 1, "timeout": 90, "max_tokens": 2600}
+    kwargs = {
+        "api_key": config.get("api_key"),
+        "max_retries": 1,
+        "timeout": 90,
+        "max_tokens": 2600,
+    }
     if config["llm_provider"] == "deepseek":
         kwargs["thinking_enabled"] = False
     llm = create_llm(config["llm_provider"], config["quick_think_llm"], config.get("backend_url"), **kwargs)

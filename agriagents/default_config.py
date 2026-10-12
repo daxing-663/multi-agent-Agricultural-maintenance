@@ -2,16 +2,17 @@
 
 仿 TradingAgents 的 ``default_config.py``，承担三件事：
 
-1. 所有可调项集中于此，不在代码里散落常量；
-2. ``AGRIAGENTS_*`` 环境变量可覆盖任意一项，换模型 / 换数据源 / 改轮次不用动代码；
+1. 运行参数集中于此；API Key 与模型选择从仓库外的 ``../model.py`` 读取；
+2. ``AGRIAGENTS_*`` 环境变量可覆盖非模型运行参数；
 3. 环境变量按默认值的类型做强制转换（见 ``_coerce``），写错就启动即报错，
    绝不静默兜底——一次无人值守的巡检不该因为拼错的布尔值而悄悄换了策略。
 """
 
+import importlib.util
 import os
+from pathlib import Path
 
-# 先加载 .env，再读取任何环境变量：否则 .env 里的配置对下面的默认值不生效。
-# 密钥只从这里来，不写进代码——代码会进版本库，密钥不能。
+# 先加载 .env，再读取非模型运行参数。模型凭据只从仓库外的 model.py 读取。
 try:
     from dotenv import load_dotenv
 
@@ -21,12 +22,33 @@ except ImportError:  # pragma: no cover - python-dotenv 是声明过的依赖
 
 _AGRIAGENTS_HOME = os.path.join(os.path.expanduser("~"), ".agriagents")
 
+
+def _load_private_model_config() -> dict:
+    """从仓库外的 ``model.py`` 加载私有模型配置。"""
+    config_path = Path(__file__).resolve().parents[2] / "model.py"
+    if not config_path.is_file():
+        raise RuntimeError(f"找不到私有模型配置：{config_path}")
+
+    spec = importlib.util.spec_from_file_location("agriagents_private_model_config", config_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"无法加载私有模型配置：{config_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    raw = getattr(module, "MODEL_CONFIG", None)
+    if not isinstance(raw, dict):
+        raise RuntimeError(f"{config_path} 必须定义 MODEL_CONFIG 字典")
+    required = ("api_key", "llm_provider", "deep_think_llm", "quick_think_llm", "backend_url")
+    missing = [key for key in required if key not in raw]
+    if missing:
+        raise RuntimeError(f"{config_path} 缺少配置项：{', '.join(missing)}")
+    return dict(raw)
+
+
+_PRIVATE_MODEL_CONFIG = _load_private_model_config()
+
 # 环境变量 → 配置键 的单向映射表。要新增可被环境覆盖的配置项，只加一行即可。
 _ENV_OVERRIDES = {
-    "AGRIAGENTS_LLM_PROVIDER":              "llm_provider",
-    "AGRIAGENTS_DEEP_THINK_LLM":            "deep_think_llm",
-    "AGRIAGENTS_QUICK_THINK_LLM":           "quick_think_llm",
-    "AGRIAGENTS_LLM_BACKEND_URL":           "backend_url",
     "AGRIAGENTS_OUTPUT_LANGUAGE":           "output_language",
     "AGRIAGENTS_MAX_PERCEPTION_ROUNDS":     "max_perception_rounds",
     "AGRIAGENTS_MAX_DIAGNOSIS_ROUNDS":      "max_diagnosis_rounds",
@@ -94,16 +116,17 @@ DEFAULT_CONFIG = _apply_env_overrides({
         or os.path.join(_AGRIAGENTS_HOME, "memory", "maintenance_log.md"),
     "memory_log_max_entries": None,   # 已回填条目的上限；None 表示不轮转
 
-    # ---- LLM 设置（双模型分级，与 TradingAgents 一致）----
-    # 可选供应商：deepseek（默认） / openai / openai_compatible / stub（离线占位）
+    # ---- LLM 设置（私有值来自仓库外的 ../model.py）----
+    # 可选供应商：deepseek / openai / openai_compatible / stub（离线占位）
     # 两个模型都是同一个「AI」，只是分工不同：
     #   deep  用于协调决策、工单规划、回滚预案这类高价值判断
     #   quick 用于感知、诊断、执行、初筛、安检这类高频调用
     # 想让四个 Agent 完全用同一个模型，把两个键设成同一个模型名即可。
-    "llm_provider": "deepseek",
-    "deep_think_llm": "deepseek-v4-pro",
-    "quick_think_llm": "deepseek-flash",
-    "backend_url": None,               # None 表示各供应商用自家默认端点
+    "api_key": _PRIVATE_MODEL_CONFIG["api_key"],
+    "llm_provider": _PRIVATE_MODEL_CONFIG["llm_provider"],
+    "deep_think_llm": _PRIVATE_MODEL_CONFIG["deep_think_llm"],
+    "quick_think_llm": _PRIVATE_MODEL_CONFIG["quick_think_llm"],
+    "backend_url": _PRIVATE_MODEL_CONFIG["backend_url"],
     "temperature": None,
     "llm_max_retries": None,
     "max_tokens": None,

@@ -26,7 +26,6 @@ DeepSeek 的实测行为（2026-09，deepseek-v4-pro / deepseek-flash），三�
 from __future__ import annotations
 
 import enum
-import os
 import types
 import typing
 
@@ -160,11 +159,10 @@ class DeepSeekChatModel(ChatOpenAI):
 
 def _create_deepseek(model: str, base_url: str | None = None, **kwargs):
     """创建 DeepSeek 客户端；缺 key 时立即报错，不留到第一次调用才失败。"""
-    api_key = kwargs.pop("api_key", None) or os.environ.get("DEEPSEEK_API_KEY")
+    api_key = kwargs.pop("api_key", None)
     if not api_key:
         raise ValueError(
-            "provider=deepseek 需要 DEEPSEEK_API_KEY：请写进项目根目录的 .env，"
-            "或设成环境变量。"
+            "provider=deepseek 需要 api_key：请在项目上级目录的 model.py 中配置。"
         )
 
     thinking_enabled = bool(kwargs.pop("thinking_enabled", False))
